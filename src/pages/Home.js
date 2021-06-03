@@ -4,6 +4,7 @@ import InfoSection from '../components/InfoSection/InfoSection';
 import { section1, section2 } from '../components/InfoSection/Data';
 import Navbar from '../components/Navbar/Navbar';
 import NavbarDropDown from '../components/NavbarDropDown/NavbarDropDown';
+import Tiles from '../components/Tiles/Tiles';
 
 const Home = () => {
 	const [ isOpen, setIsOpen ] = useState(false);
@@ -19,6 +20,7 @@ const Home = () => {
 			<Hero />
 			<InfoSection {...section1} />
 			<InfoSection {...section2} />
+			<Tiles />
 		</div>
 	);
 };
