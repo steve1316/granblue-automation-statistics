@@ -79,23 +79,43 @@ export const HeroButtonWrapper = styled.div`
 `;
 
 export const HeroButton = styled(LinkRouter)`
-    border-radius: 50px;
-    background: #01bf71;
-    padding: 16px 32px;
-    color: #010606;
-    font-size: 16px;
-    outline: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    text-decoration: none;
+	border-radius: 50px;
+	background: #01bf71;
+	padding: 16px 32px;
+	color: #010606;
+	font-size: 16px;
+	outline: none;
+	border: none;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+	text-decoration: none;
 	margin: 0 50px;
 
-    &:hover {
-        transition: all 0.2s ease-in-out;
-        background: #fff;
-        color: #010606;
-    }
+	&:hover {
+		transition: all 0.2s ease-in-out;
+		background: #fff;
+		color: #010606;
+	}
+`;
+
+export const HeroButtonLink = styled.a`
+	border-radius: 50px;
+	background: #01bf71;
+	padding: 16px 32px;
+	color: #010606;
+	font-size: 16px;
+	outline: none;
+	border: none;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+	text-decoration: none;
+	margin: 0 50px;
+
+	&:hover {
+		transition: all 0.2s ease-in-out;
+		background: #fff;
+		color: #010606;
+	}
 `;
 
 export const ArrowForward = styled(MdArrowForward)`

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HeroContainer, HeroContent, HeroBackground, HeroVideo, HeroH1, HeroP, HeroButtonWrapper, HeroButton, ArrowForward, ArrowRight } from './HeroElements';
+import { HeroContainer, HeroContent, HeroBackground, HeroVideo, HeroH1, HeroP, HeroButtonWrapper, HeroButton, HeroButtonLink, ArrowForward, ArrowRight } from './HeroElements';
 import Video from '../../assets/hero_video.mp4';
 
 const Hero = () => {
@@ -21,7 +21,7 @@ const Hero = () => {
 					<HeroButton to="/signup" onMouseEnter={onHover} onMouseLeave={onHover}>
 						Get Started {hover ? <ArrowForward /> : <ArrowRight />}
 					</HeroButton>
-					<HeroButton to="#">View on Github</HeroButton>
+					<HeroButtonLink href="https://github.com/steve1316/granblue-automation-aws-statistics">View on Github</HeroButtonLink>
 				</HeroButtonWrapper>
 			</HeroContent>
 		</HeroContainer>
