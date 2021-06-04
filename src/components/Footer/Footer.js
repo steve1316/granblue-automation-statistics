@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { animateScroll as scroll } from 'react-scroll';
 import {
 	FooterContainer,
 	FooterWrapper,
@@ -18,6 +19,11 @@ import {
 } from './FooterElements';
 
 const Footer = () => {
+	const toggleHome = () => {
+		// Scroll to the top of the page when this is clicked.
+		scroll.scrollToTop();
+	};
+
 	return (
 		<FooterContainer>
 			<FooterWrapper>
@@ -50,7 +56,9 @@ const Footer = () => {
 				</FooterLinksContainer>
 				<AdditionalInfo>
 					<AdditionalInfoWrapper>
-						<AdditionalInfoLogo to="/">Granblue Automation Statistics</AdditionalInfoLogo>
+						<AdditionalInfoLogo to="/" onClick={toggleHome}>
+							Granblue Automation Statistics
+						</AdditionalInfoLogo>
 						<WebsiteRights>steve1316 © {new Date().getFullYear()} All rights reserved.</WebsiteRights>
 						<AdditionalInfoIcons>
 							<AdditionalInfoIconLink href="https://github.com/steve1316" target="_blank" aria-label="GitHub">
