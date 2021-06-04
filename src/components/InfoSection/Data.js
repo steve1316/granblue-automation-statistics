@@ -5,7 +5,7 @@ export const section1 = {
 	lightTextDesc: true,
 	topLine: 'Currently supports 2 versions',
 	headLine: 'Windows and Android Devices',
-	description: 'View their respective repositories on GitHub for instructions on how to opt-in.',
+	description: 'View their respective repositories on GitHub for instructions on how to opt-in. Links are at the bottom of the page.',
 	imgStart: false,
 	img: require('../../assets/svgMultipleDevices.svg').default,
 	imgWidth: '400px',
