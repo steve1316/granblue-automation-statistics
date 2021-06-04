@@ -48,8 +48,16 @@ export const TilesCard = styled.div`
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 	transition: all 0.2s ease-in-out;
 
+	@media screen and (max-width: 1000px) {
+		padding: 15px;
+	}
+
+	@media screen and (max-width: 800px) {
+		padding: 5px;
+	}
+
 	&:hover {
-		transform: scale(1.02);
+		transform: scale(1.12);
 		transition: all 0.2s ease-in-out;
 		cursor: pointer;
 	}
