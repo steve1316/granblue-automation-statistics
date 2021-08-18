@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ReactPlayer from "react-player";
 import heroVideo from "../assets/hero_video.mp4";
 import { Box, Button, Typography } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
         },
         position: "relative",
     },
-    overlay: {
+    heroOverlay: {
         position: "absolute",
         top: 0,
         width: "100%",
@@ -78,51 +79,40 @@ const useStyles = makeStyles((theme) => ({
             margin: "0 25px",
         },
     },
+    heroButtonLink: {
+        color: "#fff",
+        textDecoration: "none",
+        fontWeight: "bold",
+    },
 }));
-
-const HeroButton = ({ color, variant, text }) => {
-    const classes = useStyles();
-    return (
-        <Button color={color} variant={variant} className={classes.heroButton}>
-            {text}
-        </Button>
-    );
-};
-
-const HeroContent = () => {
-    const classes = useStyles();
-    return (
-        <Box className={classes.heroContainer}>
-            <Typography variant="h3" component="h1" className={classes.heroH1}>
-                Granblue Automation Statistics
-            </Typography>
-            <Typography variant="h6" component="p" className={classes.heroP}>
-                View and analyze runs and item drops from the various Farming Modes supported by Granblue Automation.
-            </Typography>
-            <Box className={classes.heroButtonWrapper}>
-                <HeroButton color={"primary"} variant={"contained"} text={"Get Started"} />
-                <HeroButton color={"primary"} variant={"contained"} text={"View on GitHub"} />
-            </Box>
-        </Box>
-    );
-};
-
-const Overlay = () => {
-    const classes = useStyles();
-    return (
-        <div className={classes.overlay}>
-            <HeroContent />
-        </div>
-    );
-};
 
 const Hero = () => {
     const classes = useStyles();
     return (
         <section className={classes.root}>
             <ReactPlayer playing loop muted url={heroVideo} width="100%" height="100%" />
-
-            <Overlay />
+            <div className={classes.heroOverlay}>
+                <Box className={classes.heroContainer}>
+                    <Typography variant="h3" component="h1" className={classes.heroH1}>
+                        Granblue Automation Statistics
+                    </Typography>
+                    <Typography variant="h6" component="p" className={classes.heroP}>
+                        View and analyze runs and item drops from the various Farming Modes supported by Granblue Automation.
+                    </Typography>
+                    <Box className={classes.heroButtonWrapper}>
+                        <Button color="primary" variant="contained" className={classes.heroButton}>
+                            <RouterLink to="/createaccount" className={classes.heroButtonLink}>
+                                Get Started
+                            </RouterLink>
+                        </Button>
+                        <Button color="primary" variant="contained" className={classes.heroButton}>
+                            <a href="https://github.com/steve1316/granblue-automation-aws-statistics" className={classes.heroButtonLink} target="_blank" rel="noreferrer" aria-label="View on GitHub">
+                                View on GitHub
+                            </a>
+                        </Button>
+                    </Box>
+                </Box>
+            </div>
         </section>
     );
 };
