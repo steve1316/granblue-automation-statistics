@@ -13,6 +13,8 @@ const useStyles = makeStyles((theme) => ({
         margin: "0 auto",
         background: "#101522",
         width: "100%",
+        position: "relative",
+        bottom: 0,
     },
     linksContainer: {
         display: "flex",
