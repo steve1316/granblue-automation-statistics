@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { AppBar, Toolbar, Typography, Button, IconButton } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     emptyDivider: {
@@ -27,16 +28,36 @@ const useStyles = makeStyles((theme) => ({
     body: {
         transition: "0.5s all ease",
     },
+    loginButton: {
+        color: "#fff",
+        transition: "0.3s all ease",
+
+        "&:hover": {
+            color: "#01bf71",
+        },
+    },
+    drawer: {
+        backgroundColor: "#01bf71",
+    },
+    link: {
+        color: "#000",
+        textDecoration: "none",
+    },
 }));
 
 const NavBar = () => {
     const classes = useStyles();
 
     const [scrollNav, setScrollNav] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     useEffect(() => {
         window.addEventListener("scroll", toggleScroll);
     }, []);
+
+    const toggleDrawer = () => {
+        setIsDrawerOpen(!isDrawerOpen);
+    };
 
     const toggleScroll = () => {
         if (window.pageYOffset > 300) {
@@ -56,14 +77,43 @@ const NavBar = () => {
     return (
         <AppBar className={classes.body} id="header" style={scrollNav ? { background: "#101522", boxShadow: 5 } : { background: "transparent", boxShadow: "none" }}>
             <Toolbar>
-                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={toggleDrawer}>
                     <MenuIcon />
                 </IconButton>
+                <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
+                    <List>
+                        <RouterLink to="/" className={classes.link}>
+                            <ListItem button key="home">
+                                <ListItemText primary="Home" />
+                            </ListItem>
+                        </RouterLink>
+                        <Divider />
+                        <RouterLink to="/dashboard" className={classes.link}>
+                            <ListItem button key="dashboard">
+                                <ListItemText primary="Dashboard" />
+                            </ListItem>
+                        </RouterLink>
+                        <Divider />
+                        <RouterLink to="/login" className={classes.link}>
+                            <ListItem button key="login">
+                                <ListItemText primary="Log in" />
+                            </ListItem>
+                        </RouterLink>
+                        <Divider />
+                        <RouterLink to="/createaccount" className={classes.link}>
+                            <ListItem button key="createaccount">
+                                <ListItemText primary="Sign up" />
+                            </ListItem>
+                        </RouterLink>
+                    </List>
+                </Drawer>
                 <Typography variant="h6" className={classes.title} onClick={scrollToTop}>
                     GA Statistics
                 </Typography>
                 <div className={classes.emptyDivider} />
-                <Button color="inherit">Login</Button>
+                <Button color="inherit" className={classes.loginButton}>
+                    Login
+                </Button>
             </Toolbar>
         </AppBar>
     );
