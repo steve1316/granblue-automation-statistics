@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Hero from "../../components/Hero";
 import InfoSection from "../../components/InfoSection";
@@ -14,6 +14,11 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = () => {
     const classes = useStyles();
+
+    useEffect(() => {
+        document.title = "Granblue Automation Statistics";
+        window.scrollTo(0, 0);
+    }, []);
 
     return (
         <div className={classes.root} id="home">

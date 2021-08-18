@@ -10,6 +10,12 @@ const useStyles = makeStyles((theme) => ({
 
 const NotFound = () => {
     const classes = useStyles();
+
+    useEffect(() => {
+        document.title = "404 - Not Found";
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <section className={classes.root}>
             <h2>Sorry</h2>
