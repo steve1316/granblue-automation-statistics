@@ -7,36 +7,38 @@ const useStyles = makeStyles((theme) => ({
     root: {
         background: "#000",
         overflow: "hidden",
-        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        minHeight: "100vh",
     },
     container: {
         color: "#fff",
-
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "100vh",
     },
     title: {
         fontSize: "40px",
+        margin: "16px auto",
     },
     subtitle: {
         fontSize: "16px",
+        margin: "16px auto",
     },
     button: {
         borderRadius: "50px",
         background: "#01bf71",
         color: "#000",
-        padding: "16px 32px",
+        padding: "16px",
         fontSize: "16px",
         fontWeight: "normal",
-        margin: "16px 50px",
+        margin: "16px auto",
 
         [theme.breakpoints.down("sm")]: {
-            padding: "16px 24px",
             fontSize: "12px",
-            margin: "0 25px",
         },
     },
     link: {

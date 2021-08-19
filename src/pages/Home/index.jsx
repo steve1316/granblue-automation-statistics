@@ -7,7 +7,6 @@ import { section1, section2 } from "./data.js";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        position: "relative",
         overflow: "hidden",
     },
 }));

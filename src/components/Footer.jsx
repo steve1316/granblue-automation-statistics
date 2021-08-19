@@ -5,24 +5,18 @@ import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        padding: "48px 0 24px 0",
+        padding: "16px 0 16px 0",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        margin: "0 auto",
         background: "#101522",
         width: "100%",
-        position: "relative",
-        bottom: 0,
+        overflow: "hidden",
     },
     linksContainer: {
         display: "flex",
         justifyContent: "center",
-
-        [theme.breakpoints.down("md")]: {
-            paddingTop: "16px",
-        },
     },
     linksWrapper: {
         display: "flex",
