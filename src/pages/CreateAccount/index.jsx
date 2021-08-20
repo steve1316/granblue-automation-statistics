@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Avatar, Button, Container, Grid, makeStyles, Paper, TextField, Typography } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { Link } from "react-router-dom";
@@ -39,6 +39,11 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateAccount = () => {
     const classes = useStyles();
+
+    useEffect(() => {
+        document.title = "Create Account";
+        window.scrollTo(0, 0);
+    }, []);
 
     return (
         <section id="createaccount" className={classes.root}>
