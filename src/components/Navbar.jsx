@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     emptyDivider: {
@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 const NavBar = () => {
     const classes = useStyles();
+    const history = useHistory();
 
     const [scrollNav, setScrollNav] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -107,12 +108,25 @@ const NavBar = () => {
                         </RouterLink>
                     </List>
                 </Drawer>
-                <Typography variant="h6" className={classes.title} onClick={scrollToTop}>
+                <Typography
+                    variant="h6"
+                    className={classes.title}
+                    onClick={() => {
+                        history.push("/");
+                        scrollToTop();
+                    }}
+                >
                     GA Statistics
                 </Typography>
                 <div className={classes.emptyDivider} />
-                <Button color="inherit" className={classes.loginButton}>
-                    Login
+                <Button
+                    color="inherit"
+                    className={classes.loginButton}
+                    onClick={() => {
+                        history.push("/login");
+                    }}
+                >
+                    Log In
                 </Button>
             </Toolbar>
         </AppBar>
