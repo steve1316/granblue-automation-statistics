@@ -75,7 +75,7 @@ const CreateAccount = () => {
                             Create Account
                         </Button>
                         <Grid container justifyContent="flex-end">
-                            <Link href="/login" variant="body2">
+                            <Link to="/login" variant="body2">
                                 Already have an account? Sign in here.
                             </Link>
                         </Grid>
