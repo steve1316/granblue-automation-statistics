@@ -89,23 +89,18 @@ const NavBar = () => {
                             </ListItem>
                         </RouterLink>
                         <Divider />
+                        <RouterLink to="/gateway" className={classes.link}>
+                            <ListItem button key="getstarted">
+                                <ListItemText primary="Get Started" />
+                            </ListItem>
+                        </RouterLink>
+                        <Divider />
                         <RouterLink to="/dashboard" className={classes.link}>
                             <ListItem button key="dashboard">
                                 <ListItemText primary="Dashboard" />
                             </ListItem>
                         </RouterLink>
                         <Divider />
-                        <RouterLink to="/login" className={classes.link}>
-                            <ListItem button key="login">
-                                <ListItemText primary="Log in" />
-                            </ListItem>
-                        </RouterLink>
-                        <Divider />
-                        <RouterLink to="/createaccount" className={classes.link}>
-                            <ListItem button key="createaccount">
-                                <ListItemText primary="Sign up" />
-                            </ListItem>
-                        </RouterLink>
                     </List>
                 </Drawer>
                 <Typography
@@ -123,7 +118,7 @@ const NavBar = () => {
                     color="inherit"
                     className={classes.loginButton}
                     onClick={() => {
-                        history.push("/login");
+                        history.push("/gateway");
                     }}
                 >
                     Log In

@@ -101,7 +101,7 @@ const Hero = () => {
                     </Typography>
                     <Box className={classes.heroButtonWrapper}>
                         <Button color="primary" variant="contained" className={classes.heroButton}>
-                            <RouterLink to="/createaccount" className={classes.heroButtonLink}>
+                            <RouterLink to="/gateway" className={classes.heroButtonLink}>
                                 Get Started
                             </RouterLink>
                         </Button>

@@ -146,14 +146,11 @@ const Footer = () => {
                 <div className={classes.linksWrapper}>
                     <div className={classes.linksItem}>
                         <h1 className={classes.linksH1}>Services</h1>
+                        <RouterLink to="/gateway" className={classes.link}>
+                            Get Started
+                        </RouterLink>
                         <RouterLink to="/dashboard" className={classes.link}>
                             Dashboard
-                        </RouterLink>
-                        <RouterLink to="/createaccount" className={classes.link}>
-                            Sign Up
-                        </RouterLink>
-                        <RouterLink to="/login" className={classes.link}>
-                            Login
                         </RouterLink>
                     </div>
                 </div>

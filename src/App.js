@@ -3,7 +3,7 @@ import NotFound from "./pages/NotFound";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import NavBar from "./components/Navbar";
 import Footer from "./components/Footer";
-import CreateAccount from "./pages/CreateAccount";
+import Gateway from "./pages/Gateway";
 
 function App() {
     return (
@@ -13,8 +13,8 @@ function App() {
                 <Route path="/" component={Home} exact>
                     <Home />
                 </Route>
-                <Route path="/createaccount" component={CreateAccount} exact>
-                    <CreateAccount />
+                <Route path="/gateway" component={Gateway} exact>
+                    <Gateway />
                 </Route>
                 <Route path="*">
                     <NotFound />
