@@ -10,6 +10,10 @@ const useStyles = makeStyles((theme) => ({
     },
     menuButton: {
         marginRight: theme.spacing(2),
+        transition: "0.3s all ease",
+        "&:hover": {
+            color: "#01bf71",
+        },
     },
     title: {
         cursor: "pointer",
@@ -18,20 +22,18 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: "bold",
         textDecoration: "none",
         color: "#fff",
-
+        transition: "0.3s all ease",
         "&:hover": {
             color: "#01bf71",
         },
-
-        transition: "0.3s all ease",
     },
     body: {
         transition: "0.5s all ease",
     },
     loginButton: {
         color: "#fff",
+        fontSize: "16px",
         transition: "0.3s all ease",
-
         "&:hover": {
             color: "#01bf71",
         },
@@ -61,7 +63,7 @@ const NavBar = () => {
     };
 
     const toggleScroll = () => {
-        if (window.pageYOffset > 300) {
+        if (window.pageYOffset > 100) {
             setScrollNav(true);
         } else {
             setScrollNav(false);
