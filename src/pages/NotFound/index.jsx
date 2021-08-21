@@ -36,14 +36,12 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "16px",
         fontWeight: "normal",
         margin: "16px auto",
-
         [theme.breakpoints.down("sm")]: {
             fontSize: "12px",
         },
     },
     link: {
         textDecoration: "none",
-
         "&:hover": {
             color: "#fff",
         },

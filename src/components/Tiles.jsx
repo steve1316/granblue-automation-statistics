@@ -12,11 +12,9 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "center",
         alignItems: "center",
         background: "#010606",
-
         [theme.breakpoints.down("md")]: {
             height: "1100px",
         },
-
         [theme.breakpoints.down("sm")]: {
             height: "1300px",
         },
@@ -29,11 +27,9 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         gridGap: "16px",
         padding: "0 50px",
-
         [theme.breakpoints.down("lg")]: {
             gridTemplateColumns: "1fr 1fr",
         },
-
         [theme.breakpoints.down("md")]: {
             gridTemplateColumns: "1fr",
             padding: "0 20px",
@@ -50,15 +46,12 @@ const useStyles = makeStyles((theme) => ({
         padding: "30px",
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
         transition: "all 0.2s ease-in-out",
-
         [theme.breakpoints.down("lg")]: {
             padding: "15px",
         },
-
         [theme.breakpoints.down("md")]: {
             padding: "5px",
         },
-
         "&:hover": {
             transform: "scale(1.12)",
             transition: "all 0.2s ease-in-out",
@@ -74,7 +67,6 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "2.5rem",
         color: "#fff",
         marginBottom: "64px",
-
         [theme.breakpoints.down("sm")]: {
             fontSize: "2rem",
         },

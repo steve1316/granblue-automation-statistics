@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
         textAlign: "center",
         fontFamily: "Segoe UI",
         fontWeight: "bold",
-
         [theme.breakpoints.down("sm")]: {
             fontSize: "32px",
         },
@@ -49,11 +48,9 @@ const useStyles = makeStyles((theme) => ({
         padding: "0 12px 0 12px",
         textAlign: "center",
         fontWeight: "normal",
-
         [theme.breakpoints.down("md")]: {
             fontSize: "24px",
         },
-
         [theme.breakpoints.down("sm")]: {
             fontSize: "18px",
         },
@@ -72,7 +69,6 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "16px",
         fontWeight: "normal",
         margin: "0 50px",
-
         [theme.breakpoints.down("sm")]: {
             padding: "16px 24px",
             fontSize: "12px",

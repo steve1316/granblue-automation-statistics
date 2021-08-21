@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
     },
     linksWrapper: {
         display: "flex",
-
         [theme.breakpoints.down("md")]: {
             flexDirection: "column",
         },
@@ -34,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
         width: "160px",
         boxSizing: "border-box",
         color: "#fff",
-
         [theme.breakpoints.down("sm")]: {
             margin: 0,
             padding: "10px",
@@ -50,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
         textDecoration: "none",
         marginBottom: "0.5rem",
         fontSize: "14px",
-
         "&:hover": {
             color: "#01bf71",
             transition: "0.3s ease-out",
@@ -66,7 +63,6 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         maxWidth: "1100px",
         margin: "40px auto 0 auto",
-
         [theme.breakpoints.down("md")]: {
             flexDirection: "column",
         },
@@ -81,7 +77,6 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         marginBottom: "16px",
         fontWeight: "bold",
-
         "&:hover": {
             color: "#01bf71",
             transition: "0.3s ease-out",
@@ -100,7 +95,6 @@ const useStyles = makeStyles((theme) => ({
     additionalInfoIconLink: {
         color: "#fff",
         fontSize: "24px",
-
         "&:hover": {
             color: "#01bf71",
             transition: "0.3s ease-out",

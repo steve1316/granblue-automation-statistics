@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
     root: {
         background: "#000",
-
         [theme.breakpoints.down("md")]: {
             padding: "100px 0",
         },
@@ -37,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
         gridAutoColumns: "minmax(auto, 1fr)",
         alignItems: "center",
         gridTemplateAreas: `'col2 col1'`,
-
         [theme.breakpoints.down("md")]: {
             gridTemplateAreas: `'col1' 'col2'`,
         },
@@ -47,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
         gridAutoColumns: "minmax(auto, 1fr)",
         alignItems: "center",
         gridTemplateAreas: `'col1 col2'`,
-
         [theme.breakpoints.down("md")]: {
             gridTemplateAreas: `'col1 col1' 'col2 col2'`,
         },
@@ -78,7 +75,6 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "48px",
         lineHeight: 1.1,
         fontWeight: 600,
-
         [theme.breakpoints.down("sm")]: {
             fontSize: "32px",
         },
