@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link as RouterLink } from "react-router-dom";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import React, { useState, useEffect } from "react"
+import { makeStyles } from "@material-ui/core/styles"
+import { Link as RouterLink } from "react-router-dom"
+import { FaGithub, FaLinkedin } from "react-icons/fa"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -100,31 +100,31 @@ const useStyles = makeStyles((theme) => ({
             transition: "0.3s ease-out",
         },
     },
-}));
+}))
 
 const Footer = () => {
-    const classes = useStyles();
+    const classes = useStyles()
 
-    const [, setScrollNav] = useState(false);
+    const [, setScrollNav] = useState(false)
 
     useEffect(() => {
-        window.addEventListener("scroll", toggleScroll);
-    }, []);
+        window.addEventListener("scroll", toggleScroll)
+    }, [])
 
     const toggleScroll = () => {
         if (window.pageYOffset > 300) {
-            setScrollNav(true);
+            setScrollNav(true)
         } else {
-            setScrollNav(false);
+            setScrollNav(false)
         }
-    };
+    }
 
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
             behavior: "smooth",
-        });
-    };
+        })
+    }
 
     return (
         <section className={classes.root} id="footer">
@@ -177,7 +177,7 @@ const Footer = () => {
                 </div>
             </section>
         </section>
-    );
-};
+    )
+}
 
-export default Footer;
+export default Footer

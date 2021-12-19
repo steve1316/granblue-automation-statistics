@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
-import { Link as RouterLink, useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react"
+import { makeStyles } from "@material-ui/core/styles"
+import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider } from "@material-ui/core"
+import MenuIcon from "@material-ui/icons/Menu"
+import { Link as RouterLink, useHistory } from "react-router-dom"
 
 const useStyles = makeStyles((theme) => ({
     emptyDivider: {
@@ -45,37 +45,37 @@ const useStyles = makeStyles((theme) => ({
         color: "#000",
         textDecoration: "none",
     },
-}));
+}))
 
 const NavBar = () => {
-    const classes = useStyles();
-    const history = useHistory();
+    const classes = useStyles()
+    const history = useHistory()
 
-    const [scrollNav, setScrollNav] = useState(false);
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [scrollNav, setScrollNav] = useState(false)
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
     useEffect(() => {
-        window.addEventListener("scroll", toggleScroll);
-    }, []);
+        window.addEventListener("scroll", toggleScroll)
+    }, [])
 
     const toggleDrawer = () => {
-        setIsDrawerOpen(!isDrawerOpen);
-    };
+        setIsDrawerOpen(!isDrawerOpen)
+    }
 
     const toggleScroll = () => {
         if (window.pageYOffset > 100) {
-            setScrollNav(true);
+            setScrollNav(true)
         } else {
-            setScrollNav(false);
+            setScrollNav(false)
         }
-    };
+    }
 
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
             behavior: "smooth",
-        });
-    };
+        })
+    }
 
     return (
         <AppBar className={classes.body} id="header" style={scrollNav ? { background: "#101522", boxShadow: 5 } : { background: "transparent", boxShadow: "none" }}>
@@ -109,8 +109,8 @@ const NavBar = () => {
                     variant="h6"
                     className={classes.title}
                     onClick={() => {
-                        history.push("/");
-                        scrollToTop();
+                        history.push("/")
+                        scrollToTop()
                     }}
                 >
                     GA Statistics
@@ -120,14 +120,14 @@ const NavBar = () => {
                     color="inherit"
                     className={classes.loginButton}
                     onClick={() => {
-                        history.push("/gateway");
+                        history.push("/gateway")
                     }}
                 >
                     Log In
                 </Button>
             </Toolbar>
         </AppBar>
-    );
-};
+    )
+}
 
-export default NavBar;
+export default NavBar

@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
-import { Button } from "@material-ui/core";
+import React, { useEffect } from "react"
+import { makeStyles } from "@material-ui/core/styles"
+import { Link } from "react-router-dom"
+import { Button } from "@material-ui/core"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,15 +46,15 @@ const useStyles = makeStyles((theme) => ({
             color: "#fff",
         },
     },
-}));
+}))
 
 const NotFound = () => {
-    const classes = useStyles();
+    const classes = useStyles()
 
     useEffect(() => {
-        document.title = "404 - Not Found";
-        window.scrollTo(0, 0);
-    }, []);
+        document.title = "404 - Not Found"
+        window.scrollTo(0, 0)
+    }, [])
 
     return (
         <section className={classes.root}>
@@ -68,7 +68,7 @@ const NotFound = () => {
                 </Button>
             </div>
         </section>
-    );
-};
+    )
+}
 
-export default NotFound;
+export default NotFound

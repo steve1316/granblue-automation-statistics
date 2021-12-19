@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { Avatar, Button, Container, Grid, makeStyles, TextField, Typography, FormControlLabel, Checkbox } from "@material-ui/core";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
+import React, { useEffect } from "react"
+import { Avatar, Button, Container, Grid, makeStyles, TextField, Typography, FormControlLabel, Checkbox } from "@material-ui/core"
+import LockOpenIcon from "@material-ui/icons/LockOpen"
 
 const useStyles = makeStyles((theme) => ({
     paperContainer: {
@@ -33,15 +33,15 @@ const useStyles = makeStyles((theme) => ({
         margin: "32px 32px 0 0",
         color: "#000",
     },
-}));
+}))
 
 const Login = () => {
-    const classes = useStyles();
+    const classes = useStyles()
 
     useEffect(() => {
-        document.title = "Login";
-        window.scrollTo(0, 0);
-    }, []);
+        document.title = "Login"
+        window.scrollTo(0, 0)
+    }, [])
 
     return (
         <section id="login">
@@ -70,7 +70,7 @@ const Login = () => {
                 </form>
             </Container>
         </section>
-    );
-};
+    )
+}
 
-export default Login;
+export default Login

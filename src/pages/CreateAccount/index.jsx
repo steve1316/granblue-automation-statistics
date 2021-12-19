@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { Avatar, Button, Container, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import React, { useEffect } from "react"
+import { Avatar, Button, Container, Grid, makeStyles, TextField, Typography } from "@material-ui/core"
+import AccountCircleIcon from "@material-ui/icons/AccountCircle"
 
 const useStyles = makeStyles((theme) => ({
     paperContainer: {
@@ -27,15 +27,15 @@ const useStyles = makeStyles((theme) => ({
         margin: "32px 32px 0 0",
         color: "#000",
     },
-}));
+}))
 
 const CreateAccount = () => {
-    const classes = useStyles();
+    const classes = useStyles()
 
     useEffect(() => {
-        document.title = "Create Account";
-        window.scrollTo(0, 0);
-    }, []);
+        document.title = "Create Account"
+        window.scrollTo(0, 0)
+    }, [])
 
     return (
         <section id="createaccount">
@@ -70,7 +70,7 @@ const CreateAccount = () => {
                 </form>
             </Container>
         </section>
-    );
-};
+    )
+}
 
-export default CreateAccount;
+export default CreateAccount

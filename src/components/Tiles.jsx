@@ -1,8 +1,8 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Icon1 from "../assets/images/svgNumber.svg";
-import Icon2 from "../assets/images/svgItem.svg";
-import Icon3 from "../assets/images/svgTime.svg";
+import React from "react"
+import { makeStyles } from "@material-ui/core/styles"
+import Icon1 from "../assets/images/svgNumber.svg"
+import Icon2 from "../assets/images/svgItem.svg"
+import Icon3 from "../assets/images/svgTime.svg"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -79,10 +79,10 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "1rem",
         textAlign: "center",
     },
-}));
+}))
 
 const Tiles = () => {
-    const classes = useStyles();
+    const classes = useStyles()
     return (
         <div className={classes.root} id="tiles">
             <h1 className={classes.tilesCardH1}>What this Website offers</h1>
@@ -104,7 +104,7 @@ const Tiles = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Tiles;
+export default Tiles

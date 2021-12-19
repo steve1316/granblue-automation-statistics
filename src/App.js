@@ -1,9 +1,9 @@
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import NavBar from "./components/Navbar";
-import Footer from "./components/Footer";
-import Gateway from "./pages/Gateway";
+import Home from "./pages/Home"
+import NotFound from "./pages/NotFound"
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
+import NavBar from "./components/Navbar"
+import Footer from "./components/Footer"
+import Gateway from "./pages/Gateway"
 
 function App() {
     return (
@@ -22,7 +22,7 @@ function App() {
             </Switch>
             <Footer />
         </Router>
-    );
+    )
 }
 
-export default App;
+export default App

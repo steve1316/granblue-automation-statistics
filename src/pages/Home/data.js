@@ -10,7 +10,7 @@ export const section1 = {
     imgHeight: "500px",
     alt: "PC and Android Devices",
     svgPattern: false,
-};
+}
 
 export const section2 = {
     id: "optional",
@@ -24,4 +24,4 @@ export const section2 = {
     imgHeight: "500px",
     alt: "Statistics",
     svgPattern: true,
-};
+}

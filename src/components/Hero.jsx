@@ -1,9 +1,9 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import ReactPlayer from "react-player";
-import heroVideo from "../assets/hero_video.mp4";
-import { Box, Button, Typography } from "@material-ui/core";
-import { Link as RouterLink } from "react-router-dom";
+import React from "react"
+import { makeStyles } from "@material-ui/core/styles"
+import ReactPlayer from "react-player"
+import heroVideo from "../assets/hero_video.mp4"
+import { Box, Button, Typography } from "@material-ui/core"
+import { Link as RouterLink } from "react-router-dom"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -80,10 +80,10 @@ const useStyles = makeStyles((theme) => ({
         textDecoration: "none",
         fontWeight: "bold",
     },
-}));
+}))
 
 const Hero = () => {
-    const classes = useStyles();
+    const classes = useStyles()
     return (
         <section className={classes.root}>
             <ReactPlayer playing loop muted url={heroVideo} width="100%" height="100%" />
@@ -110,7 +110,7 @@ const Hero = () => {
                 </Box>
             </div>
         </section>
-    );
-};
+    )
+}
 
-export default Hero;
+export default Hero

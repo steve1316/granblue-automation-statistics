@@ -1,6 +1,6 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import svgInfoSectionBackground from "../assets/images/svgInfoSectionBackground.svg";
+import React from "react"
+import { makeStyles } from "@material-ui/core/styles"
+import svgInfoSectionBackground from "../assets/images/svgInfoSectionBackground.svg"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -91,10 +91,10 @@ const useStyles = makeStyles((theme) => ({
         width: "100%",
         margin: "0 0 10px 0",
     },
-}));
+}))
 
 const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStart, imgWidth, imgHeight, alt, svgPattern }) => {
-    const classes = useStyles();
+    const classes = useStyles()
     if (svgPattern) {
         return (
             <section className={classes.rootSVG} id={id}>
@@ -119,7 +119,7 @@ const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStar
                     </div>
                 </div>
             </section>
-        );
+        )
     } else {
         return (
             <section className={classes.root} style={{ background: lightBg ? "#b3b6b7" : "#010606" }} id={id}>
@@ -144,8 +144,8 @@ const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStar
                     </div>
                 </div>
             </section>
-        );
+        )
     }
-};
+}
 
-export default InfoSection;
+export default InfoSection

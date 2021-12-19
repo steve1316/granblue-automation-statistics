@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { makeStyles, Paper, Tabs, Tab, AppBar } from "@material-ui/core";
+import React, { useState } from "react"
+import { makeStyles, Paper, Tabs, Tab, AppBar } from "@material-ui/core"
 import svgGatewayBackground1 from "../../assets/images/svgGatewayBackground1.svg"
 import svgGatewayBackground2 from "../../assets/images/svgGatewayBackground2.svg"
 import CreateAccount from "../CreateAccount"
 import Login from "../Login"
-import CreateAccount from "../CreateAccount";
+
 const Gateway = () => {
     const [tabValue, setTabValue] = useState(1)
 
@@ -67,7 +67,7 @@ const Gateway = () => {
                     <Tabs
                         value={tabValue}
                         onChange={(e, value) => {
-                            setTabValue(value);
+                            setTabValue(value)
                         }}
                         indicatorColor="secondary"
                         textColor="inherit"
@@ -86,7 +86,7 @@ const Gateway = () => {
                 </AppBar>
             </Paper>
         </section>
-    );
-};
+    )
+}
 
-export default Gateway;
+export default Gateway
