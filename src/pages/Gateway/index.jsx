@@ -1,67 +1,67 @@
 import React, { useState } from "react";
 import { makeStyles, Paper, Tabs, Tab, AppBar } from "@material-ui/core";
-import svgGatewayBackground1 from "../../assets/images/svgGatewayBackground1.svg";
-import svgGatewayBackground2 from "../../assets/images/svgGatewayBackground2.svg";
+import svgGatewayBackground1 from "../../assets/images/svgGatewayBackground1.svg"
+import svgGatewayBackground2 from "../../assets/images/svgGatewayBackground2.svg"
+import CreateAccount from "../CreateAccount"
+import Login from "../Login"
 import CreateAccount from "../CreateAccount";
-import Login from "../Login";
+const Gateway = () => {
+    const [tabValue, setTabValue] = useState(1)
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        // Background image from svgbackgrounds.com
-        backgroundColor: "#000",
-        backgroundAttachment: "fill",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        overflow: "hidden",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    paper: {
-        position: "relative",
-        background: "#fff",
-        borderRadius: 50,
-        height: 650,
-        maxWidth: 500,
-        margin: 16,
-    },
-    tabBar: {
-        borderTopLeftRadius: 50,
-        borderTopRightRadius: 50,
-        backgroundColor: "#01bf71",
-    },
-    tab: {
-        color: "#000",
-    },
-    bottomBar: {
-        position: "absolute",
-        bottom: 0,
-        backgroundColor: "#01bf71",
-        width: "100%",
-        borderBottomLeftRadius: 50,
-        borderBottomRightRadius: 50,
-    },
-    bottomDiv: {
-        display: "flex",
-        marginRight: "32px",
-        justifyContent: "flex-end",
-
-        [theme.breakpoints.down("sm")]: {
-            marginRight: 0,
+    const useStyles = makeStyles((theme) => ({
+        root: {
+            // Background image from svgbackgrounds.com
+            backgroundColor: "#000",
+            backgroundAttachment: "fill",
+            backgroundPosition: "center",
+            backgroundImage: tabValue === 1 ? `url(${svgGatewayBackground1})` : `url(${svgGatewayBackground2})`,
+            overflow: "hidden",
+            minHeight: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
             justifyContent: "center",
         },
-    },
-}));
+        paper: {
+            position: "relative",
+            background: "#fff",
+            borderRadius: 50,
+            height: 650,
+            maxWidth: 500,
+            margin: 16,
+        },
+        tabBar: {
+            borderTopLeftRadius: 50,
+            borderTopRightRadius: 50,
+            backgroundColor: "#01bf71",
+        },
+        tab: {
+            color: "#000",
+        },
+        bottomBar: {
+            position: "absolute",
+            bottom: 0,
+            backgroundColor: "#01bf71",
+            width: "100%",
+            borderBottomLeftRadius: 50,
+            borderBottomRightRadius: 50,
+        },
+        bottomDiv: {
+            display: "flex",
+            marginRight: "32px",
+            justifyContent: "flex-end",
 
-const Gateway = () => {
-    const classes = useStyles();
+            [theme.breakpoints.down("sm")]: {
+                marginRight: 0,
+                justifyContent: "center",
+            },
+        },
+    }))
 
-    const [tabValue, setTabValue] = useState(1);
+    const classes = useStyles()
 
     return (
-        <section id="gateway" className={classes.root} style={{ backgroundImage: tabValue === 1 ? `url(${svgGatewayBackground1})` : `url(${svgGatewayBackground2})` }}>
+        <section id="gateway" className={classes.root}>
             <Paper className={classes.paper}>
                 <AppBar position="static" color="default" className={classes.tabBar}>
                     <Tabs
