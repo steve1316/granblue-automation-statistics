@@ -51,6 +51,7 @@ const NotFound = () => {
 
     const classes = useStyles()
 
+    // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
         document.title = "404 - Not Found"
         window.scrollTo(0, 0)

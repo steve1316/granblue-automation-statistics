@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import svgInfoSectionBackground from "../../assets/images/svgInfoSectionBackground.svg"
 import { Section } from "../../pages/Home/data"
 
+// Data and interface is from the data file in the Home page's folder.
 const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStart, imgWidth, imgHeight, alt, svgPattern }: Section) => {
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -97,6 +98,7 @@ const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStar
 
     const classes = useStyles()
 
+    // Alternate rendering the component with a provided SVG background or none at all.
     if (svgPattern) {
         return (
             <section className={classes.rootSVG} id={id}>

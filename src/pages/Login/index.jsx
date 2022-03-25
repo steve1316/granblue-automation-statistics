@@ -39,6 +39,7 @@ const Login = () => {
 
     const classes = useStyles()
 
+    // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
         document.title = "Login"
         window.scrollTo(0, 0)

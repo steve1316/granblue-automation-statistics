@@ -107,10 +107,12 @@ const Footer = () => {
 
     const [, setScrollNav] = useState(false)
 
+    // Add listener for when the user scrolls the page.
     useEffect(() => {
         window.addEventListener("scroll", toggleScroll)
     }, [])
 
+    // If user's y-position is greater than the specified offset, allow the page to send the user back to the top of the page.
     const toggleScroll = () => {
         if (window.pageYOffset > 300) {
             setScrollNav(true)
@@ -119,6 +121,7 @@ const Footer = () => {
         }
     }
 
+    // Send the user back to the top of the page.
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,

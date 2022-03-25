@@ -54,6 +54,7 @@ const NavBar = () => {
     const [scrollNav, setScrollNav] = useState(false)
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
+    // Add listener for when the user scrolls the page.
     useEffect(() => {
         window.addEventListener("scroll", toggleScroll)
     }, [])
@@ -62,6 +63,7 @@ const NavBar = () => {
         setIsDrawerOpen(!isDrawerOpen)
     }
 
+    // If user's y-position is greater than the specified offset, allow the page to send the user back to the top of the page.
     const toggleScroll = () => {
         if (window.pageYOffset > 100) {
             setScrollNav(true)
@@ -70,6 +72,7 @@ const NavBar = () => {
         }
     }
 
+    // Send the user back to the top of the page.
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
