@@ -1,7 +1,7 @@
 import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import ReactPlayer from "react-player"
-import heroVideo from "../assets/hero_video.mp4"
+import heroVideo from "../../assets/hero_video.mp4"
 import { Box, Button, Typography } from "@material-ui/core"
 import { Link as RouterLink } from "react-router-dom"
 
@@ -87,14 +87,17 @@ const Hero = () => {
     return (
         <section className={classes.root}>
             <ReactPlayer playing loop muted url={heroVideo} width="100%" height="100%" />
+
             <div className={classes.heroOverlay}>
                 <Box className={classes.heroContainer}>
                     <Typography variant="h3" component="h1" className={classes.heroH1}>
                         Granblue Automation Statistics
                     </Typography>
+
                     <Typography variant="h6" component="p" className={classes.heroP}>
                         View and analyze runs and item drops from the various Farming Modes supported by Granblue Automation.
                     </Typography>
+
                     <Box className={classes.heroButtonWrapper}>
                         <Button color="primary" variant="contained" className={classes.heroButton}>
                             <RouterLink to="/gateway" className={classes.heroButtonLink}>

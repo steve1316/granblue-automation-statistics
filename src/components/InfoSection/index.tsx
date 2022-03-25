@@ -1,6 +1,7 @@
 import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import svgInfoSectionBackground from "../assets/images/svgInfoSectionBackground.svg"
+import svgInfoSectionBackground from "../../assets/images/svgInfoSectionBackground.svg"
+import { Section } from "../../pages/Home/data"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -93,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStart, imgWidth, imgHeight, alt, svgPattern }) => {
+const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStart, imgWidth, imgHeight, alt, svgPattern }: Section) => {
     const classes = useStyles()
     if (svgPattern) {
         return (
@@ -111,6 +112,7 @@ const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStar
                                 </p>
                             </div>
                         </div>
+
                         <div className={classes.col2}>
                             <div className={classes.imageWrapper}>
                                 <img className={classes.image} src={img} width={imgWidth} height={imgHeight} alt={alt} />
@@ -136,6 +138,7 @@ const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStar
                                 </p>
                             </div>
                         </div>
+
                         <div className={classes.col2}>
                             <div className={classes.imageWrapper}>
                                 <img className={classes.image} src={img} width={imgWidth} height={imgHeight} alt={alt} />

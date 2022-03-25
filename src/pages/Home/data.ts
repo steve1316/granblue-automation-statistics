@@ -1,4 +1,18 @@
-export const section1 = {
+export interface Section {
+    id: string
+    lightBg: boolean
+    topLine: string
+    headLine: string
+    description: string
+    img: string
+    imgStart: boolean
+    imgWidth: string
+    imgHeight: string
+    alt: string
+    svgPattern: boolean
+}
+
+export const section1: Section = {
     id: "about",
     lightBg: false,
     topLine: "Currently supports 2 versions",
@@ -12,7 +26,7 @@ export const section1 = {
     svgPattern: false,
 }
 
-export const section2 = {
+export const section2: Section = {
     id: "optional",
     lightBg: true,
     topLine: "Completely optional",

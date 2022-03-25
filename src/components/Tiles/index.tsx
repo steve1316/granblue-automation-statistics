@@ -1,8 +1,8 @@
 import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import Icon1 from "../assets/images/svgNumber.svg"
-import Icon2 from "../assets/images/svgItem.svg"
-import Icon3 from "../assets/images/svgTime.svg"
+import Icon1 from "../../assets/images/svgNumber.svg"
+import Icon2 from "../../assets/images/svgItem.svg"
+import Icon3 from "../../assets/images/svgTime.svg"
 
 const useStyles = makeStyles((theme) => ({
     root: {

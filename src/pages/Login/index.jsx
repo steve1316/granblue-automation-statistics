@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         justifyContent: "center",
         padding: "32px",
+        width: "500px",
     },
     avatar: {
         margin: theme.spacing(1),

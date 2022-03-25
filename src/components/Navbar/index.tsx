@@ -78,11 +78,12 @@ const NavBar = () => {
     }
 
     return (
-        <AppBar className={classes.body} id="header" style={scrollNav ? { background: "#101522", boxShadow: 5 } : { background: "transparent", boxShadow: "none" }}>
+        <AppBar className={classes.body} id="header" style={{ background: scrollNav ? "#101522" : "transparent", boxShadow: scrollNav ? "5px" : "none" }}>
             <Toolbar>
                 <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={toggleDrawer}>
                     <MenuIcon />
                 </IconButton>
+
                 <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
                     <List>
                         <RouterLink to="/" className={classes.link}>
@@ -91,12 +92,14 @@ const NavBar = () => {
                             </ListItem>
                         </RouterLink>
                         <Divider />
+
                         <RouterLink to="/gateway" className={classes.link}>
                             <ListItem button key="getstarted">
                                 <ListItemText primary="Get Started" />
                             </ListItem>
                         </RouterLink>
                         <Divider />
+
                         <RouterLink to="/dashboard" className={classes.link}>
                             <ListItem button key="dashboard">
                                 <ListItemText primary="Dashboard" />
@@ -105,6 +108,7 @@ const NavBar = () => {
                         <Divider />
                     </List>
                 </Drawer>
+
                 <Typography
                     variant="h6"
                     className={classes.title}
@@ -115,7 +119,9 @@ const NavBar = () => {
                 >
                     GA Statistics
                 </Typography>
+
                 <div className={classes.emptyDivider} />
+
                 <Button
                     color="inherit"
                     className={classes.loginButton}

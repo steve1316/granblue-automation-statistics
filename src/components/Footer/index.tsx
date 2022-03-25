@@ -137,6 +137,7 @@ const Footer = () => {
                         </RouterLink>
                     </div>
                 </div>
+
                 <div className={classes.linksWrapper}>
                     <div className={classes.linksItem}>
                         <h1 className={classes.linksH1}>Services</h1>
@@ -148,6 +149,7 @@ const Footer = () => {
                         </RouterLink>
                     </div>
                 </div>
+
                 <div className={classes.linksWrapper}>
                     <div className={classes.linksItem}>
                         <h1 className={classes.linksH1}>Supported Apps</h1>
@@ -160,6 +162,7 @@ const Footer = () => {
                     </div>
                 </div>
             </div>
+
             <section className={classes.additionalInfoContainer}>
                 <div className={classes.additionalInfoWrapper}>
                     <RouterLink to="/" onClick={scrollToTop} className={classes.additionalInfoLogo}>
