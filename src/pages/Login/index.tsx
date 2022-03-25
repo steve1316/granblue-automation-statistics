@@ -50,10 +50,12 @@ const Login = () => {
         window.scrollTo(0, 0)
     }, [])
 
+    // Enable the Login button if the fields have been filled in.
     useEffect(() => {
         setReady(username !== "" && password !== "")
     })
 
+    // Send a POST request to the Express server to login.
     const login = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         axios
