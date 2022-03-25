@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider } from "@material-ui/core"
+import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider, ListItemIcon, Box } from "@material-ui/core"
 import MenuIcon from "@material-ui/icons/Menu"
 import { Link as RouterLink, useHistory } from "react-router-dom"
 
@@ -38,9 +38,6 @@ const NavBar = () => {
             "&:hover": {
                 color: "#01bf71",
             },
-        },
-        drawer: {
-            backgroundColor: "#01bf71",
         },
         link: {
             color: "#000",
@@ -88,28 +85,30 @@ const NavBar = () => {
                 </IconButton>
 
                 <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
-                    <List>
-                        <RouterLink to="/" className={classes.link}>
-                            <ListItem button key="home">
-                                <ListItemText primary="Home" />
-                            </ListItem>
-                        </RouterLink>
-                        <Divider />
+                    <Box sx={{ bgcolor: "#191919", height: "100%" }}>
+                        <List>
+                            <RouterLink to="/" className={classes.link}>
+                                <ListItem button key="home">
+                                    <ListItemText primary="Home" />
+                                </ListItem>
+                            </RouterLink>
+                            <Divider />
 
-                        <RouterLink to="/gateway" className={classes.link}>
-                            <ListItem button key="getstarted">
-                                <ListItemText primary="Get Started" />
-                            </ListItem>
-                        </RouterLink>
-                        <Divider />
+                            <RouterLink to="/gateway" className={classes.link}>
+                                <ListItem button key="getstarted">
+                                    <ListItemText primary="Get Started" />
+                                </ListItem>
+                            </RouterLink>
+                            <Divider />
 
-                        <RouterLink to="/dashboard" className={classes.link}>
-                            <ListItem button key="dashboard">
-                                <ListItemText primary="Dashboard" />
-                            </ListItem>
-                        </RouterLink>
-                        <Divider />
-                    </List>
+                            <RouterLink to="/dashboard" className={classes.link}>
+                                <ListItem button key="dashboard">
+                                    <ListItemText primary="Dashboard" />
+                                </ListItem>
+                            </RouterLink>
+                            <Divider />
+                        </List>
+                    </Box>
                 </Drawer>
 
                 <Typography
