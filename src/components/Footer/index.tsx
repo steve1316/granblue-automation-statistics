@@ -3,106 +3,106 @@ import { makeStyles } from "@material-ui/core/styles"
 import { Link as RouterLink } from "react-router-dom"
 import { FaGithub, FaLinkedin } from "react-icons/fa"
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        padding: "16px 0 16px 0",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#101522",
-        width: "100%",
-        overflow: "hidden",
-    },
-    linksContainer: {
-        display: "flex",
-        justifyContent: "center",
-    },
-    linksWrapper: {
-        display: "flex",
-        [theme.breakpoints.down("md")]: {
+const Footer = () => {
+    const useStyles = makeStyles((theme) => ({
+        root: {
+            padding: "16px 0 16px 0",
+            display: "flex",
             flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "#101522",
+            width: "100%",
+            overflow: "hidden",
         },
-    },
-    linksItem: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        margin: "16px",
-        textAlign: "left",
-        width: "160px",
-        boxSizing: "border-box",
-        color: "#fff",
-        [theme.breakpoints.down("sm")]: {
-            margin: 0,
-            padding: "10px",
+        linksContainer: {
+            display: "flex",
+            justifyContent: "center",
+        },
+        linksWrapper: {
+            display: "flex",
+            [theme.breakpoints.down("md")]: {
+                flexDirection: "column",
+            },
+        },
+        linksItem: {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            margin: "16px",
+            textAlign: "left",
+            width: "160px",
+            boxSizing: "border-box",
+            color: "#fff",
+            [theme.breakpoints.down("sm")]: {
+                margin: 0,
+                padding: "10px",
+                width: "100%",
+            },
+        },
+        linksH1: {
+            fontSize: "14px",
+            marginBottom: "16px",
+        },
+        link: {
+            color: "#fff",
+            textDecoration: "none",
+            marginBottom: "0.5rem",
+            fontSize: "14px",
+            "&:hover": {
+                color: "#01bf71",
+                transition: "0.3s ease-out",
+            },
+        },
+        additionalInfoContainer: {
+            maxWidth: "1000px",
             width: "100%",
         },
-    },
-    linksH1: {
-        fontSize: "14px",
-        marginBottom: "16px",
-    },
-    link: {
-        color: "#fff",
-        textDecoration: "none",
-        marginBottom: "0.5rem",
-        fontSize: "14px",
-        "&:hover": {
-            color: "#01bf71",
-            transition: "0.3s ease-out",
+        additionalInfoWrapper: {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            maxWidth: "1100px",
+            margin: "40px auto 0 auto",
+            [theme.breakpoints.down("md")]: {
+                flexDirection: "column",
+            },
         },
-    },
-    additionalInfoContainer: {
-        maxWidth: "1000px",
-        width: "100%",
-    },
-    additionalInfoWrapper: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        maxWidth: "1100px",
-        margin: "40px auto 0 auto",
-        [theme.breakpoints.down("md")]: {
-            flexDirection: "column",
+        additionalInfoLogo: {
+            color: "#fff",
+            justifySelf: "start",
+            cursor: "pointer",
+            textDecoration: "none",
+            fontSize: "1.5rem",
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "16px",
+            fontWeight: "bold",
+            "&:hover": {
+                color: "#01bf71",
+                transition: "0.3s ease-out",
+            },
         },
-    },
-    additionalInfoLogo: {
-        color: "#fff",
-        justifySelf: "start",
-        cursor: "pointer",
-        textDecoration: "none",
-        fontSize: "1.5rem",
-        display: "flex",
-        alignItems: "center",
-        marginBottom: "16px",
-        fontWeight: "bold",
-        "&:hover": {
-            color: "#01bf71",
-            transition: "0.3s ease-out",
+        additionalInfoWebsiteRights: {
+            color: "#fff",
+            marginBottom: "16px",
         },
-    },
-    additionalInfoWebsiteRights: {
-        color: "#fff",
-        marginBottom: "16px",
-    },
-    additionalInfoIconWrapper: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        width: "240px",
-    },
-    additionalInfoIconLink: {
-        color: "#fff",
-        fontSize: "24px",
-        "&:hover": {
-            color: "#01bf71",
-            transition: "0.3s ease-out",
+        additionalInfoIconWrapper: {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "240px",
         },
-    },
-}))
+        additionalInfoIconLink: {
+            color: "#fff",
+            fontSize: "24px",
+            "&:hover": {
+                color: "#01bf71",
+                transition: "0.3s ease-out",
+            },
+        },
+    }))
 
-const Footer = () => {
     const classes = useStyles()
 
     const [, setScrollNav] = useState(false)

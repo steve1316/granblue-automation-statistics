@@ -5,13 +5,13 @@ import InfoSection from "../../components/InfoSection"
 import Tiles from "../../components/Tiles"
 import { section1, section2 } from "./data.ts"
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        overflow: "hidden",
-    },
-}))
-
 const Home = () => {
+    const useStyles = makeStyles((theme) => ({
+        root: {
+            overflow: "hidden",
+        },
+    }))
+
     const classes = useStyles()
 
     useEffect(() => {

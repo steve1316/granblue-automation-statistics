@@ -2,41 +2,41 @@ import React, { useEffect } from "react"
 import { Avatar, Button, Container, Grid, makeStyles, TextField, Typography, FormControlLabel, Checkbox } from "@material-ui/core"
 import LockOpenIcon from "@material-ui/icons/LockOpen"
 
-const useStyles = makeStyles((theme) => ({
-    paperContainer: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "32px",
-        width: "500px",
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        height: 64,
-        width: 64,
-        backgroundColor: "#01bf71",
-    },
-    form: {
-        marginTop: theme.spacing(3),
-    },
-    formButton: {
-        backgroundColor: "#01bf71",
-        margin: "32px 32px 0 0",
-        color: "#000",
-    },
-    flexDiv: {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    checkbox: {
-        margin: "32px 32px 0 0",
-        color: "#000",
-    },
-}))
-
 const Login = () => {
+    const useStyles = makeStyles((theme) => ({
+        paperContainer: {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "32px",
+            width: "500px",
+        },
+        avatar: {
+            margin: theme.spacing(1),
+            height: 64,
+            width: 64,
+            backgroundColor: "#01bf71",
+        },
+        form: {
+            marginTop: theme.spacing(3),
+        },
+        formButton: {
+            backgroundColor: "#01bf71",
+            margin: "32px 32px 0 0",
+            color: "#000",
+        },
+        flexDiv: {
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+        },
+        checkbox: {
+            margin: "32px 32px 0 0",
+            color: "#000",
+        },
+    }))
+
     const classes = useStyles()
 
     useEffect(() => {

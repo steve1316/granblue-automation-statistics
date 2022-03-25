@@ -4,50 +4,50 @@ import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem
 import MenuIcon from "@material-ui/icons/Menu"
 import { Link as RouterLink, useHistory } from "react-router-dom"
 
-const useStyles = makeStyles((theme) => ({
-    emptyDivider: {
-        flexGrow: 1,
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
-        transition: "0.3s all ease",
-        "&:hover": {
-            color: "#01bf71",
-        },
-    },
-    title: {
-        cursor: "pointer",
-        fontSize: "1.5rem",
-        marginLeft: "24px",
-        fontWeight: "bold",
-        textDecoration: "none",
-        color: "#fff",
-        transition: "0.3s all ease",
-        "&:hover": {
-            color: "#01bf71",
-        },
-    },
-    body: {
-        transition: "0.5s all ease",
-    },
-    loginButton: {
-        color: "#fff",
-        fontSize: "16px",
-        transition: "0.3s all ease",
-        "&:hover": {
-            color: "#01bf71",
-        },
-    },
-    drawer: {
-        backgroundColor: "#01bf71",
-    },
-    link: {
-        color: "#000",
-        textDecoration: "none",
-    },
-}))
-
 const NavBar = () => {
+    const useStyles = makeStyles((theme) => ({
+        emptyDivider: {
+            flexGrow: 1,
+        },
+        menuButton: {
+            marginRight: theme.spacing(2),
+            transition: "0.3s all ease",
+            "&:hover": {
+                color: "#01bf71",
+            },
+        },
+        title: {
+            cursor: "pointer",
+            fontSize: "1.5rem",
+            marginLeft: "24px",
+            fontWeight: "bold",
+            textDecoration: "none",
+            color: "#fff",
+            transition: "0.3s all ease",
+            "&:hover": {
+                color: "#01bf71",
+            },
+        },
+        body: {
+            transition: "0.5s all ease",
+        },
+        loginButton: {
+            color: "#fff",
+            fontSize: "16px",
+            transition: "0.3s all ease",
+            "&:hover": {
+                color: "#01bf71",
+            },
+        },
+        drawer: {
+            backgroundColor: "#01bf71",
+        },
+        link: {
+            color: "#000",
+            textDecoration: "none",
+        },
+    }))
+
     const classes = useStyles()
     const history = useHistory()
 

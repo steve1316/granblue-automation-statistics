@@ -2,34 +2,35 @@ import React, { useEffect } from "react"
 import { Avatar, Button, Container, Grid, makeStyles, TextField, Typography } from "@material-ui/core"
 import AccountCircleIcon from "@material-ui/icons/AccountCircle"
 
-const useStyles = makeStyles((theme) => ({
-    paperContainer: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "32px",
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        height: 64,
-        width: 64,
-        backgroundColor: "#01bf71",
-    },
-    subtitle: {
-        textAlign: "center",
-    },
-    form: {
-        marginTop: theme.spacing(3),
-    },
-    formButton: {
-        backgroundColor: "#01bf71",
-        margin: "32px 32px 0 0",
-        color: "#000",
-    },
-}))
-
 const CreateAccount = () => {
+    const useStyles = makeStyles((theme) => ({
+        paperContainer: {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "32px",
+            width: "500px",
+        },
+        avatar: {
+            margin: theme.spacing(1),
+            height: 64,
+            width: 64,
+            backgroundColor: "#01bf71",
+        },
+        subtitle: {
+            textAlign: "center",
+        },
+        form: {
+            marginTop: theme.spacing(3),
+        },
+        formButton: {
+            backgroundColor: "#01bf71",
+            margin: "32px 32px 0 0",
+            color: "#000",
+        },
+    }))
+
     const classes = useStyles()
 
     useEffect(() => {
