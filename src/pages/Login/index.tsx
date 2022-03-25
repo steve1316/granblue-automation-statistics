@@ -1,8 +1,13 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Avatar, Button, Container, Grid, makeStyles, TextField, Typography, FormControlLabel, Checkbox } from "@material-ui/core"
 import LockOpenIcon from "@material-ui/icons/LockOpen"
+import axios from "axios"
 
 const Login = () => {
+    const [username, setUsername] = useState("")
+    const [password, setPassword] = useState("")
+    const [ready, setReady] = useState(false)
+
     const useStyles = makeStyles((theme) => ({
         paperContainer: {
             display: "flex",
@@ -45,6 +50,31 @@ const Login = () => {
         window.scrollTo(0, 0)
     }, [])
 
+    useEffect(() => {
+        setReady(username !== "" && password !== "")
+    })
+
+    const login = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault()
+        axios
+            .post(
+                "http://localhost:4000/login",
+                {
+                    username,
+                    password,
+                },
+                {
+                    withCredentials: true,
+                }
+            )
+            .then((res) => {
+                console.log(res.data)
+            })
+            .catch((err) => {
+                console.error("Login details are invalid.")
+            })
+    }
+
     return (
         <section id="login">
             <Container className={classes.paperContainer}>
@@ -57,14 +87,14 @@ const Login = () => {
                 <form className={classes.form}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <TextField label="ID" placeholder="Enter your uniquely generated ID" required fullWidth />
+                            <TextField label="ID" placeholder="Enter your uniquely generated ID" required fullWidth onChange={(e) => setUsername(e.target.value)} />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField label="Password" placeholder="Enter your password" required fullWidth />
+                            <TextField label="Password" placeholder="Enter your password" required fullWidth onChange={(e) => setPassword(e.target.value)} />
                         </Grid>
                     </Grid>
                     <div className={classes.flexDiv}>
-                        <Button type="submit" variant="contained" color="primary" className={classes.formButton}>
+                        <Button type="submit" variant="contained" color="primary" className={classes.formButton} disabled={!ready} onClick={(e) => login(e)}>
                             Login
                         </Button>
                         <FormControlLabel className={classes.checkbox} control={<Checkbox />} label="Remember Me" />
