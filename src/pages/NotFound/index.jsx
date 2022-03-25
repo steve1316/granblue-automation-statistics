@@ -40,12 +40,14 @@ const NotFound = () => {
             [theme.breakpoints.down("sm")]: {
                 fontSize: "12px",
             },
+            "&:hover": {
+                "& $link": {
+                    color: "white",
+                },
+            },
         },
         link: {
             textDecoration: "none",
-            "&:hover": {
-                color: "#fff",
-            },
         },
     }))
 
