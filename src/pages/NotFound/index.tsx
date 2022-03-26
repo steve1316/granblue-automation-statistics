@@ -1,10 +1,10 @@
 import React, { useEffect } from "react"
-import { makeStyles } from "@material-ui/core/styles"
+import makeStyles from "@mui/styles/makeStyles"
 import { Link } from "react-router-dom"
-import { Button } from "@material-ui/core"
+import { Button, Theme } from "@mui/material"
 
 const NotFound = () => {
-    const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles((theme: Theme) => ({
         root: {
             background: "#000",
             overflow: "hidden",
@@ -37,7 +37,7 @@ const NotFound = () => {
             fontSize: "16px",
             fontWeight: "normal",
             margin: "16px auto",
-            [theme.breakpoints.down("sm")]: {
+            [theme.breakpoints.down("md")]: {
                 fontSize: "12px",
             },
             "&:hover": {

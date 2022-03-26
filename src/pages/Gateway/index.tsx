@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { makeStyles, Paper, Tabs, Tab, AppBar } from "@material-ui/core"
+import { Paper, Tabs, Tab, AppBar, Theme } from "@mui/material"
+import makeStyles from "@mui/styles/makeStyles"
 import svgGatewayBackground1 from "../../assets/images/svgGatewayBackground1.svg"
 import svgGatewayBackground2 from "../../assets/images/svgGatewayBackground2.svg"
 import CreateAccount from "../CreateAccount"
@@ -8,7 +9,7 @@ import Login from "../Login"
 const Gateway = () => {
     const [tabValue, setTabValue] = useState(1)
 
-    const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles((theme: Theme) => ({
         root: {
             // Background image from svgbackgrounds.com
             backgroundColor: "#000",
@@ -51,7 +52,7 @@ const Gateway = () => {
             marginRight: "32px",
             justifyContent: "flex-end",
 
-            [theme.breakpoints.down("sm")]: {
+            [theme.breakpoints.down("md")]: {
                 marginRight: 0,
                 justifyContent: "center",
             },

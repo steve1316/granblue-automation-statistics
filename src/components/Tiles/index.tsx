@@ -1,11 +1,12 @@
 import React from "react"
-import { makeStyles } from "@material-ui/core/styles"
+import makeStyles from "@mui/styles/makeStyles"
 import Icon1 from "../../assets/images/svgNumber.svg"
 import Icon2 from "../../assets/images/svgItem.svg"
 import Icon3 from "../../assets/images/svgTime.svg"
+import { Theme } from "@mui/material"
 
 const Tiles = () => {
-    const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles((theme: Theme) => ({
         root: {
             height: "800px",
             display: "flex",
@@ -13,10 +14,10 @@ const Tiles = () => {
             justifyContent: "center",
             alignItems: "center",
             background: "#010606",
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("lg")]: {
                 height: "1100px",
             },
-            [theme.breakpoints.down("sm")]: {
+            [theme.breakpoints.down("md")]: {
                 height: "1300px",
             },
         },
@@ -28,10 +29,10 @@ const Tiles = () => {
             alignItems: "center",
             gridGap: "16px",
             padding: "0 50px",
-            [theme.breakpoints.down("lg")]: {
+            [theme.breakpoints.down("xl")]: {
                 gridTemplateColumns: "1fr 1fr",
             },
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("lg")]: {
                 gridTemplateColumns: "1fr",
                 padding: "0 20px",
             },
@@ -47,10 +48,10 @@ const Tiles = () => {
             padding: "30px",
             boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
             transition: "all 0.2s ease-in-out",
-            [theme.breakpoints.down("lg")]: {
+            [theme.breakpoints.down("xl")]: {
                 padding: "15px",
             },
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("lg")]: {
                 padding: "5px",
             },
             "&:hover": {
@@ -68,7 +69,7 @@ const Tiles = () => {
             fontSize: "2.5rem",
             color: "#fff",
             marginBottom: "64px",
-            [theme.breakpoints.down("sm")]: {
+            [theme.breakpoints.down("md")]: {
                 fontSize: "2rem",
             },
         },

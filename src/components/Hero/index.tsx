@@ -1,12 +1,12 @@
 import React from "react"
-import { makeStyles } from "@material-ui/core/styles"
+import makeStyles from "@mui/styles/makeStyles"
 import ReactPlayer from "react-player"
 import heroVideo from "../../assets/hero_video.mp4"
-import { Box, Button, Typography } from "@material-ui/core"
+import { Box, Button, Theme, Typography } from "@mui/material"
 import { Link as RouterLink } from "react-router-dom"
 
 const Hero = () => {
-    const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles((theme: Theme) => ({
         root: {
             width: "100%",
             height: "800px",
@@ -37,7 +37,7 @@ const Hero = () => {
             textAlign: "center",
             fontFamily: "Segoe UI",
             fontWeight: "bold",
-            [theme.breakpoints.down("sm")]: {
+            [theme.breakpoints.down("md")]: {
                 fontSize: "32px",
             },
         },
@@ -49,10 +49,10 @@ const Hero = () => {
             padding: "0 12px 0 12px",
             textAlign: "center",
             fontWeight: "normal",
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("lg")]: {
                 fontSize: "24px",
             },
-            [theme.breakpoints.down("sm")]: {
+            [theme.breakpoints.down("md")]: {
                 fontSize: "18px",
             },
         },
@@ -70,7 +70,7 @@ const Hero = () => {
             fontSize: "16px",
             fontWeight: "normal",
             margin: "0 50px",
-            [theme.breakpoints.down("sm")]: {
+            [theme.breakpoints.down("md")]: {
                 padding: "16px 24px",
                 fontSize: "12px",
                 margin: "0 25px",

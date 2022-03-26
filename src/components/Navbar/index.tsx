@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react"
-import { makeStyles } from "@material-ui/core/styles"
-import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider, ListItemIcon, Box } from "@material-ui/core"
+import makeStyles from "@mui/styles/makeStyles"
+import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider, ListItemIcon, Box, Theme } from "@mui/material"
 import MenuIcon from "@material-ui/icons/Menu"
 import { Link as RouterLink, useHistory } from "react-router-dom"
 
 const NavBar = () => {
-    const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles((theme: Theme) => ({
         emptyDivider: {
             flexGrow: 1,
         },

@@ -1,12 +1,13 @@
 import React, { useEffect } from "react"
-import { makeStyles } from "@material-ui/core/styles"
+import makeStyles from "@mui/styles/makeStyles"
 import Hero from "../../components/Hero"
 import InfoSection from "../../components/InfoSection"
 import Tiles from "../../components/Tiles"
 import { section1, section2 } from "./data"
+import { Theme } from "@mui/material"
 
 const Home = () => {
-    const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles((theme: Theme) => ({
         root: {
             overflow: "hidden",
         },

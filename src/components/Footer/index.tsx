@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react"
-import { makeStyles } from "@material-ui/core/styles"
 import { Link as RouterLink } from "react-router-dom"
 import { FaGithub, FaLinkedin } from "react-icons/fa"
+import makeStyles from "@mui/styles/makeStyles"
+import { Theme } from "@mui/material"
 
 const Footer = () => {
-    const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles((theme: Theme) => ({
         root: {
             padding: "16px 0 16px 0",
             display: "flex",
@@ -21,7 +22,7 @@ const Footer = () => {
         },
         linksWrapper: {
             display: "flex",
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("lg")]: {
                 flexDirection: "column",
             },
         },
@@ -34,7 +35,7 @@ const Footer = () => {
             width: "160px",
             boxSizing: "border-box",
             color: "#fff",
-            [theme.breakpoints.down("sm")]: {
+            [theme.breakpoints.down("md")]: {
                 margin: 0,
                 padding: "10px",
                 width: "100%",
@@ -64,7 +65,7 @@ const Footer = () => {
             alignItems: "center",
             maxWidth: "1100px",
             margin: "40px auto 0 auto",
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("lg")]: {
                 flexDirection: "column",
             },
         },
@@ -140,7 +141,6 @@ const Footer = () => {
                         </RouterLink>
                     </div>
                 </div>
-
                 <div className={classes.linksWrapper}>
                     <div className={classes.linksItem}>
                         <h1 className={classes.linksH1}>Services</h1>
@@ -152,7 +152,6 @@ const Footer = () => {
                         </RouterLink>
                     </div>
                 </div>
-
                 <div className={classes.linksWrapper}>
                     <div className={classes.linksItem}>
                         <h1 className={classes.linksH1}>Supported Apps</h1>
@@ -165,7 +164,6 @@ const Footer = () => {
                     </div>
                 </div>
             </div>
-
             <section className={classes.additionalInfoContainer}>
                 <div className={classes.additionalInfoWrapper}>
                     <RouterLink to="/" onClick={scrollToTop} className={classes.additionalInfoLogo}>

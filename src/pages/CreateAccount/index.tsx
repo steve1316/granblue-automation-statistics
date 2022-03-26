@@ -1,9 +1,10 @@
 import React, { useEffect } from "react"
-import { Avatar, Button, Container, Grid, makeStyles, TextField, Typography } from "@material-ui/core"
-import AccountCircleIcon from "@material-ui/icons/AccountCircle"
+import { Avatar, Button, Container, Grid, TextField, Theme, Typography } from "@mui/material"
+import makeStyles from "@mui/styles/makeStyles"
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 
 const CreateAccount = () => {
-    const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles((theme: Theme) => ({
         paperContainer: {
             display: "flex",
             flexDirection: "column",

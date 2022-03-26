@@ -1,14 +1,15 @@
 import React from "react"
-import { makeStyles } from "@material-ui/core/styles"
+import makeStyles from "@mui/styles/makeStyles"
 import svgInfoSectionBackground from "../../assets/images/svgInfoSectionBackground.svg"
 import { Section } from "../../pages/Home/data"
+import { Theme } from "@mui/material"
 
 // Data and interface is from the data file in the Home page's folder.
 const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStart, imgWidth, imgHeight, alt, svgPattern }: Section) => {
-    const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles((theme: Theme) => ({
         root: {
             background: "#000",
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("lg")]: {
                 padding: "100px 0",
             },
         },
@@ -17,7 +18,7 @@ const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStar
             backgroundImage: `url(${svgInfoSectionBackground})`,
             backgroundAttachment: "fixed",
             backgroundSize: "100%",
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("lg")]: {
                 padding: "100px 0",
             },
         },
@@ -37,7 +38,7 @@ const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStar
             gridAutoColumns: "minmax(auto, 1fr)",
             alignItems: "center",
             gridTemplateAreas: `'col2 col1'`,
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("lg")]: {
                 gridTemplateAreas: `'col1' 'col2'`,
             },
         },
@@ -46,7 +47,7 @@ const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStar
             gridAutoColumns: "minmax(auto, 1fr)",
             alignItems: "center",
             gridTemplateAreas: `'col1 col2'`,
-            [theme.breakpoints.down("md")]: {
+            [theme.breakpoints.down("lg")]: {
                 gridTemplateAreas: `'col1 col1' 'col2 col2'`,
             },
         },
@@ -76,7 +77,7 @@ const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStar
             fontSize: "48px",
             lineHeight: 1.1,
             fontWeight: 600,
-            [theme.breakpoints.down("sm")]: {
+            [theme.breakpoints.down("md")]: {
                 fontSize: "32px",
             },
         },

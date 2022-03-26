@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { Avatar, Button, Container, Grid, makeStyles, TextField, Typography, FormControlLabel, Checkbox } from "@material-ui/core"
-import LockOpenIcon from "@material-ui/icons/LockOpen"
+import { Avatar, Button, Container, Grid, TextField, Typography, FormControlLabel, Checkbox, Theme } from "@mui/material"
+import makeStyles from "@mui/styles/makeStyles"
+import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
 
 const Login = () => {
@@ -8,7 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState("")
     const [ready, setReady] = useState(false)
 
-    const useStyles = makeStyles((theme) => ({
+    const useStyles = makeStyles((theme: Theme) => ({
         paperContainer: {
             display: "flex",
             flexDirection: "column",
