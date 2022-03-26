@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import makeStyles from "@mui/styles/makeStyles"
 import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider, ListItemIcon, Box, Theme } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import { Link as RouterLink, useHistory } from "react-router-dom"
 import { AssignmentInd, Home, Logout, InsertChart } from "@mui/icons-material"
+import { UserContext } from "../../context/UserContext"
+import Axios from "axios"
 
 const NavBar = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -56,6 +58,7 @@ const NavBar = () => {
 
     const classes = useStyles()
     const history = useHistory()
+    const user = useContext(UserContext)
 
     const [scrollNav, setScrollNav] = useState(false)
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -67,6 +70,18 @@ const NavBar = () => {
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen)
+    }
+
+    // Log out the user.
+    const logout = () => {
+        Axios.get("http://localhost:4000/logout", { withCredentials: true }).then((res) => {
+            if (res.status === 200) {
+                // This will forcibly reload the page so that conditional rendering can occur for the Navbar.
+                window.location.href = "/"
+            } else {
+                console.error("Failed to log user out: ", res.data)
+            }
+        })
     }
 
     // If user's y-position is greater than the specified offset, allow the page to send the user back to the top of the page.
@@ -105,23 +120,36 @@ const NavBar = () => {
                                 </ListItem>
                             </RouterLink>
 
-                            <RouterLink to="/gateway" className={classes.link}>
-                                <ListItem button key="getstarted">
-                                    <ListItemIcon className={classes.drawerIcon}>
-                                        <AssignmentInd />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Get Started" />
-                                </ListItem>
-                            </RouterLink>
-
-                            <RouterLink to="/dashboard" className={classes.link}>
-                                <ListItem button key="dashboard">
-                                    <ListItemIcon className={classes.drawerIcon}>
-                                        <InsertChart />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Dashboard" />
-                                </ListItem>
-                            </RouterLink>
+                            {user ? (
+                                <>
+                                    <RouterLink to="/dashboard" className={classes.link}>
+                                        <ListItem button key="dashboard">
+                                            <ListItemIcon className={classes.drawerIcon}>
+                                                <InsertChart />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Dashboard" />
+                                        </ListItem>
+                                    </RouterLink>
+                                    <Divider />
+                                    <RouterLink to="/logout" className={classes.link} onClick={() => logout()}>
+                                        <ListItem button key="logout">
+                                            <ListItemIcon className={classes.drawerIcon}>
+                                                <Logout />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Logout" />
+                                        </ListItem>
+                                    </RouterLink>
+                                </>
+                            ) : (
+                                <RouterLink to="/gateway" className={classes.link}>
+                                    <ListItem button key="getstarted">
+                                        <ListItemIcon className={classes.drawerIcon}>
+                                            <AssignmentInd />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Get Started" />
+                                    </ListItem>
+                                </RouterLink>
+                            )}
                         </List>
                     </Box>
                 </Drawer>
@@ -139,15 +167,21 @@ const NavBar = () => {
 
                 <div className={classes.emptyDivider} />
 
-                <Button
-                    color="inherit"
-                    className={classes.loginButton}
-                    onClick={() => {
-                        history.push("/gateway")
-                    }}
-                >
-                    Log In
-                </Button>
+                {user ? (
+                    <Button color="inherit" className={classes.loginButton} onClick={() => logout()}>
+                        Log Out
+                    </Button>
+                ) : (
+                    <Button
+                        color="inherit"
+                        className={classes.loginButton}
+                        onClick={() => {
+                            history.push("/gateway")
+                        }}
+                    >
+                        Log In
+                    </Button>
+                )}
             </Toolbar>
         </AppBar>
     )

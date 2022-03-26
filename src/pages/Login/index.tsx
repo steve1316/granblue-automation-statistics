@@ -5,10 +5,6 @@ import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
 
 const Login = () => {
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-    const [ready, setReady] = useState(false)
-
     const useStyles = makeStyles((theme: Theme) => ({
         paperContainer: {
             display: "flex",
@@ -45,6 +41,10 @@ const Login = () => {
 
     const classes = useStyles()
 
+    const [username, setUsername] = useState("")
+    const [password, setPassword] = useState("")
+    const [ready, setReady] = useState(false)
+
     // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
         document.title = "Login"
@@ -71,7 +71,7 @@ const Login = () => {
                 }
             )
             .then((res) => {
-                console.log(res.data)
+                window.location.href = "/dashboard"
             })
             .catch((err) => {
                 console.error("Login details are invalid.")

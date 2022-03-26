@@ -10,9 +10,11 @@ import session from "express-session"
 import User from "./schemas/User"
 import { UserInterface } from "./interfaces/UserInterface"
 
+require("dotenv").config()
+
 ////////////////////
 // Connect to MongoDB cluster.
-mongoose.connect("mongodb+srv://steve1316:<PASSWORD>@cluster0.bms87.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", (err: MongooseError) => {
+mongoose.connect(`mongodb+srv://steve1316:${process.env.MONGODB_PASSWORD}@cluster0.bms87.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`, (err: MongooseError) => {
     if (err) {
         throw err
     }
@@ -111,19 +113,25 @@ app.post("/register", async (req: Request, res: Response) => {
             // Save the new User to the collection.
             await newUser.save()
 
-            res.send("Success")
+            res.status(200).send("Successfully logged in.")
         }
     })
 })
 
 // POST route to login via passport authentication.
 app.post("/login", passport.authenticate("local"), (req, res) => {
-    res.send("Successfully authenticated user.")
+    res.status(200).send("Successfully authenticated user.")
 })
 
 // GET route to get the logged in user.
 app.get("/user", (req, res) => {
-    res.send(req.user)
+    res.status(200).send(req.user)
+})
+
+// GET route to log out the user.
+app.get("/logout", (req, res) => {
+    req.logout()
+    res.status(200).send("Successfully logged out.")
 })
 
 ////////////////////
