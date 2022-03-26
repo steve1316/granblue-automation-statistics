@@ -18,14 +18,33 @@ Information collected by Granblue Automation Statistics do not contain any perso
 
 # TODO
 
--   [x] Integration with MongoDB
--   [ ] Implement CRUD API
--   [ ] Add support for Granblue Automation
--   [ ] Add support for Granblue Automation Android
--   [ ] Create Login/Logout functionality
--   [ ] Create Signup functionality
--   [ ] Create Dashboard page to display statistics from AWS DB
-    -   [ ] Display statistics as a table/graph.
+-   [ ] Backend
+
+    -   [x] Integration with MongoDB.
+    -   [ ] Implement CRUD API.
+        -   [x] Create route to create a new account.
+        -   [x] Create route to login using provided credentials.
+        -   [ ] Create route to send a new result to the specified Farming Mode table.
+        -   [ ] Create route to fetch result(s) for an item in their own tables, either all results or results belonging to your user id.
+        -   [ ] Create route to check if user id exists when attempting to generate a unique user id.
+    -   [ ] Add support for Granblue Automation.
+        -   [ ] Add feature to opt-in and then provide a button to generate a unique user id for you.
+    -   [ ] Add support for Granblue Automation Android.
+        -   [ ] Add feature to opt-in and then provide a button to generate a unique user id for you.
+
+-   [ ] Frontend
+
+    -   [x] Finish Home page.
+    -   [ ] Finish Gateway page.
+        -   [x] Complete Login component.
+        -   [x] Complete Create Account component.
+        -   [ ] Complete Password Recovery component.
+            -   [ ] Add email service for successful account creation and password recovery(?).
+    -   [ ] Finish Dashboard page to display the fetched data.
+        -   [ ] Add ability to search for an item.
+        -   [ ] Display statistics as a table/graph.
+        -   [ ] Add ability to sort/filter.
+        -   [ ] Add button to refresh the data and fetch from MongoDB again.
 
 # Features
 
