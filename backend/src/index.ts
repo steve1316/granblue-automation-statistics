@@ -7,7 +7,7 @@ import mongoose, { MongooseError } from "mongoose"
 import passport from "passport"
 import passportLocal from "passport-local"
 import session from "express-session"
-import User from "./User"
+import User from "./schemas/User"
 import { UserInterface } from "./interfaces/UserInterface"
 
 ////////////////////
