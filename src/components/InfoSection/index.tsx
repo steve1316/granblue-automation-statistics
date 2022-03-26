@@ -30,7 +30,6 @@ const InfoSection = ({ id, lightBg, topLine, headLine, description, img, imgStar
             maxWidth: "1100px",
             marginRight: "auto",
             marginLeft: "auto",
-            padding: "0 24px",
             justifyContent: "center",
         },
         infoContainerStartLeft: {

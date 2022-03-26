@@ -16,13 +16,13 @@ const Login = () => {
             alignItems: "center",
             justifyContent: "center",
             padding: "32px",
-            width: "500px",
+            width: "100%",
         },
         avatar: {
             margin: theme.spacing(1),
             height: 64,
             width: 64,
-            backgroundColor: "#01bf71",
+            backgroundColor: "#1565C0",
         },
         form: {
             marginTop: theme.spacing(3),
@@ -35,10 +35,10 @@ const Login = () => {
         flexDiv: {
             display: "flex",
             flexDirection: "row",
-            alignItems: "center",
+            justifyContent: "space-between",
         },
         checkbox: {
-            margin: "32px 32px 0 0",
+            margin: "32px 0 0 0",
             color: "#000",
         },
     }))

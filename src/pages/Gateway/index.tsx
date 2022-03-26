@@ -27,13 +27,17 @@ const Gateway = () => {
             position: "relative",
             background: "#fff",
             borderRadius: 50,
-            height: 650,
-            maxWidth: 500,
+            height: 600,
+            width: 600,
             margin: 16,
+            [theme.breakpoints.down("md")]: {
+                height: 650,
+                width: "80%",
+            },
         },
         tabBar: {
-            borderTopLeftRadius: 50,
-            borderTopRightRadius: 50,
+            borderTopLeftRadius: 25,
+            borderTopRightRadius: 25,
             backgroundColor: "#01bf71",
         },
         tab: {
@@ -44,8 +48,8 @@ const Gateway = () => {
             bottom: 0,
             backgroundColor: "#01bf71",
             width: "100%",
-            borderBottomLeftRadius: 50,
-            borderBottomRightRadius: 50,
+            borderBottomLeftRadius: 25,
+            borderBottomRightRadius: 25,
         },
         bottomDiv: {
             display: "flex",
@@ -79,7 +83,7 @@ const Gateway = () => {
                     </Tabs>
                 </AppBar>
 
-                {tabValue === 1 ? <Login /> : <CreateAccount />}
+                <div style={{ height: "80%", overflowY: "auto" }}>{tabValue === 1 ? <Login /> : <CreateAccount />}</div>
 
                 <AppBar position="static" color="default" className={classes.bottomBar}>
                     {/* TODO: Create Forgot Password functionality here. */}

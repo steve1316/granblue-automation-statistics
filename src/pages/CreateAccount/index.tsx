@@ -11,13 +11,13 @@ const CreateAccount = () => {
             alignItems: "center",
             justifyContent: "center",
             padding: "32px",
-            width: "500px",
+            width: "100%",
         },
         avatar: {
             margin: theme.spacing(1),
             height: 64,
             width: 64,
-            backgroundColor: "#01bf71",
+            backgroundColor: "#1565C0",
         },
         subtitle: {
             textAlign: "center",

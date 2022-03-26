@@ -22,6 +22,7 @@ const Footer = () => {
         },
         linksWrapper: {
             display: "flex",
+            width: "100%",
             [theme.breakpoints.down("lg")]: {
                 flexDirection: "column",
             },
