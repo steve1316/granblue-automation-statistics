@@ -1,5 +1,5 @@
 {
-    "name": "granblue-automation-aws-statistics",
+    "name": "granblue-automation-statistics",
     "version": "0.1.0",
     "private": true,
     "dependencies": {

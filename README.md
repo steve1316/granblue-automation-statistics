@@ -1,6 +1,6 @@
 # Granblue Automation Statistics
 
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/steve1316/granblue-automation-aws-statistics?logo=GitHub) ![GitHub last commit](https://img.shields.io/github/last-commit/steve1316/granblue-automation-aws-statistics?logo=GitHub) ![GitHub issues](https://img.shields.io/github/issues/steve1316/granblue-automation-aws-statistics?logo=GitHub) ![GitHub pull requests](https://img.shields.io/github/issues-pr/steve1316/granblue-automation-aws-statistics?logo=GitHub) ![GitHub](https://img.shields.io/github/license/steve1316/granblue-automation-aws-statistics?logo=GitHub)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/steve1316/granblue-automation-statistics?logo=GitHub) ![GitHub last commit](https://img.shields.io/github/last-commit/steve1316/granblue-automation-statistics?logo=GitHub) ![GitHub issues](https://img.shields.io/github/issues/steve1316/granblue-automation-statistics?logo=GitHub) ![GitHub pull requests](https://img.shields.io/github/issues-pr/steve1316/granblue-automation-statistics?logo=GitHub) ![GitHub](https://img.shields.io/github/license/steve1316/granblue-automation-statistics?logo=GitHub)
 
 Granblue Automation Statistics aims to provide users who choose to opt-in valuable information regarding which Farming Modes and Raids have been popular with what and how many item drops the user and others have been getting.
 

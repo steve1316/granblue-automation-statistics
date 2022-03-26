@@ -102,12 +102,7 @@ const Hero = () => {
                         <Button color="primary" variant="contained" className={classes.heroButton} onClick={() => history.push("/gateway")}>
                             Get Started
                         </Button>
-                        <Button
-                            color="primary"
-                            variant="contained"
-                            className={classes.heroButton}
-                            onClick={() => window.open("https://github.com/steve1316/granblue-automation-aws-statistics", "_blank")}
-                        >
+                        <Button color="primary" variant="contained" className={classes.heroButton} onClick={() => window.open("https://github.com/steve1316/granblue-automation-statistics", "_blank")}>
                             View on GitHub
                         </Button>
                     </Box>
