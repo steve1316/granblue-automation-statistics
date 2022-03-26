@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react"
 import makeStyles from "@mui/styles/makeStyles"
 import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider, ListItemIcon, Box, Theme } from "@mui/material"
-import MenuIcon from "@material-ui/icons/Menu"
+import MenuIcon from "@mui/icons-material/Menu"
 import { Link as RouterLink, useHistory } from "react-router-dom"
+import { AssignmentInd, Home, Logout, InsertChart } from "@mui/icons-material"
 
 const NavBar = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -42,7 +43,15 @@ const NavBar = () => {
         link: {
             color: "#000",
             textDecoration: "none",
+            "&:hover": {
+                color: "#01bf71",
+            },
         },
+        drawerBody: {
+            height: "100%",
+            width: "250px",
+        },
+        drawerIcon: {},
     }))
 
     const classes = useStyles()
@@ -80,33 +89,39 @@ const NavBar = () => {
     return (
         <AppBar className={classes.body} id="header" style={{ background: scrollNav ? "#101522" : "transparent", boxShadow: scrollNav ? "5px" : "none" }}>
             <Toolbar>
-                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={toggleDrawer}>
+                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={toggleDrawer} size="large">
                     <MenuIcon />
                 </IconButton>
 
                 <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
-                    <Box sx={{ bgcolor: "#191919", height: "100%" }}>
+                    <Box className={classes.drawerBody}>
                         <List>
                             <RouterLink to="/" className={classes.link}>
                                 <ListItem button key="home">
+                                    <ListItemIcon className={classes.drawerIcon}>
+                                        <Home />
+                                    </ListItemIcon>
                                     <ListItemText primary="Home" />
                                 </ListItem>
                             </RouterLink>
-                            <Divider />
 
                             <RouterLink to="/gateway" className={classes.link}>
                                 <ListItem button key="getstarted">
+                                    <ListItemIcon className={classes.drawerIcon}>
+                                        <AssignmentInd />
+                                    </ListItemIcon>
                                     <ListItemText primary="Get Started" />
                                 </ListItem>
                             </RouterLink>
-                            <Divider />
 
                             <RouterLink to="/dashboard" className={classes.link}>
                                 <ListItem button key="dashboard">
+                                    <ListItemIcon className={classes.drawerIcon}>
+                                        <InsertChart />
+                                    </ListItemIcon>
                                     <ListItemText primary="Dashboard" />
                                 </ListItem>
                             </RouterLink>
-                            <Divider />
                         </List>
                     </Box>
                 </Drawer>
