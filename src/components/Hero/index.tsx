@@ -3,7 +3,7 @@ import makeStyles from "@mui/styles/makeStyles"
 import ReactPlayer from "react-player"
 import heroVideo from "../../assets/hero_video.mp4"
 import { Box, Button, Theme, Typography } from "@mui/material"
-import { Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink, useHistory } from "react-router-dom"
 
 const Hero = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -65,10 +65,8 @@ const Hero = () => {
         heroButton: {
             borderRadius: "50px",
             background: "#01bf71",
-            color: "#000",
             padding: "16px 32px",
             fontSize: "16px",
-            fontWeight: "normal",
             margin: "0 50px",
             [theme.breakpoints.down("md")]: {
                 padding: "16px 24px",
@@ -84,6 +82,7 @@ const Hero = () => {
     }))
 
     const classes = useStyles()
+    const history = useHistory()
 
     return (
         <section className={classes.root}>
@@ -100,15 +99,16 @@ const Hero = () => {
                     </Typography>
 
                     <Box className={classes.heroButtonWrapper}>
-                        <Button color="primary" variant="contained" className={classes.heroButton}>
-                            <RouterLink to="/gateway" className={classes.heroButtonLink}>
-                                Get Started
-                            </RouterLink>
+                        <Button color="primary" variant="contained" className={classes.heroButton} onClick={() => history.push("/gateway")}>
+                            Get Started
                         </Button>
-                        <Button color="primary" variant="contained" className={classes.heroButton}>
-                            <a href="https://github.com/steve1316/granblue-automation-aws-statistics" className={classes.heroButtonLink} target="_blank" rel="noreferrer" aria-label="View on GitHub">
-                                View on GitHub
-                            </a>
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            className={classes.heroButton}
+                            onClick={() => window.open("https://github.com/steve1316/granblue-automation-aws-statistics", "_blank")}
+                        >
+                            View on GitHub
                         </Button>
                     </Box>
                 </Box>
