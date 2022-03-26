@@ -12,7 +12,7 @@ import { UserInterface } from "./interfaces/UserInterface"
 
 ////////////////////
 // Connect to MongoDB cluster.
-mongoose.connect("mongodb+srv://steve1316:admin@cluster0.bms87.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", (err: MongooseError) => {
+mongoose.connect("mongodb+srv://steve1316:<PASSWORD>@cluster0.bms87.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", (err: MongooseError) => {
     if (err) {
         throw err
     }
