@@ -1,3 +1,4 @@
+import { ItemInterface } from "./interfaces/ItemInterface"
 import bcrypt from "bcryptjs"
 import cookieParser from "cookie-parser"
 import cors from "cors"
@@ -9,6 +10,7 @@ import passportLocal from "passport-local"
 import session from "express-session"
 import User from "./schemas/User"
 import { UserInterface } from "./interfaces/UserInterface"
+import Item from "./schemas/Item"
 
 require("dotenv").config()
 
@@ -138,6 +140,32 @@ app.get("/logout", (req, res) => {
     res.status(200).send("Successfully logged out.")
 })
 
+// POST route to create an item if it does not already exist.
+app.post("/create-item/:farmingMode/:itemName", async (req, res) => {
+    const { farmingMode, itemName } = req.params
+    if (!farmingMode || !itemName || typeof farmingMode !== "string" || typeof itemName !== "string") {
+        res.status(400).send("Improper values for parameters.")
+        return
+    }
+
+    await Item.findOne({ itemName }, async (err: Error, doc: ItemInterface) => {
+        if (err) throw err
+
+        if (doc) {
+            return
+        } else {
+            // Create the new Item object to the items collection.
+            const newItem = new Item({
+                itemName: itemName,
+                farmingMode: farmingMode,
+            })
+
+            // Save the new Item.
+            await newItem.save()
+            res.status(201).send(`Successfully created item "${itemName}".`)
+        }
+    }).clone()
+})
 ////////////////////
 // Start the Express server on the specified port.
 app.listen(expressPort, () => {
