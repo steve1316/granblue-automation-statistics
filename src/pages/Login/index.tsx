@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Avatar, Button, Container, Grid, TextField, Typography, FormControlLabel, Checkbox, Theme } from "@mui/material"
+import { Avatar, Button, Container, Grid, TextField, Typography, FormControlLabel, Checkbox, Theme, Alert, Snackbar } from "@mui/material"
 import makeStyles from "@mui/styles/makeStyles"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
@@ -44,6 +44,8 @@ const Login = () => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [ready, setReady] = useState(false)
+    const [open, setOpen] = useState(false)
+    const [loginFailed, setLoginFailed] = useState(false)
 
     // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
@@ -55,6 +57,13 @@ const Login = () => {
     useEffect(() => {
         setReady(username !== "" && password !== "")
     }, [username, password])
+
+    // Show the Snackbar for success or failure.
+    useEffect(() => {
+        if (loginFailed) {
+            setOpen(true)
+        }
+    }, [loginFailed])
 
     // Send a POST request to the Express server to login.
     const login = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -70,12 +79,19 @@ const Login = () => {
                     withCredentials: true,
                 }
             )
-            .then((res) => {
+            .then(() => {
+                // After login was authenticated, send user to the Dashboard.
                 window.location.href = "/dashboard"
             })
-            .catch((err) => {
-                console.error("Login details are invalid.")
+            .catch(() => {
+                setLoginFailed(true)
             })
+    }
+
+    // Close the Snackbar.
+    const handleClose = () => {
+        setOpen(false)
+        setLoginFailed(false)
     }
 
     return (
@@ -104,6 +120,14 @@ const Login = () => {
                     </div>
                 </form>
             </Container>
+
+            {loginFailed ? (
+                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={5000} onClose={() => handleClose()} key="bottom right">
+                    <Alert onClose={() => handleClose()} severity="error">
+                        Username/Password was incorrect.
+                    </Alert>
+                </Snackbar>
+            ) : null}
         </section>
     )
 }
