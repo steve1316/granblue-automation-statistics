@@ -251,6 +251,25 @@ app.get("/get-result/:userID", async (req, res) => {
     }).clone()
 })
 
+// GET route to fetch multiple results via the item name.
+app.get("/get-result/:itemName", async (req, res) => {
+    const { itemName } = req.params
+    if (!itemName || typeof itemName !== "string") {
+        res.status(400).send("Improper values for parameters.")
+        return
+    }
+
+    await Result.find({ itemName }, (err: Error, docs: ResultInterface) => {
+        if (err) throw err
+
+        if (docs) {
+            res.status(200).send(docs)
+        } else {
+            res.status(404).send(`No results have been posted yet for this item "${itemName}".`)
+        }
+    }).clone()
+})
+
 ////////////////////
 // Start the Express server on the specified port.
 app.listen(expressPort, () => {
