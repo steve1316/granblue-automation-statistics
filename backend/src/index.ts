@@ -232,6 +232,25 @@ app.post("/create-result/:userID/:itemName/:amount", async (req, res) => {
     res.status(201).send("Successfully sent the result and updated the total amount.")
 })
 
+// GET route to fetch multiple results via user ID.
+app.get("/get-result/:userID", async (req, res) => {
+    const { userID } = req.params
+    if (!userID || typeof userID !== "string") {
+        res.status(400).send("Improper values for parameters.")
+        return
+    }
+
+    await Result.find({ userID }, (err: Error, docs: ResultInterface) => {
+        if (err) throw err
+
+        if (docs) {
+            res.status(200).send(docs)
+        } else {
+            res.status(404).send(`No results have been posted yet for this user "${userID}".`)
+        }
+    }).clone()
+})
+
 ////////////////////
 // Start the Express server on the specified port.
 app.listen(expressPort, () => {
