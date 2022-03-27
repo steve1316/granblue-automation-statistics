@@ -85,10 +85,13 @@ passport.deserializeUser((id: string, cb) => {
 
 // POST route to register a new user.
 app.post("/register", async (req: Request, res: Response) => {
-    // Destructure the username and password fields and perform type validation.
-    const { username, password } = req?.body
+    // Destructure the username, password and email fields and perform type validation.
+    const { username, password, email } = req?.body
     if (!username || !password || typeof username !== "string" || typeof password !== "string") {
-        res.send("Improper values for username or password.")
+        res.status(400).send("Improper values for username or password.")
+        return
+    } else if (typeof email !== "string") {
+        res.status(400).send("Improper value for email.")
         return
     }
 
@@ -99,7 +102,7 @@ app.post("/register", async (req: Request, res: Response) => {
         }
 
         if (doc) {
-            res.send("User already exists")
+            res.status(409).send("User ID already exists.")
         } else {
             // Hash the user's password.
             const hashedPassword = await bcrypt.hash(req.body.password, 10)
@@ -108,12 +111,12 @@ app.post("/register", async (req: Request, res: Response) => {
             const newUser = new User({
                 username: req.body.username,
                 password: hashedPassword,
+                email: email,
             })
 
             // Save the new User to the collection.
             await newUser.save()
-
-            res.status(200).send("Successfully logged in.")
+            res.status(201).send("Successfully created user.")
         }
     })
 })
