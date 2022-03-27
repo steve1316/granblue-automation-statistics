@@ -185,6 +185,26 @@ app.get("/get-item/:farmingMode", async (req, res) => {
         }
     }).clone()
 })
+
+// GET route to fetch an item via the item name.
+app.get("/get-item/:farmingMode/:itemName", async (req, res) => {
+    const { farmingMode, itemName } = req.params
+    if (!farmingMode || !itemName || typeof farmingMode !== "string" || typeof itemName !== "string") {
+        res.status(400).send("Improper values for parameters.")
+        return
+    }
+
+    await Item.findOne({ farmingMode, itemName }, (err: Error, doc: ItemInterface) => {
+        if (err) throw err
+
+        if (doc) {
+            res.status(200).send(doc)
+        } else {
+            res.status(404).send(`Item "${itemName}" does not exist for Farming Mode "${farmingMode}".`)
+        }
+    }).clone()
+})
+
 ////////////////////
 // Start the Express server on the specified port.
 app.listen(expressPort, () => {
