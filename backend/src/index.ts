@@ -166,6 +166,25 @@ app.post("/create-item/:farmingMode/:itemName", async (req, res) => {
         }
     }).clone()
 })
+
+// GET route to fetch multiple items via the Farming Mode.
+app.get("/get-item/:farmingMode", async (req, res) => {
+    const { farmingMode } = req.params
+    if (!farmingMode || typeof farmingMode !== "string") {
+        res.status(400).send("Improper values for parameters.")
+        return
+    }
+
+    await Item.find({ farmingMode }, (err: Error, docs: ItemInterface[]) => {
+        if (err) throw err
+
+        if (docs) {
+            res.status(200).send(docs)
+        } else {
+            res.status(404).send(`No Items have been created for Farming Mode "${farmingMode}" yet.`)
+        }
+    }).clone()
+})
 ////////////////////
 // Start the Express server on the specified port.
 app.listen(expressPort, () => {
