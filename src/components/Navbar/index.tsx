@@ -5,7 +5,7 @@ import MenuIcon from "@mui/icons-material/Menu"
 import { Link as RouterLink, useHistory } from "react-router-dom"
 import { AssignmentInd, Home, Logout, InsertChart } from "@mui/icons-material"
 import { UserContext } from "../../context/UserContext"
-import Axios from "axios"
+import axios, { AxiosResponse } from "axios"
 
 const NavBar = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -68,18 +68,19 @@ const NavBar = () => {
         window.addEventListener("scroll", toggleScroll)
     }, [])
 
+    // Open or close the Drawer.
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen)
     }
 
     // Log out the user.
     const logout = () => {
-        Axios.get("http://localhost:4000/logout", { withCredentials: true }).then((res) => {
+        axios.get("http://localhost:4000/logout", { withCredentials: true }).then((res: AxiosResponse) => {
             if (res.status === 200) {
                 // This will forcibly reload the page so that conditional rendering can occur for the Navbar.
                 window.location.href = "/"
             } else {
-                console.error("Failed to log user out: ", res.data)
+                console.error("[GAS] Failed to log user out: ", res.data)
             }
         })
     }

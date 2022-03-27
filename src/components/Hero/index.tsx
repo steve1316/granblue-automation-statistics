@@ -3,7 +3,7 @@ import makeStyles from "@mui/styles/makeStyles"
 import ReactPlayer from "react-player"
 import heroVideo from "../../assets/hero_video.mp4"
 import { Box, Button, Theme, Typography } from "@mui/material"
-import { Link as RouterLink, useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 
 const Hero = () => {
     const useStyles = makeStyles((theme: Theme) => ({

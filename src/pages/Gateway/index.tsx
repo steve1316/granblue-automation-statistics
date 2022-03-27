@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Paper, Tabs, Tab, AppBar, Theme } from "@mui/material"
 import makeStyles from "@mui/styles/makeStyles"
 import svgGatewayBackground1 from "../../assets/images/svgGatewayBackground1.svg"
 import svgGatewayBackground2 from "../../assets/images/svgGatewayBackground2.svg"
 import CreateAccount from "../CreateAccount"
 import Login from "../Login"
-import { UserContext } from "../../context/UserContext"
-import { useHistory } from "react-router-dom"
 
 const Gateway = () => {
     const [tabValue, setTabValue] = useState(1)
@@ -66,17 +64,6 @@ const Gateway = () => {
     }))
 
     const classes = useStyles()
-    const history = useHistory()
-    const user = useContext(UserContext)
-
-    useEffect(() => {
-        if (user) {
-            history.replace("/dashboard")
-            console.log("User LOGGED IN")
-        } else {
-            console.log("USER LOGGED OUT")
-        }
-    }, [])
 
     return (
         <section id="gateway" className={classes.root}>

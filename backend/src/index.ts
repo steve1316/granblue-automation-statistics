@@ -51,6 +51,7 @@ passport.use(
             if (!user) {
                 return done(null, false)
             } else {
+                // Use bcrypt to compare the hashes.
                 bcrypt.compare(password, user.password, (bcryptError, result) => {
                     if (bcryptError) {
                         throw bcryptError

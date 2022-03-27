@@ -1,4 +1,4 @@
-import Axios from "axios"
+import axios, { AxiosError, AxiosResponse } from "axios"
 import React, { createContext, PropsWithChildren, useEffect, useState } from "react"
 
 export const UserContext = createContext<any>({})
@@ -7,12 +7,16 @@ export default function Context(props: PropsWithChildren<any>) {
 
     // Check and retrieve the user if they were logged in.
     useEffect(() => {
-        Axios.get("http://localhost:4000/user", { withCredentials: true })
-            .then((res) => {
-                setUser(res.data)
+        axios
+            .get("http://localhost:4000/user", { withCredentials: true })
+            .then((res: AxiosResponse) => {
+                if (res.data) {
+                    console.log("[GAS] Successfully retrieved the logged in user. ", res.data)
+                    setUser(res.data)
+                }
             })
-            .catch((err) => {
-                console.error("Unable to fetch previously logged in user: ", err)
+            .catch((err: AxiosError) => {
+                console.error("[GAS] Unable to fetch previously logged in user: ", err.response?.data)
             })
     }, [])
 
