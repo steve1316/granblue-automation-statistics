@@ -19,9 +19,7 @@ require("dotenv").config()
 ////////////////////
 // Connect to MongoDB cluster.
 mongoose.connect(`mongodb+srv://steve1316:${process.env.MONGODB_PASSWORD}@cluster0.bms87.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`, (err: MongooseError) => {
-    if (err) {
-        throw err
-    }
+    if (err) throw err
     console.log("Connected to MongoDB Cluster.")
 })
 
@@ -48,9 +46,7 @@ const LocalStrategy = passportLocal.Strategy
 passport.use(
     new LocalStrategy((username, password, done) => {
         User.findOne({ username: username }, (err: Error, user: UserInterface) => {
-            if (err) {
-                throw err
-            }
+            if (err) throw err
 
             if (!user) {
                 return done(null, false)
@@ -92,19 +88,14 @@ passport.deserializeUser((id: string, cb) => {
 app.post("/register", async (req: Request, res: Response) => {
     // Destructure the username, password and email fields and perform type validation.
     const { username, password, email } = req?.body
-    if (!username || !password || typeof username !== "string" || typeof password !== "string") {
-        res.status(400).send("Improper values for username or password.")
-        return
-    } else if (typeof email !== "string") {
-        res.status(400).send("Improper value for email.")
+    if (!username || !password || typeof username !== "string" || typeof password !== "string" || typeof email !== "string") {
+        res.status(400).send("Improper values for parameters.")
         return
     }
 
     // Check if user already exists.
     User.findOne({ username }, async (err: Error, doc: UserInterface) => {
-        if (err) {
-            throw err
-        }
+        if (err) throw err
 
         if (doc) {
             res.status(409).send("User ID already exists.")
@@ -119,7 +110,7 @@ app.post("/register", async (req: Request, res: Response) => {
                 email: email,
             })
 
-            // Save the new User to the collection.
+            // Save the new User to the users collection.
             await newUser.save()
             res.status(201).send("Successfully created user.")
         }
