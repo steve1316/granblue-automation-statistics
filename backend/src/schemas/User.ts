@@ -9,6 +9,10 @@ const user = new mongoose.Schema({
     password: {
         type: String,
     },
+    email: {
+        type: String,
+        default: "",
+    },
     isAdmin: {
         type: Boolean,
         default: false,
