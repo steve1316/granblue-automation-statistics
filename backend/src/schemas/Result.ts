@@ -7,7 +7,6 @@ import mongoose from "mongoose"
 const result = new mongoose.Schema({
     userID: {
         type: String,
-        unique: true,
     },
     itemName: {
         type: String,
