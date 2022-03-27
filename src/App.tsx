@@ -22,7 +22,7 @@ function App() {
                     {user ? <Redirect to="/dashboard" /> : <Gateway />}
                 </Route>
                 <Route path={["/dashboard"]} component={Dashboard} exact>
-                    <Dashboard />
+                    {user ? <Dashboard /> : <Redirect to="/gateway" />}
                 </Route>
                 <Route path="*">
                     <NotFound />
