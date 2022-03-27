@@ -12,7 +12,7 @@ const item = new mongoose.Schema({
     },
     totalAmount: {
         type: Number,
-        default: 1,
+        default: 0,
     },
 })
 
