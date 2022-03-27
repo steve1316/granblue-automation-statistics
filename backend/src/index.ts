@@ -1,3 +1,4 @@
+import { ResultInterface } from "./interfaces/ResultInterface"
 import { ItemInterface } from "./interfaces/ItemInterface"
 import bcrypt from "bcryptjs"
 import cookieParser from "cookie-parser"
@@ -11,6 +12,7 @@ import session from "express-session"
 import User from "./schemas/User"
 import { UserInterface } from "./interfaces/UserInterface"
 import Item from "./schemas/Item"
+import Result from "./schemas/Result"
 
 require("dotenv").config()
 
@@ -203,6 +205,31 @@ app.get("/get-item/:farmingMode/:itemName", async (req, res) => {
             res.status(404).send(`Item "${itemName}" does not exist for Farming Mode "${farmingMode}".`)
         }
     }).clone()
+})
+
+// POST route to create a new result for an item. The bot at this point has already checked if the item exists before calling this.
+app.post("/create-result/:userID/:itemName/:amount", async (req, res) => {
+    const { userID, itemName, amount } = req.params
+    if (!userID || !itemName || !amount || typeof userID !== "string" || typeof itemName !== "string" || typeof amount !== "string") {
+        res.status(400).send("Improper values for parameters.")
+        return
+    }
+
+    // Create the new Result object.
+    let date = new Date()
+    const newResult = new Result({
+        userID: userID,
+        itemName: itemName,
+        amount: amount,
+        date: `${date.getUTCMonth() + 1}.${date.getUTCDate()}.${date.getUTCFullYear()}`,
+    })
+
+    // Save the new Result to the results collection.
+    await newResult.save()
+
+    // Now update the total amount for this item.
+    await Item.updateOne({ itemName }, { $inc: { totalAmount: amount } }).exec()
+    res.status(201).send("Successfully sent the result and updated the total amount.")
 })
 
 ////////////////////
