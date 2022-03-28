@@ -15,6 +15,9 @@ const result = new mongoose.Schema({
         type: Number,
         default: 1,
     },
+    platform: {
+        type: String,
+    },
     date: {
         type: String,
     },
