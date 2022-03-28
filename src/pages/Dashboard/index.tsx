@@ -1,7 +1,10 @@
-import React, { useContext, useEffect } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import makeStyles from "@mui/styles/makeStyles"
-import { Button, Theme } from "@mui/material"
+import { Theme } from "@mui/material"
 import { UserContext } from "../../context/UserContext"
+import axios from "axios"
+import { ResultInterface } from "../../interfaces/ResultInterface"
+import Chart from "../../components/Chart"
 
 const Dashboard = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -29,25 +32,18 @@ const Dashboard = () => {
             fontSize: "16px",
             margin: "16px auto",
         },
-        button: {
-            borderRadius: "50px",
-            background: "#01bf71",
-            color: "#000",
-            padding: "16px",
-            fontSize: "16px",
-            fontWeight: "normal",
-            margin: "16px auto",
-            [theme.breakpoints.down("md")]: {
-                fontSize: "12px",
+        chartContainer: {
+            position: "relative",
+            height: "60%",
+            width: "60%",
+            [theme.breakpoints.down("lg")]: {
+                height: "80%",
+                width: "80%",
             },
-            "&:hover": {
-                "& $link": {
-                    color: "white",
-                },
+            [theme.breakpoints.down("sm")]: {
+                height: "100%",
+                width: "80%",
             },
-        },
-        link: {
-            textDecoration: "none",
         },
     }))
 
@@ -55,17 +51,32 @@ const Dashboard = () => {
 
     const user = useContext(UserContext)
 
+    const [results, setResults] = useState<ResultInterface[]>([])
+
     // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
         document.title = "Dashboard"
         window.scrollTo(0, 0)
+
+        getResults("Meat")
     }, [])
+
+    // Get results for this item.
+    const getResults = (itemName: string) => {
+        axios.get(`http://localhost:4000/get-result/item/${itemName}`, { withCredentials: true }).then((data) => {
+            setResults(data.data)
+        })
+    }
 
     return (
         <section className={classes.root}>
             <div className={classes.container}>
                 <h2 className={classes.title}>Dashboard</h2>
                 <p className={classes.subtitle}>User is logged in</p>
+            </div>
+
+            <div className={classes.chartContainer}>
+                <Chart type="line" chartTitle="My Chart" data={results} />
             </div>
         </section>
     )
