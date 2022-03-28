@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 import dotenv from "dotenv"
-import express, { Request, Response } from "express"
+import express, { NextFunction, Request, Response } from "express"
 import mongoose, { MongooseError } from "mongoose"
 import passport from "passport"
 import passportLocal from "passport-local"
@@ -39,6 +39,25 @@ app.use(
 app.use(cookieParser())
 app.use(passport.initialize())
 app.use(passport.session())
+
+// Makes sure that user is an admin before continuing executing the route.
+const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    const { user }: any = req
+
+    if (!user) {
+        res.status(401).send("No user provided.")
+    } else {
+        User.findOne({ username: user.username }, (err: Error, doc: UserInterface) => {
+            if (err) throw err
+
+            if (doc?.isAdmin) {
+                next()
+            } else {
+                res.status(401).send("User is not an admin.")
+            }
+        })
+    }
+}
 
 ////////////////////
 // Passport
@@ -273,6 +292,45 @@ app.get("/get-result/item/:itemName", async (req, res) => {
     }).clone()
 })
 
+app.put("/delete-user/:username", isAdminMiddleware, async (req, res) => {
+    const { username } = req.params
+    if (!username || typeof username !== "string") {
+        res.status(400).send("Improper values for parameters.")
+        return
+    }
+
+    await User.deleteOne({ userID: username }).exec()
+    console.log(`User ${username} has been successfully deleted. Now proceeding to remove all records belonging to them...`)
+
+    // Decrement from the totals of items that the user had results for.
+    let amountToDelete: { [key: string]: number } = {}
+    await Result.find({ userID: username }, async (err: Error, docs: ResultInterface[]) => {
+        if (err) throw err
+
+        if (docs) {
+            docs.forEach((doc) => {
+                // Check if the key exists.
+                if (amountToDelete[doc.itemName]) {
+                    amountToDelete[doc.itemName] += doc.amount
+                } else {
+                    amountToDelete[doc.itemName] = doc.amount
+                }
+            })
+
+            // Delete all of the user's data.
+            await Result.deleteMany({ userID: username }).exec()
+            console.log(`Deleted records for user ${username}.`)
+
+            // Update the amounts of the items affected.
+            Object.keys(amountToDelete).forEach(async (key) => {
+                await Item.updateOne({ itemName: key }, { $dec: { totalAmount: amountToDelete[key] } }).exec()
+                console.log(`Total amount updated for item: ${key}.`)
+            })
+
+            console.log("Updated total amounts in items affected.")
+            res.status(200).send(`User and their data have been successfully deleted.`)
+        } else {
+            res.status(200).send(`User successfully deleted.`)
         }
     }).clone()
 })
