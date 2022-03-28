@@ -141,11 +141,11 @@ app.post("/create-item/:farmingMode/:itemName", async (req, res) => {
         return
     }
 
-    await Item.findOne({ itemName }, async (err: Error, doc: ItemInterface) => {
+    await Item.findOne({ itemName: itemName }, async (err: Error, doc: ItemInterface) => {
         if (err) throw err
 
         if (doc) {
-            return
+            res.status(201).send("Item already exists.")
         } else {
             // Create the new Item object to the items collection.
             const newItem = new Item({
@@ -155,7 +155,7 @@ app.post("/create-item/:farmingMode/:itemName", async (req, res) => {
 
             // Save the new Item.
             await newItem.save()
-            res.status(201).send(`Successfully created item "${itemName}".`)
+            res.status(201).send(`Successfully created item ${itemName}.`)
         }
     }).clone()
 })
@@ -168,13 +168,13 @@ app.get("/get-item/:farmingMode", async (req, res) => {
         return
     }
 
-    await Item.find({ farmingMode }, (err: Error, docs: ItemInterface[]) => {
+    await Item.find({ farmingMode: farmingMode }, (err: Error, docs: ItemInterface[]) => {
         if (err) throw err
 
         if (docs) {
             res.status(200).send(docs)
         } else {
-            res.status(404).send(`No Items have been created for Farming Mode "${farmingMode}" yet.`)
+            res.status(200).send(`No Items have been created for Farming Mode ${farmingMode} yet.`)
         }
     }).clone()
 })
@@ -187,76 +187,92 @@ app.get("/get-item/:farmingMode/:itemName", async (req, res) => {
         return
     }
 
-    await Item.findOne({ farmingMode, itemName }, (err: Error, doc: ItemInterface) => {
+    await Item.findOne({ farmingMode: farmingMode, itemName: itemName }, (err: Error, doc: ItemInterface) => {
         if (err) throw err
 
         if (doc) {
             res.status(200).send(doc)
         } else {
-            res.status(404).send(`Item "${itemName}" does not exist for Farming Mode "${farmingMode}".`)
+            res.status(200).send(`Item ${itemName} does not exist for Farming Mode ${farmingMode}.`)
         }
     }).clone()
 })
 
 // POST route to create a new result for an item. The bot at this point has already checked if the item exists before calling this.
-app.post("/create-result/:userID/:itemName/:amount", async (req, res) => {
-    const { userID, itemName, amount } = req.params
-    if (!userID || !itemName || !amount || typeof userID !== "string" || typeof itemName !== "string" || typeof amount !== "string") {
+app.post("/create-result/:username/:itemName/:platform/:amount", async (req, res) => {
+    const { username, itemName, platform, amount } = req.params
+    if (!username || !itemName || !platform || !amount || typeof username !== "string" || typeof itemName !== "string" || typeof platform !== "string" || typeof amount !== "string") {
         res.status(400).send("Improper values for parameters.")
+        return
+    } else if (Number(amount) === NaN) {
+        res.status(400).send("Improper value for the item amount.")
         return
     }
 
-    // Create the new Result object.
-    let date = new Date()
-    const newResult = new Result({
-        userID: userID,
-        itemName: itemName,
-        amount: amount,
-        date: `${date.getUTCMonth() + 1}.${date.getUTCDate()}.${date.getUTCFullYear()}`,
-    })
+    await User.findOne({ userID: username }, async (err: Error, doc: UserInterface) => {
+        if (err) throw err
 
-    // Save the new Result to the results collection.
-    await newResult.save()
+        if (doc) {
+            // Create the new Result object.
+            let date = new Date()
+            const newResult = new Result({
+                userID: username,
+                itemName: itemName,
+                amount: amount,
+                platform: platform,
+                date: `${date.getUTCMonth() + 1}.${date.getUTCDate()}.${date.getUTCFullYear()}`,
+            })
 
-    // Now update the total amount for this item.
-    await Item.updateOne({ itemName }, { $inc: { totalAmount: amount } }).exec()
-    res.status(201).send("Successfully sent the result and updated the total amount.")
+            // Save the new Result to the results collection.
+            await newResult.save()
+
+            // Now update the total amount for this item.
+            await Item.updateOne({ itemName: itemName }, { $inc: { totalAmount: amount } }).exec()
+            res.status(201).send("Successfully sent the result and updated the total amount.")
+        } else {
+            res.status(404).send("User does not exist.")
+        }
+    }).clone()
 })
 
 // GET route to fetch multiple results via user ID.
-app.get("/get-result/:userID", async (req, res) => {
-    const { userID } = req.params
-    if (!userID || typeof userID !== "string") {
+app.get("/get-result/user/:username", async (req, res) => {
+    const { username } = req.params
+    if (!username || typeof username !== "string") {
         res.status(400).send("Improper values for parameters.")
         return
     }
 
-    await Result.find({ userID }, (err: Error, docs: ResultInterface) => {
+    await Result.find({ userID: username }, (err: Error, docs: ResultInterface) => {
         if (err) throw err
 
         if (docs) {
             res.status(200).send(docs)
         } else {
-            res.status(404).send(`No results have been posted yet for this user "${userID}".`)
+            res.status(200).send("No results have been posted yet for this user.")
         }
     }).clone()
 })
 
 // GET route to fetch multiple results via the item name.
-app.get("/get-result/:itemName", async (req, res) => {
+app.get("/get-result/item/:itemName", async (req, res) => {
     const { itemName } = req.params
     if (!itemName || typeof itemName !== "string") {
         res.status(400).send("Improper values for parameters.")
         return
     }
 
-    await Result.find({ itemName }, (err: Error, docs: ResultInterface) => {
+    await Result.find({ itemName: itemName }, (err: Error, docs: ResultInterface) => {
         if (err) throw err
 
         if (docs) {
             res.status(200).send(docs)
         } else {
-            res.status(404).send(`No results have been posted yet for this item "${itemName}".`)
+            res.status(200).send(`No results have been posted yet for this item ${itemName}.`)
+        }
+    }).clone()
+})
+
         }
     }).clone()
 })
