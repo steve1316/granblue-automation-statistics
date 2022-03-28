@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import makeStyles from "@mui/styles/makeStyles"
-import { Theme } from "@mui/material"
+import { Box, Button, Theme } from "@mui/material"
 import { UserContext } from "../../context/UserContext"
 import axios from "axios"
 import { ResultInterface } from "../../interfaces/ResultInterface"
@@ -45,6 +45,12 @@ const Dashboard = () => {
                 width: "80%",
             },
         },
+        buttonWrapper: {
+            marginTop: "32px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+        },
     }))
 
     const classes = useStyles()
@@ -52,6 +58,8 @@ const Dashboard = () => {
     const user = useContext(UserContext)
 
     const [results, setResults] = useState<ResultInterface[]>([])
+    const [chartType, setChartType] = useState("line")
+    const [dateFilter, setDateFilter] = useState("month")
 
     // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
@@ -72,11 +80,31 @@ const Dashboard = () => {
         <section className={classes.root}>
             <div className={classes.container}>
                 <h2 className={classes.title}>Dashboard</h2>
-                <p className={classes.subtitle}>User is logged in</p>
+
+                <Box className={classes.buttonWrapper}>
+                    <Button color="primary" variant="contained" onClick={() => setChartType("line")}>
+                        Line
+                    </Button>
+                    <Button color="primary" variant="contained" onClick={() => setChartType("bar")}>
+                        Bar
+                    </Button>
+                </Box>
+
+                <Box className={classes.buttonWrapper}>
+                    <Button color="primary" variant="contained" onClick={() => setDateFilter("month")}>
+                        Month
+                    </Button>
+                    <Button color="primary" variant="contained" onClick={() => setDateFilter("day")}>
+                        Day
+                    </Button>
+                    <Button color="primary" variant="contained" onClick={() => setDateFilter("year")}>
+                        Year
+                    </Button>
+                </Box>
             </div>
 
             <div className={classes.chartContainer}>
-                <Chart type="line" chartTitle="My Chart" data={results} />
+                <Chart type={chartType} chartTitle={`Chart by ${dateFilter}`} data={results} dateFilter={dateFilter} />
             </div>
         </section>
     )
