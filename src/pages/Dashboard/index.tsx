@@ -5,6 +5,7 @@ import { UserContext } from "../../context/UserContext"
 import axios from "axios"
 import { ResultInterface } from "../../interfaces/ResultInterface"
 import CustomChart from "../../components/CustomChart"
+import CustomTable from "../../components/CustomTable"
 import { Done } from "@mui/icons-material"
 
 const Dashboard = () => {
@@ -53,6 +54,21 @@ const Dashboard = () => {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+        },
+        tableContainer: {
+            position: "relative",
+            height: "60%",
+            width: "60%",
+            marginTop: "16px",
+            marginBottom: "16px",
+            [theme.breakpoints.down("lg")]: {
+                height: "80%",
+                width: "80%",
+            },
+            [theme.breakpoints.down("sm")]: {
+                height: "100%",
+                width: "80%",
+            },
         },
     }))
 
@@ -110,6 +126,9 @@ const Dashboard = () => {
             <div className={classes.chartContainer}>
                 <CustomChart type={chartType} chartTitle={`Chart by ${dateFilter}`} data={results} dateFilter={dateFilter} />
             </div>
+
+            <div className={classes.tableContainer}>
+                <CustomTable rows={results} />
             </div>
         </section>
     )
