@@ -5,7 +5,7 @@ import { ResultInterface } from "../../interfaces/ResultInterface"
 // Register elements to be used by chartjs.
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend)
 
-const Chart = ({ type, chartTitle, data, dateFilter }: { type: string; chartTitle: string; data: ResultInterface[]; dateFilter: string }) => {
+const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; chartTitle: string; data: ResultInterface[]; dateFilter: string }) => {
     const labels: string[] = []
     const dataValuesGA: number[] = []
     const dataValuesGAA: number[] = []
@@ -188,4 +188,4 @@ const Chart = ({ type, chartTitle, data, dateFilter }: { type: string; chartTitl
     }
 }
 
-export default Chart
+export default CustomChart
