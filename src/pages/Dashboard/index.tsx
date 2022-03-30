@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react"
 import makeStyles from "@mui/styles/makeStyles"
-import { Box, Button, Theme } from "@mui/material"
+import { Chip, Stack, Theme } from "@mui/material"
 import { UserContext } from "../../context/UserContext"
 import axios from "axios"
 import { ResultInterface } from "../../interfaces/ResultInterface"
-import Chart from "../../components/Chart"
+import CustomChart from "../../components/CustomChart"
+import { Done } from "@mui/icons-material"
 
 const Dashboard = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -36,6 +37,8 @@ const Dashboard = () => {
             position: "relative",
             height: "60%",
             width: "60%",
+            marginTop: "16px",
+            marginBottom: "16px",
             [theme.breakpoints.down("lg")]: {
                 height: "80%",
                 width: "80%",
@@ -65,7 +68,6 @@ const Dashboard = () => {
     useEffect(() => {
         document.title = "Dashboard"
         window.scrollTo(0, 0)
-
         getResults("Meat")
     }, [])
 
@@ -81,30 +83,33 @@ const Dashboard = () => {
             <div className={classes.container}>
                 <h2 className={classes.title}>Dashboard</h2>
 
-                <Box className={classes.buttonWrapper}>
-                    <Button color="primary" variant="contained" onClick={() => setChartType("line")}>
-                        Line
-                    </Button>
-                    <Button color="primary" variant="contained" onClick={() => setChartType("bar")}>
-                        Bar
-                    </Button>
-                </Box>
+                <Stack direction="row" spacing={1} sx={{ marginBottom: "16px" }}>
+                    <Chip label="Line" color="primary" onClick={() => setChartType("line")} icon={chartType === "line" ? <Done /> : undefined} variant={chartType === "line" ? "filled" : "outlined"} />
+                    <Chip label="Bar" color="primary" onClick={() => setChartType("bar")} icon={chartType === "bar" ? <Done /> : undefined} variant={chartType === "bar" ? "filled" : "outlined"} />
+                </Stack>
 
-                <Box className={classes.buttonWrapper}>
-                    <Button color="primary" variant="contained" onClick={() => setDateFilter("month")}>
-                        Month
-                    </Button>
-                    <Button color="primary" variant="contained" onClick={() => setDateFilter("day")}>
-                        Day
-                    </Button>
-                    <Button color="primary" variant="contained" onClick={() => setDateFilter("year")}>
-                        Year
-                    </Button>
-                </Box>
+                <Stack direction="row" spacing={1}>
+                    <Chip
+                        label="Month"
+                        color="primary"
+                        onClick={() => setDateFilter("month")}
+                        icon={dateFilter === "month" ? <Done /> : undefined}
+                        variant={dateFilter === "month" ? "filled" : "outlined"}
+                    />
+                    <Chip label="Day" color="primary" onClick={() => setDateFilter("day")} icon={dateFilter === "day" ? <Done /> : undefined} variant={dateFilter === "day" ? "filled" : "outlined"} />
+                    <Chip
+                        label="Year"
+                        color="primary"
+                        onClick={() => setDateFilter("year")}
+                        icon={dateFilter === "year" ? <Done /> : undefined}
+                        variant={dateFilter === "year" ? "filled" : "outlined"}
+                    />
+                </Stack>
             </div>
 
             <div className={classes.chartContainer}>
-                <Chart type={chartType} chartTitle={`Chart by ${dateFilter}`} data={results} dateFilter={dateFilter} />
+                <CustomChart type={chartType} chartTitle={`Chart by ${dateFilter}`} data={results} dateFilter={dateFilter} />
+            </div>
             </div>
         </section>
     )
