@@ -87,7 +87,7 @@ const NavBar = () => {
 
     // If user's y-position is greater than the specified offset, allow the page to send the user back to the top of the page.
     const toggleScroll = () => {
-        if (window.pageYOffset > 100) {
+        if ((window.screenY < 1000 && window.pageYOffset > 25) || (window.screenY >= 1000 && window.pageYOffset > 200)) {
             setScrollNav(true)
         } else {
             setScrollNav(false)
