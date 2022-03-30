@@ -25,6 +25,7 @@ const Dashboard = () => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            marginTop: "10%",
         },
         title: {
             fontSize: "40px",
@@ -35,19 +36,10 @@ const Dashboard = () => {
             margin: "16px auto",
         },
         chartContainer: {
-            position: "relative",
-            height: "60%",
-            width: "60%",
+            height: "500px",
+            width: "80%",
             marginTop: "16px",
             marginBottom: "16px",
-            [theme.breakpoints.down("lg")]: {
-                height: "80%",
-                width: "80%",
-            },
-            [theme.breakpoints.down("sm")]: {
-                height: "100%",
-                width: "80%",
-            },
         },
         buttonWrapper: {
             marginTop: "32px",
@@ -58,16 +50,11 @@ const Dashboard = () => {
         tableContainer: {
             position: "relative",
             height: "60%",
-            width: "60%",
+            width: "80%",
             marginTop: "16px",
             marginBottom: "16px",
-            [theme.breakpoints.down("lg")]: {
-                height: "80%",
-                width: "80%",
-            },
             [theme.breakpoints.down("sm")]: {
                 height: "100%",
-                width: "80%",
             },
         },
     }))
