@@ -133,8 +133,8 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
                 dataValuesGAA[dataValuesIndex - 1] = newResults[year][month].amountGAA
             }
         } else if (dateFilter === "day") {
-            if (labels.indexOf(months[month] + day) === -1) {
-                labels.push(months[month] + day)
+            if (labels.indexOf(months[month] + " " + day) === -1) {
+                labels.push(months[month] + " " + day)
                 dataValuesGA.push(newResults[year][month][day].amountGA)
                 dataValuesGAA.push(newResults[year][month][day].amountGAA)
                 dataValuesIndex += 1
