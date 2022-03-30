@@ -147,6 +147,7 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
 
     // Configuration options for customizing the chart.
     const options = {
+        responsive: true,
         plugins: {
             legend: {
                 position: "top" as const,
@@ -157,6 +158,7 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
             },
         },
         scales: { y: { min: 0 } },
+        maintainAspectRatio: false,
     }
 
     // Data set with the labels and values to display on the chart.
