@@ -58,6 +58,12 @@ const headCells: readonly HeadCell[] = [
         label: "Amount",
     },
     {
+        id: "farmingMode",
+        numeric: true,
+        disablePadding: false,
+        label: "Farming Mode",
+    },
+    {
         id: "platform",
         numeric: true,
         disablePadding: false,
@@ -166,6 +172,7 @@ const CustomTable = ({ rows }: Props) => {
                                             </TableCell>
                                             <TableCell>{row.itemName}</TableCell>
                                             <TableCell>{row.amount}</TableCell>
+                                            <TableCell>{row.farmingMode}</TableCell>
                                             <TableCell>{row.platform}</TableCell>
                                         </TableRow>
                                     )
