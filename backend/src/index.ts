@@ -262,7 +262,7 @@ app.get("/get-result/user/:username", async (req, res) => {
         return
     }
 
-    await Result.find({ userID: username }, (err: Error, docs: ResultInterface) => {
+    await Result.find({ userID: username }, (err: Error, docs: ResultInterface[]) => {
         if (err) throw err
 
         if (docs) {
@@ -281,7 +281,7 @@ app.get("/get-result/item/:itemName", async (req, res) => {
         return
     }
 
-    await Result.find({ itemName: itemName }, (err: Error, docs: ResultInterface) => {
+    await Result.find({ itemName: itemName }, (err: Error, docs: ResultInterface[]) => {
         if (err) throw err
 
         if (docs) {
