@@ -12,6 +12,8 @@ import Paper from "@mui/material/Paper"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import Switch from "@mui/material/Switch"
 import { ResultInterface } from "../../interfaces/ResultInterface"
+import makeStyles from "@mui/styles/makeStyles"
+import { Theme } from "@mui/material"
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -101,6 +103,20 @@ interface Props {
 }
 
 const CustomTable = ({ rows }: Props) => {
+    const useStyles = makeStyles((theme: Theme) => ({
+        tableFooter: {
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingLeft: "12px",
+            [theme.breakpoints.down("sm")]: {
+                flexDirection: "column",
+            },
+        },
+    }))
+
+    const classes = useStyles()
+
     const [order, setOrder] = useState<Order>("asc")
     const [orderBy, setOrderBy] = useState<keyof ResultInterface>("date")
     const [page, setPage] = useState(0)
@@ -166,7 +182,7 @@ const CustomTable = ({ rows }: Props) => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", paddingLeft: "12px" }}>
+                <div className={classes.tableFooter}>
                     <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" />
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
