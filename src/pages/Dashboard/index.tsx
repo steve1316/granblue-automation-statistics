@@ -74,8 +74,10 @@ const Dashboard = () => {
     const [availableSearchTerms, setAvailableSearchTerms] = useState<string[]>([])
     const [searchSubmission, setSearchSubmission] = useState(false)
     const [results, setResults] = useState<ResultInterface[]>([])
+    const [userResults, setUserResults] = useState<ResultInterface[]>([])
     const [chartType, setChartType] = useState("line")
     const [dateFilter, setDateFilter] = useState("month")
+    const [showOnlyUserResults, setShowOnlyUserResults] = useState(false)
 
     // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
@@ -151,12 +153,12 @@ const Dashboard = () => {
             <div className={classes.container}>
                 <h2 className={classes.title}>Dashboard</h2>
 
-                <Stack direction="row" spacing={1} sx={{ marginBottom: "16px" }}>
+                <Stack direction="row" spacing={1} sx={{ marginTop: "16px" }}>
                     <Chip label="Line" color="primary" onClick={() => setChartType("line")} icon={chartType === "line" ? <Done /> : undefined} variant={chartType === "line" ? "filled" : "outlined"} />
                     <Chip label="Bar" color="primary" onClick={() => setChartType("bar")} icon={chartType === "bar" ? <Done /> : undefined} variant={chartType === "bar" ? "filled" : "outlined"} />
                 </Stack>
 
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" spacing={1} sx={{ marginTop: "16px" }}>
                     <Chip
                         label="Month"
                         color="primary"
@@ -174,6 +176,27 @@ const Dashboard = () => {
                     />
                 </Stack>
 
+                <Stack direction="row" spacing={1} sx={{ marginTop: "16px" }}>
+                    <Chip
+                        label="Show only my results"
+                        color="primary"
+                        onClick={() => setShowOnlyUserResults(!showOnlyUserResults)}
+                        icon={showOnlyUserResults ? <Done /> : undefined}
+                        variant={showOnlyUserResults ? "filled" : "outlined"}
+                    />
+                </Stack>
+            </div>
+
+            <div className={classes.chartContainer}>
+                <CustomChart
+                    type={chartType}
+                    chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Missing Search Term`}
+                    data={showOnlyUserResults ? userResults : results}
+                    dateFilter={dateFilter}
+                />
+            </div>
+
+            <div className={classes.tableContainer}>
                 <Autocomplete
                     options={availableSearchTerms.map((result) => result)}
                     value={search}
@@ -219,14 +242,7 @@ const Dashboard = () => {
                         )
                     }}
                 />
-            </div>
-
-            <div className={classes.chartContainer}>
-                <CustomChart type={chartType} chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Missing Search Term`} data={results} dateFilter={dateFilter} />
-            </div>
-
-            <div className={classes.tableContainer}>
-                <CustomTable rows={results} />
+                <CustomTable rows={showOnlyUserResults ? userResults : results} />
             </div>
         </section>
     )
