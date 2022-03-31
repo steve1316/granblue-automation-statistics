@@ -84,9 +84,6 @@ const Dashboard = () => {
         document.title = "Dashboard"
         window.scrollTo(0, 0)
 
-        // Get results for the user at the start.
-        getUserResults(user.username)
-
         // Now construct the available search terms by reading the data json file.
         var searchTerms: string[] = []
         Object.keys(data).forEach((key) => {
@@ -108,18 +105,52 @@ const Dashboard = () => {
                 Object.entries(data[key]).forEach((missionObj) => {
                     searchTerms = searchTerms.concat(missionObj[1].items)
                 })
+
+            // Save the Farming Mode as a search term as well.
+            searchTerms.push(key + " " + "Farming Mode")
         })
 
         // Remove any duplicate items and save it to state.
         setAvailableSearchTerms(Array.from(new Set(searchTerms)))
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Only send the search request after the user's query matches a searchable term.
     useEffect(() => {
         if (searchSubmission) {
-            console.log("Searching now for: ", search)
-            getItemResults(search)
+            if (search.indexOf("Farming Mode") !== -1) {
+                const newSearch = search.slice(0, search.indexOf("Farming Mode"))
+                console.log("Searching results for the Farming Mode: ", newSearch)
+                getFarmingModeResults(newSearch)
+            } else {
+                console.log("Searching results for the item: ", search)
+                getItemResults(search)
+            }
         }
     }, [searchSubmission]) // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Display either all or only the user's results belonging to the search term.
+    useEffect(() => {
+        if (showOnlyUserResults) {
+            const userResults = results.filter((result) => result.userID === user.username)
+            setUserResults(userResults)
+        } else {
+            setUserResults([])
+        }
+    }, [showOnlyUserResults])
+
+    const getFarmingModeResults = (farmingMode: string) => {
+        axios
+            .get(`http://localhost:4000/get-result/farmingMode/${farmingMode}`, { withCredentials: true })
+            .then((data) => {
+                setResults(data.data)
+            })
+            .catch(() => {
+                setResults([])
+            })
+            .finally(() => {
+                setSearchSubmission(false)
+            })
+    }
 
     // Get all results for this item from the search term.
     const getItemResults = (itemName: string) => {
@@ -133,18 +164,6 @@ const Dashboard = () => {
             })
             .finally(() => {
                 setSearchSubmission(false)
-            })
-    }
-
-    // Get all results for this user.
-    const getUserResults = (userID: string) => {
-        axios
-            .get(`http://localhost:4000/get-result/user/${userID}`, { withCredentials: true })
-            .then((data) => {
-                setResults(data.data)
-            })
-            .catch(() => {
-                setResults([])
             })
     }
 
