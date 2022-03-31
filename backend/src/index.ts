@@ -292,6 +292,25 @@ app.get("/get-result/item/:itemName", async (req, res) => {
     }).clone()
 })
 
+// GET route to fetch multiple results via the Farming Mode.
+app.get("/get-result/farmingMode/:farmingMode", async (req, res) => {
+    const { farmingMode } = req.params
+    if (!farmingMode || typeof farmingMode !== "string") {
+        res.status(400).send("Improper values for parameters.")
+        return
+    }
+
+    await Result.find({ farmingMode: farmingMode }, (err: Error, docs: ResultInterface[]) => {
+        if (err) throw err
+
+        if (docs) {
+            res.status(200).send(docs)
+        } else {
+            res.status(200).send(`No results have been posted yet for the Farming Mode: ${farmingMode}.`)
+        }
+    }).clone()
+})
+
 app.put("/delete-user/:username", isAdminMiddleware, async (req, res) => {
     const { username } = req.params
     if (!username || typeof username !== "string") {
