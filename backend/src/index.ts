@@ -180,7 +180,7 @@ app.post("/create-item/:farmingMode/:itemName", async (req, res) => {
 })
 
 // GET route to fetch multiple items via the Farming Mode.
-app.get("/get-item/:farmingMode", async (req, res) => {
+app.get("/get-item/farmingMode/:farmingMode", async (req, res) => {
     const { farmingMode } = req.params
     if (!farmingMode || typeof farmingMode !== "string") {
         res.status(400).send("Improper values for parameters.")
@@ -199,7 +199,7 @@ app.get("/get-item/:farmingMode", async (req, res) => {
 })
 
 // GET route to fetch an item via the item name.
-app.get("/get-item/:farmingMode/:itemName", async (req, res) => {
+app.get("/get-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
     const { farmingMode, itemName } = req.params
     if (!farmingMode || !itemName || typeof farmingMode !== "string" || typeof itemName !== "string") {
         res.status(400).send("Improper values for parameters.")
