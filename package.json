@@ -11,6 +11,7 @@
         "@testing-library/jest-dom": "^5.11.4",
         "@testing-library/react": "^11.1.0",
         "@testing-library/user-event": "^12.1.10",
+        "autosuggest-highlight": "^3.2.1",
         "axios": "^0.26.1",
         "chart.js": "^3.7.1",
         "react": "^17.0.2",
@@ -49,6 +50,7 @@
         ]
     },
     "devDependencies": {
+        "@types/autosuggest-highlight": "^3.2.0",
         "@types/chart.js": "^2.9.35",
         "@types/react-chartjs-2": "^2.5.7",
         "@types/react-dom": "^17.0.14",
