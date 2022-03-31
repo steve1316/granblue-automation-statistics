@@ -153,14 +153,14 @@ app.get("/logout", (req, res) => {
 })
 
 // POST route to create an item if it does not already exist.
-app.post("/create-item/:farmingMode/:itemName", async (req, res) => {
+app.post("/create-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
     const { farmingMode, itemName } = req.params
     if (!farmingMode || !itemName || typeof farmingMode !== "string" || typeof itemName !== "string") {
         res.status(400).send("Improper values for parameters.")
         return
     }
 
-    await Item.findOne({ itemName: itemName }, async (err: Error, doc: ItemInterface) => {
+    await Item.findOne({ farmingMode: farmingMode, itemName: itemName }, async (err: Error, doc: ItemInterface) => {
         if (err) throw err
 
         if (doc) {
