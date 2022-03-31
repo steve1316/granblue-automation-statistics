@@ -1,12 +1,16 @@
 import React, { useContext, useEffect, useState } from "react"
 import makeStyles from "@mui/styles/makeStyles"
-import { Chip, Stack, Theme } from "@mui/material"
+import { Autocomplete, Chip, Stack, TextField, Theme } from "@mui/material"
 import { UserContext } from "../../context/UserContext"
 import axios from "axios"
 import { ResultInterface } from "../../interfaces/ResultInterface"
 import CustomChart from "../../components/CustomChart"
 import CustomTable from "../../components/CustomTable"
 import { Done } from "@mui/icons-material"
+import match from "autosuggest-highlight/match"
+import parse from "autosuggest-highlight/parse"
+import { UserInterface } from "../../interfaces/UserInterface"
+import data from "../../data/data.json"
 
 const Dashboard = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -57,12 +61,18 @@ const Dashboard = () => {
                 height: "100%",
             },
         },
+        searchBar: {
+            backgroundColor: "white",
+        },
     }))
 
     const classes = useStyles()
 
-    const user = useContext(UserContext)
+    const user: UserInterface = useContext(UserContext)
 
+    const [search, setSearch] = useState("")
+    const [availableSearchTerms, setAvailableSearchTerms] = useState<string[]>([])
+    const [searchSubmission, setSearchSubmission] = useState(false)
     const [results, setResults] = useState<ResultInterface[]>([])
     const [chartType, setChartType] = useState("line")
     const [dateFilter, setDateFilter] = useState("month")
@@ -71,14 +81,69 @@ const Dashboard = () => {
     useEffect(() => {
         document.title = "Dashboard"
         window.scrollTo(0, 0)
-        getResults("Meat")
-    }, [])
 
-    // Get results for this item.
-    const getResults = (itemName: string) => {
-        axios.get(`http://localhost:4000/get-result/item/${itemName}`, { withCredentials: true }).then((data) => {
-            setResults(data.data)
+        // Get results for the user at the start.
+        getUserResults(user.username)
+
+        // Now construct the available search terms by reading the data json file.
+        var searchTerms: string[] = []
+        Object.keys(data).forEach((key) => {
+            if (
+                key === "Quest" ||
+                key === "Special" ||
+                key === "Raid" ||
+                key === "Event" ||
+                key === "Event (Token Drawboxes)" ||
+                key === "Rise of the Beasts" ||
+                key === "Guild Wars" ||
+                key === "Dread Barrage" ||
+                key === "Proving Grounds" ||
+                key === "Xeno Clash" ||
+                key === "Arcarum" ||
+                key === "Arcarum Sandbox" ||
+                key === "Generic"
+            )
+                Object.entries(data[key]).forEach((missionObj) => {
+                    searchTerms = searchTerms.concat(missionObj[1].items)
+                })
         })
+
+        // Remove any duplicate items and save it to state.
+        setAvailableSearchTerms(Array.from(new Set(searchTerms)))
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        if (searchSubmission) {
+            console.log("Searching now for: ", search)
+            getItemResults(search)
+        }
+    }, [searchSubmission]) // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Get all results for this item from the search term.
+    const getItemResults = (itemName: string) => {
+        axios
+            .get(`http://localhost:4000/get-result/item/${itemName}`, { withCredentials: true })
+            .then((data) => {
+                setResults(data.data)
+            })
+            .catch(() => {
+                setResults([])
+            })
+            .finally(() => {
+                setSearchSubmission(false)
+            })
+    }
+
+    // Get all results for this user.
+    const getUserResults = (userID: string) => {
+        axios
+            .get(`http://localhost:4000/get-result/user/${userID}`, { withCredentials: true })
+            .then((data) => {
+                setResults(data.data)
+            })
+            .catch(() => {
+                setResults([])
+            })
     }
 
     return (
@@ -108,10 +173,56 @@ const Dashboard = () => {
                         variant={dateFilter === "year" ? "filled" : "outlined"}
                     />
                 </Stack>
+
+                <Autocomplete
+                    options={availableSearchTerms.map((result) => result)}
+                    value={search}
+                    onChange={(e, value) => {
+                        var newItem = ""
+                        if (value !== null) {
+                            newItem = value
+
+                            if (availableSearchTerms.indexOf(value) !== -1) {
+                                setSearchSubmission(true)
+                            }
+                        }
+
+                        setSearch(newItem)
+                    }}
+                    getOptionLabel={(option) => option}
+                    isOptionEqualToValue={(option) => option !== ""}
+                    renderInput={(params) => (
+                        <TextField
+                            className={classes.searchBar}
+                            {...params}
+                            label="Search Farming Mode or Item"
+                            variant="filled"
+                            helperText="Display data belonging to a particular Farming Mode or item"
+                        />
+                    )}
+                    renderOption={(props, option, { inputValue }) => {
+                        const matches = match(option, inputValue)
+                        const parts = parse(option, matches)
+
+                        return (
+                            <li {...props}>
+                                <div>
+                                    {parts.map((part, index) => {
+                                        return (
+                                            <span key={index} style={{ fontWeight: part.highlight ? 1000 : 400 }}>
+                                                {part.text}
+                                            </span>
+                                        )
+                                    })}
+                                </div>
+                            </li>
+                        )
+                    }}
+                />
             </div>
 
             <div className={classes.chartContainer}>
-                <CustomChart type={chartType} chartTitle={`Chart by ${dateFilter}`} data={results} dateFilter={dateFilter} />
+                <CustomChart type={chartType} chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Missing Search Term`} data={results} dateFilter={dateFilter} />
             </div>
 
             <div className={classes.tableContainer}>
