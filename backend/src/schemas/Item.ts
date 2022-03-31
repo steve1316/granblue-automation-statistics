@@ -5,7 +5,6 @@ import mongoose from "mongoose"
 const item = new mongoose.Schema({
     itemName: {
         type: String,
-        unique: true,
     },
     farmingMode: {
         type: String,
