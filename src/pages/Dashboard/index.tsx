@@ -107,7 +107,7 @@ const Dashboard = () => {
                 })
 
             // Save the Farming Mode as a search term as well.
-            searchTerms.push(key + " " + "Farming Mode")
+            searchTerms.push(key + " Farming Mode")
         })
 
         // Remove any duplicate items and save it to state.
@@ -136,7 +136,7 @@ const Dashboard = () => {
         } else {
             setUserResults([])
         }
-    }, [showOnlyUserResults])
+    }, [showOnlyUserResults]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const getFarmingModeResults = (farmingMode: string) => {
         axios

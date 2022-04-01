@@ -1,10 +1,8 @@
-import { ResultInterface } from "./interfaces/ResultInterface"
-import { ItemInterface } from "./interfaces/ItemInterface"
 import bcrypt from "bcryptjs"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 import dotenv from "dotenv"
-import express, { NextFunction, Request, Response } from "express"
+import express from "express"
 import mongoose, { MongooseError } from "mongoose"
 import passport from "passport"
 import passportLocal from "passport-local"
@@ -15,7 +13,7 @@ import ResultRoutes from "./routes/ResultRoutes"
 import ItemRoutes from "./routes/ItemRoutes"
 import AccountRoutes from "./routes/AccountRoutes"
 
-require("dotenv").config()
+dotenv.config()
 
 ////////////////////
 // Connect to MongoDB cluster.
@@ -69,9 +67,11 @@ passport.use(
     })
 )
 passport.serializeUser((user: any, cb) => {
+    // Persist user data after successful authentication throughout the session.
     cb(null, user.id)
 })
 passport.deserializeUser((id: string, cb) => {
+    // Attaches the user object to the session's object in the request.
     User.findOne({ _id: id }, (err: Error, user: UserInterface) => {
         const userInfo = {
             username: user.username,

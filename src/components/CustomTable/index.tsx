@@ -32,10 +32,10 @@ function getComparator<Key extends keyof any>(order: Order, orderBy: Key): (a: {
 }
 
 interface HeadCell {
-    disablePadding: boolean
     id: keyof ResultInterface
-    label: string
     numeric: boolean
+    disablePadding: boolean
+    label: string
 }
 
 const headCells: readonly HeadCell[] = [
@@ -77,8 +77,10 @@ interface EnhancedTableProps {
     orderBy: string
 }
 
+// Custom header component to facilitate sorting.
 function EnhancedTableHead(props: EnhancedTableProps) {
     const { order, orderBy, onRequestSort } = props
+
     const createSortHandler = (property: keyof ResultInterface) => (event: React.MouseEvent<unknown>) => {
         onRequestSort(event, property)
     }
@@ -104,11 +106,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     )
 }
 
-interface Props {
-    rows: ResultInterface[]
-}
-
-const CustomTable = ({ rows }: Props) => {
+const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
     const useStyles = makeStyles((theme: Theme) => ({
         tableFooter: {
             display: "flex",
@@ -129,23 +127,11 @@ const CustomTable = ({ rows }: Props) => {
     const [dense, setDense] = useState(false)
     const [rowsPerPage, setRowsPerPage] = useState(5)
 
+    // Adjust the ordering of the column according to the provided property key.
     const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof ResultInterface) => {
         const isAsc = orderBy === property && order === "asc"
         setOrder(isAsc ? "desc" : "asc")
         setOrderBy(property)
-    }
-
-    const handleChangePage = (event: unknown, newPage: number) => {
-        setPage(newPage)
-    }
-
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(parseInt(event.target.value, 10))
-        setPage(0)
-    }
-
-    const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDense(event.target.checked)
     }
 
     // Avoid a layout jump when reaching the last page with empty rows.
@@ -190,15 +176,18 @@ const CustomTable = ({ rows }: Props) => {
                     </Table>
                 </TableContainer>
                 <div className={classes.tableFooter}>
-                    <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" />
+                    <FormControlLabel control={<Switch checked={dense} onChange={(e) => setDense(e.target.checked)} />} label="Dense padding" />
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
                         count={rows.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        onPageChange={(e, newPage) => setPage(newPage)}
+                        onRowsPerPageChange={(e) => {
+                            setRowsPerPage(parseInt(e.target.value, 10))
+                            setPage(0)
+                        }}
                     />
                 </div>
             </Paper>
