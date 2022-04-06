@@ -78,7 +78,7 @@ router.get("/api/logout", (req, res) => {
 })
 
 // PUT route to delete a user and all of their associated results.
-router.put("/delete-user/:username", isAdminMiddleware, async (req, res) => {
+router.put("/api/delete-user/:username", isAdminMiddleware, async (req, res) => {
     const { username } = req.params
     if (!username || typeof username !== "string") {
         res.status(400).send("Improper values for parameters.")
