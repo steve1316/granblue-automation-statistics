@@ -68,7 +68,11 @@ router.post("/api/login", passport.authenticate("local"), (req, res) => {
 
 // GET route to get the logged in user.
 router.get("/api/user", (req, res) => {
-    res.status(200).send(req.user)
+    if (req.isAuthenticated()) {
+        res.status(200).send(req.user)
+    } else {
+        res.status(401).send("Not Authenticated.")
+    }
 })
 
 // GET route to log out the user.

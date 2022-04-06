@@ -9,6 +9,11 @@ const router: Router = express.Router()
 
 // POST route to create a new result for an item. The bot at this point has already checked if the item exists before calling this.
 router.post("/api/create-result/:username/:itemName/:platform/:amount", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        res.status(401).send("Not Authenticated.")
+        return
+    }
+
     const { username, itemName, platform, amount } = req.params
     if (!username || !itemName || !platform || !amount || typeof username !== "string" || typeof itemName !== "string" || typeof platform !== "string" || typeof amount !== "string") {
         res.status(400).send("Improper values for parameters.")
@@ -46,6 +51,11 @@ router.post("/api/create-result/:username/:itemName/:platform/:amount", async (r
 
 // GET route to fetch multiple results via user ID.
 router.get("/api/get-result/user/:username", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        res.status(401).send("Not Authenticated.")
+        return
+    }
+
     const { username } = req.params
     if (!username || typeof username !== "string") {
         res.status(400).send("Improper values for parameters.")
@@ -65,6 +75,11 @@ router.get("/api/get-result/user/:username", async (req, res) => {
 
 // GET route to fetch multiple results via the item name.
 router.get("/api/get-result/item/:itemName", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        res.status(401).send("Not Authenticated.")
+        return
+    }
+
     const { itemName } = req.params
     if (!itemName || typeof itemName !== "string") {
         res.status(400).send("Improper values for parameters.")
@@ -84,6 +99,11 @@ router.get("/api/get-result/item/:itemName", async (req, res) => {
 
 // GET route to fetch multiple results via the Farming Mode.
 router.get("/api/get-result/farmingMode/:farmingMode", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        res.status(401).send("Not Authenticated.")
+        return
+    }
+
     const { farmingMode } = req.params
     if (!farmingMode || typeof farmingMode !== "string") {
         res.status(400).send("Improper values for parameters.")

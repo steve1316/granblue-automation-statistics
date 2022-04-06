@@ -6,6 +6,11 @@ const router: Router = express.Router()
 
 // POST route to create an item if it does not already exist.
 router.post("/api/create-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        res.status(401).send("Not Authenticated.")
+        return
+    }
+
     const { farmingMode, itemName } = req.params
     if (!farmingMode || !itemName || typeof farmingMode !== "string" || typeof itemName !== "string") {
         res.status(400).send("Improper values for parameters.")
@@ -33,6 +38,11 @@ router.post("/api/create-item/farmingMode/:farmingMode/:itemName", async (req, r
 
 // GET route to fetch multiple items via the Farming Mode.
 router.get("/api/get-item/farmingMode/:farmingMode", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        res.status(401).send("Not Authenticated.")
+        return
+    }
+
     const { farmingMode } = req.params
     if (!farmingMode || typeof farmingMode !== "string") {
         res.status(400).send("Improper values for parameters.")
@@ -52,6 +62,11 @@ router.get("/api/get-item/farmingMode/:farmingMode", async (req, res) => {
 
 // GET route to fetch an item via the item name.
 router.get("/api/get-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        res.status(401).send("Not Authenticated.")
+        return
+    }
+
     const { farmingMode, itemName } = req.params
     if (!farmingMode || !itemName || typeof farmingMode !== "string" || typeof itemName !== "string") {
         res.status(400).send("Improper values for parameters.")
