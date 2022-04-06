@@ -17,14 +17,13 @@ dotenv.config()
 
 ////////////////////
 // Connect to MongoDB cluster.
-mongoose.connect(`mongodb+srv://steve1316:${process.env.MONGODB_PASSWORD}@cluster0.bms87.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`, (err: MongooseError) => {
+mongoose.connect(`mongodb+srv://steve1316:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_URI}`, (err: MongooseError) => {
     if (err) throw err
     console.log("Connected to MongoDB Cluster.")
 })
 
 ////////////////////
 // Middleware
-const expressPort = 4000
 const app = express()
 app.use(express.json())
 app.use(cors({ origin: ["http://localhost:3000", "https://granblue-automation-statistics.com"], credentials: true })) //
@@ -91,6 +90,6 @@ app.use(ResultRoutes)
 
 ////////////////////
 // Start the Express server on the specified port.
-app.listen(expressPort, () => {
-    console.log(`Express server started on port ${expressPort}.`)
+app.listen(process.env.EXPRESS_PORT || 4000, () => {
+    console.log(`Express server started on port ${process.env.EXPRESS_PORT || 4000}.`)
 })
