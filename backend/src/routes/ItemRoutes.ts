@@ -5,7 +5,7 @@ import Item from "../schemas/Item"
 const router: Router = express.Router()
 
 // POST route to create an item if it does not already exist.
-router.post("/create-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
+router.post("/api/create-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
     const { farmingMode, itemName } = req.params
     if (!farmingMode || !itemName || typeof farmingMode !== "string" || typeof itemName !== "string") {
         res.status(400).send("Improper values for parameters.")
@@ -32,7 +32,7 @@ router.post("/create-item/farmingMode/:farmingMode/:itemName", async (req, res) 
 })
 
 // GET route to fetch multiple items via the Farming Mode.
-router.get("/get-item/farmingMode/:farmingMode", async (req, res) => {
+router.get("/api/get-item/farmingMode/:farmingMode", async (req, res) => {
     const { farmingMode } = req.params
     if (!farmingMode || typeof farmingMode !== "string") {
         res.status(400).send("Improper values for parameters.")
@@ -51,7 +51,7 @@ router.get("/get-item/farmingMode/:farmingMode", async (req, res) => {
 })
 
 // GET route to fetch an item via the item name.
-router.get("/get-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
+router.get("/api/get-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
     const { farmingMode, itemName } = req.params
     if (!farmingMode || !itemName || typeof farmingMode !== "string" || typeof itemName !== "string") {
         res.status(400).send("Improper values for parameters.")

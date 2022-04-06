@@ -8,7 +8,7 @@ import User from "../schemas/User"
 const router: Router = express.Router()
 
 // POST route to create a new result for an item. The bot at this point has already checked if the item exists before calling this.
-router.post("/create-result/:username/:itemName/:platform/:amount", async (req, res) => {
+router.post("/api/create-result/:username/:itemName/:platform/:amount", async (req, res) => {
     const { username, itemName, platform, amount } = req.params
     if (!username || !itemName || !platform || !amount || typeof username !== "string" || typeof itemName !== "string" || typeof platform !== "string" || typeof amount !== "string") {
         res.status(400).send("Improper values for parameters.")
@@ -45,7 +45,7 @@ router.post("/create-result/:username/:itemName/:platform/:amount", async (req, 
 })
 
 // GET route to fetch multiple results via user ID.
-router.get("/get-result/user/:username", async (req, res) => {
+router.get("/api/get-result/user/:username", async (req, res) => {
     const { username } = req.params
     if (!username || typeof username !== "string") {
         res.status(400).send("Improper values for parameters.")
@@ -64,7 +64,7 @@ router.get("/get-result/user/:username", async (req, res) => {
 })
 
 // GET route to fetch multiple results via the item name.
-router.get("/get-result/item/:itemName", async (req, res) => {
+router.get("/api/get-result/item/:itemName", async (req, res) => {
     const { itemName } = req.params
     if (!itemName || typeof itemName !== "string") {
         res.status(400).send("Improper values for parameters.")
@@ -83,7 +83,7 @@ router.get("/get-result/item/:itemName", async (req, res) => {
 })
 
 // GET route to fetch multiple results via the Farming Mode.
-router.get("/get-result/farmingMode/:farmingMode", async (req, res) => {
+router.get("/api/get-result/farmingMode/:farmingMode", async (req, res) => {
     const { farmingMode } = req.params
     if (!farmingMode || typeof farmingMode !== "string") {
         res.status(400).send("Improper values for parameters.")

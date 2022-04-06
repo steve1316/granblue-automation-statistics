@@ -29,7 +29,7 @@ const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
 }
 
 // POST route to register a new user.
-router.post("/register", async (req: Request, res: Response) => {
+router.post("/api/register", async (req: Request, res: Response) => {
     // Destructure the username, password and email fields and perform type validation.
     const { username, password, email } = req?.body
     if (!username || !password || typeof username !== "string" || typeof password !== "string" || typeof email !== "string") {
@@ -62,17 +62,17 @@ router.post("/register", async (req: Request, res: Response) => {
 })
 
 // POST route to login via passport authentication.
-router.post("/login", passport.authenticate("local"), (req, res) => {
+router.post("/api/login", passport.authenticate("local"), (req, res) => {
     res.status(200).send("Successfully authenticated user.")
 })
 
 // GET route to get the logged in user.
-router.get("/user", (req, res) => {
+router.get("/api/user", (req, res) => {
     res.status(200).send(req.user)
 })
 
 // GET route to log out the user.
-router.get("/logout", (req, res) => {
+router.get("/api/logout", (req, res) => {
     req.logout()
     res.status(200).send("Successfully logged out.")
 })
