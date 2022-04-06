@@ -21,13 +21,13 @@ Information collected by Granblue Automation Statistics do not contain any perso
 -   [ ] Backend
 
     -   [x] Integration with MongoDB.
-    -   [ ] Implement CRUD API.
+    -   [x] Implement CRUD API.
         -   [x] Create route to create a new account.
         -   [x] Create route to login using provided credentials.
         -   [x] Create route to send a new result to the specified Farming Mode table.
         -   [x] Create route to fetch result(s) for an item, either all results or results belonging to your user id.
         -   [x] Create route to create an item if it does not already exist.
-        -   [ ] Create route to check if user id exists when attempting to generate a unique user id.
+        -   [x] Create route to check if user id exists when attempting to generate a unique user id.
     -   [ ] Add support for Granblue Automation.
         -   [ ] Add feature to opt-in and then provide a button to generate a unique user id for you.
     -   [ ] Add support for Granblue Automation Android.
@@ -42,9 +42,9 @@ Information collected by Granblue Automation Statistics do not contain any perso
         -   [ ] Complete Password Recovery component.
             -   [ ] Add email service for successful account creation and password recovery(?).
     -   [ ] Finish Dashboard page to display the fetched data.
-        -   [ ] Add ability to search for an item.
-        -   [ ] Display statistics as a table/graph.
-        -   [ ] Add ability to sort/filter.
+        -   [x] Add ability to search for an item.
+        -   [x] Display statistics as a table/graph.
+        -   [x] Add ability to sort/filter.
         -   [ ] Add button to refresh the data and fetch from MongoDB again.
 
 # Features
