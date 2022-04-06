@@ -73,7 +73,7 @@ const CreateAccount = () => {
     const createAccount = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         axios
-            .post("http://localhost:4000/register", { username: username, password: password, email: optionalEmail })
+            .post("https://granblue-automation-statistics.com/api/register", { username: username, password: password, email: optionalEmail })
             .then((res: AxiosResponse) => {
                 console.log("[GAS] Received success response.")
                 if (res.status === 201) {

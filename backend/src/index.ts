@@ -27,7 +27,7 @@ mongoose.connect(`mongodb+srv://steve1316:${process.env.MONGODB_PASSWORD}@cluste
 const expressPort = 4000
 const app = express()
 app.use(express.json())
-app.use(cors({ origin: "http://localhost:3000", credentials: true }))
+app.use(cors({ origin: ["http://localhost:3000", "https://granblue-automation-statistics.com"], credentials: true })) //
 app.use(
     session({
         secret: "secretcode",

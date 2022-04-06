@@ -8,7 +8,7 @@ export default function Context(props: PropsWithChildren<any>) {
     // Check and retrieve the user if they were logged in.
     useEffect(() => {
         axios
-            .get("http://localhost:4000/user", { withCredentials: true })
+            .get("https://granblue-automation-statistics.com/api/user", { withCredentials: true })
             .then((res: AxiosResponse) => {
                 if (res.data) {
                     console.log("[GAS] Successfully retrieved the logged in user. ", res.data)

@@ -70,7 +70,7 @@ const Login = () => {
         e.preventDefault()
         axios
             .post(
-                "http://localhost:4000/login",
+                "https://granblue-automation-statistics.com/api/login",
                 {
                     username,
                     password,

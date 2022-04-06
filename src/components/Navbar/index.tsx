@@ -75,7 +75,7 @@ const NavBar = () => {
 
     // Log out the user.
     const logout = () => {
-        axios.get("http://localhost:4000/logout", { withCredentials: true }).then((res: AxiosResponse) => {
+        axios.get("https://granblue-automation-statistics.com/api/logout", { withCredentials: true }).then((res: AxiosResponse) => {
             if (res.status === 200) {
                 // This will forcibly reload the page so that conditional rendering can occur for the Navbar.
                 window.location.href = "/"
