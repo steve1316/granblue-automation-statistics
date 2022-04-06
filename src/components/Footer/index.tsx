@@ -79,6 +79,7 @@ const Footer = () => {
             display: "flex",
             alignItems: "center",
             marginBottom: "16px",
+            textAlign: "center",
             fontWeight: "bold",
             "&:hover": {
                 color: "#01bf71",
