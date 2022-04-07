@@ -131,7 +131,7 @@ const Dashboard = () => {
     // Display either all or only the user's results belonging to the search term.
     useEffect(() => {
         if (showOnlyUserResults) {
-            const userResults = results.filter((result) => result.userID === user.username)
+            const userResults = results.filter((result) => result.username === user.username)
             setUserResults(userResults)
         } else {
             setUserResults([])

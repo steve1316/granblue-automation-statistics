@@ -38,11 +38,11 @@ router.post("/api/register", async (req: Request, res: Response) => {
     }
 
     // Check if user already exists.
-    User.findOne({ username }, async (err: Error, doc: UserInterface) => {
+    User.findOne({ username: username }, async (err: Error, doc: UserInterface) => {
         if (err) throw err
 
         if (doc) {
-            res.status(409).send("User ID already exists.")
+            res.status(409).send("Username already exists.")
         } else {
             // Hash the user's password.
             const hashedPassword = await bcrypt.hash(req.body.password, 10)
@@ -89,12 +89,12 @@ router.put("/api/delete-user/:username", isAdminMiddleware, async (req, res) => 
         return
     }
 
-    await User.deleteOne({ userID: username }).exec()
+    await User.deleteOne({ username: username }).exec()
     console.log(`User ${username} has been successfully deleted. Now proceeding to remove all records belonging to them...`)
 
     // Decrement from the totals of items that the user had results for.
     let amountToDelete: { [key: string]: number } = {}
-    await Result.find({ userID: username }, async (err: Error, docs: ResultInterface[]) => {
+    await Result.find({ username: username }, async (err: Error, docs: ResultInterface[]) => {
         if (err) throw err
 
         if (docs) {
@@ -108,7 +108,7 @@ router.put("/api/delete-user/:username", isAdminMiddleware, async (req, res) => 
             })
 
             // Delete all of the user's data.
-            await Result.deleteMany({ userID: username }).exec()
+            await Result.deleteMany({ username: username }).exec()
             console.log(`Deleted records for user ${username}.`)
 
             // Update the amounts of the items affected.

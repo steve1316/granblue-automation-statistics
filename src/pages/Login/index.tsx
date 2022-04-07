@@ -72,8 +72,8 @@ const Login = () => {
             .post(
                 "https://granblue-automation-statistics.com/api/login",
                 {
-                    username,
-                    password,
+                    username: username,
+                    password: password,
                 },
                 {
                     withCredentials: true,
@@ -106,7 +106,7 @@ const Login = () => {
                 <form className={classes.form}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <TextField label="ID" placeholder="Enter your uniquely generated ID" required fullWidth onChange={(e) => setUsername(e.target.value)} />
+                            <TextField label="Username" placeholder="Enter your username" required fullWidth onChange={(e) => setUsername(e.target.value)} />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField label="Password" placeholder="Enter your password" required fullWidth onChange={(e) => setPassword(e.target.value)} />

@@ -1,5 +1,5 @@
 export interface ResultInterface {
-    userID: string
+    username: string
     itemName: string
     amount: number
     platform: string

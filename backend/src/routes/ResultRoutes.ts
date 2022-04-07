@@ -23,14 +23,14 @@ router.post("/api/create-result/:username/:itemName/:platform/:amount", async (r
         return
     }
 
-    await User.findOne({ userID: username }, async (err: Error, doc: UserInterface) => {
+    await User.findOne({ username: username }, async (err: Error, doc: UserInterface) => {
         if (err) throw err
 
         if (doc) {
             // Create the new Result object.
             let date = new Date()
             const newResult = new Result({
-                userID: username,
+                username: username,
                 itemName: itemName,
                 amount: amount,
                 platform: platform,
@@ -62,7 +62,7 @@ router.get("/api/get-result/user/:username", async (req, res) => {
         return
     }
 
-    await Result.find({ userID: username }, (err: Error, docs: ResultInterface[]) => {
+    await Result.find({ username: username }, (err: Error, docs: ResultInterface[]) => {
         if (err) throw err
 
         if (docs) {

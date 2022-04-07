@@ -107,12 +107,12 @@ const CreateAccount = () => {
                     Create Account
                 </Typography>
                 <Typography variant="caption" className={classes.subtitle}>
-                    Please make sure to run GA/GAA for the first time to get your ID
+                    You can use the username and password for GA/GAA after you create your account.
                 </Typography>
                 <form className={classes.form}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <TextField label="ID" placeholder="Enter your uniquely generated ID" required fullWidth onChange={(e) => setUsername(e.target.value)} />
+                            <TextField label="ID" placeholder="Enter your username" required fullWidth onChange={(e) => setUsername(e.target.value)} />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField label="Password" placeholder="Enter your password" required fullWidth onChange={(e) => setPassword(e.target.value)} />
@@ -141,7 +141,7 @@ const CreateAccount = () => {
             {usernameExists ? (
                 <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={5000} onClose={() => handleClose()} key="bottom right">
                     <Alert onClose={() => handleClose()} severity="error">
-                        The ID already exists.
+                        The username already exists.
                     </Alert>
                 </Snackbar>
             ) : null}
