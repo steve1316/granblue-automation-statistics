@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Avatar, Button, Container, Grid, TextField, Typography, FormControlLabel, Checkbox, Theme, Alert, Snackbar } from "@mui/material"
+import { Avatar, Button, Container, Grid, TextField, Typography, Theme, Alert, Snackbar } from "@mui/material"
 import makeStyles from "@mui/styles/makeStyles"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
@@ -116,13 +116,13 @@ const Login = () => {
                         <Button type="submit" variant="contained" color="primary" className={classes.formButton} disabled={!ready} onClick={(e) => login(e)}>
                             Login
                         </Button>
-                        <FormControlLabel className={classes.checkbox} control={<Checkbox />} label="Remember Me" />
+                        {/* <FormControlLabel className={classes.checkbox} control={<Checkbox />} label="Remember Me" /> */}
                     </div>
                 </form>
             </Container>
 
             {loginFailed ? (
-                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={5000} onClose={() => handleClose()} key="bottom right">
+                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
                     <Alert onClose={() => handleClose()} severity="error">
                         Username/Password was incorrect.
                     </Alert>

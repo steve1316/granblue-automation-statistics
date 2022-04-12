@@ -131,7 +131,7 @@ const CreateAccount = () => {
             </Container>
 
             {creationSuccess ? (
-                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={5000} onClose={() => handleClose()} key="bottom right">
+                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
                     <Alert onClose={() => handleClose()} severity="success">
                         Success! You can now log in.
                     </Alert>
@@ -139,7 +139,7 @@ const CreateAccount = () => {
             ) : null}
 
             {usernameExists ? (
-                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={5000} onClose={() => handleClose()} key="bottom right">
+                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
                     <Alert onClose={() => handleClose()} severity="error">
                         The username already exists.
                     </Alert>
