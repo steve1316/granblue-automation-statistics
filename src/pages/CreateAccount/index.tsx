@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { Avatar, Button, Container, Grid, Snackbar, TextField, Theme, Typography } from "@mui/material"
+import { Avatar, Container, Grid, Snackbar, TextField, Theme, Typography } from "@mui/material"
 import MuiAlert, { AlertProps } from "@mui/material/Alert"
 import makeStyles from "@mui/styles/makeStyles"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import axios, { AxiosError, AxiosResponse } from "axios"
+import LoadingButton from "@mui/lab/LoadingButton"
 
 const CreateAccount = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -41,6 +42,7 @@ const CreateAccount = () => {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [optionalEmail, setOptionalEmail] = useState("")
     const [ready, setReady] = useState(false)
+    const [inProgress, setInProgress] = useState(false)
     const [creationSuccess, setCreationSuccess] = useState(false)
     const [usernameExists, setUsernameExists] = useState(false)
     const [open, setOpen] = useState(false)
@@ -72,6 +74,7 @@ const CreateAccount = () => {
     // Create the account via POST request and receive the result whether success or failure.
     const createAccount = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
+        setInProgress(true)
         axios
             .post("https://granblue-automation-statistics.com/api/register", { username: username, password: password, email: optionalEmail })
             .then((res: AxiosResponse) => {
@@ -87,6 +90,9 @@ const CreateAccount = () => {
                     setCreationSuccess(false)
                     setUsernameExists(true)
                 }
+            })
+            .finally(() => {
+                setInProgress(false)
             })
     }
 
@@ -124,9 +130,10 @@ const CreateAccount = () => {
                             <TextField label="Email (optional)" placeholder="Enter your email address (used for account recovery)" fullWidth onChange={(e) => setOptionalEmail(e.target.value)} />
                         </Grid>
                     </Grid>
-                    <Button type="submit" variant="contained" color="primary" disabled={!ready} className={classes.formButton} onClick={(e) => createAccount(e)}>
+
+                    <LoadingButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => createAccount(e)} className={classes.formButton}>
                         Create Account
-                    </Button>
+                    </LoadingButton>
                 </form>
             </Container>
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react"
-import { Avatar, Button, Container, Grid, TextField, Typography, Theme, Alert, Snackbar } from "@mui/material"
+import { Avatar, Container, Grid, TextField, Typography, Theme, Alert, Snackbar } from "@mui/material"
 import makeStyles from "@mui/styles/makeStyles"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
+import LoadingButton from "@mui/lab/LoadingButton"
 
 const Login = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -44,6 +45,7 @@ const Login = () => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [ready, setReady] = useState(false)
+    const [inProgress, setInProgress] = useState(false)
     const [open, setOpen] = useState(false)
     const [loginFailed, setLoginFailed] = useState(false)
 
@@ -68,6 +70,7 @@ const Login = () => {
     // Send a POST request to the Express server to login.
     const login = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
+        setInProgress(true)
         axios
             .post(
                 "https://granblue-automation-statistics.com/api/login",
@@ -85,6 +88,9 @@ const Login = () => {
             })
             .catch(() => {
                 setLoginFailed(true)
+            })
+            .finally(() => {
+                setInProgress(false)
             })
     }
 
@@ -112,12 +118,9 @@ const Login = () => {
                             <TextField label="Password" placeholder="Enter your password" required fullWidth onChange={(e) => setPassword(e.target.value)} />
                         </Grid>
                     </Grid>
-                    <div className={classes.flexDiv}>
-                        <Button type="submit" variant="contained" color="primary" className={classes.formButton} disabled={!ready} onClick={(e) => login(e)}>
-                            Login
-                        </Button>
-                        {/* <FormControlLabel className={classes.checkbox} control={<Checkbox />} label="Remember Me" /> */}
-                    </div>
+                    <LoadingButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => login(e)} className={classes.formButton}>
+                        Login
+                    </LoadingButton>
                 </form>
             </Container>
 
