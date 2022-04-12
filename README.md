@@ -28,24 +28,24 @@ Information collected by Granblue Automation Statistics do not contain any perso
         -   [x] Create route to fetch result(s) for an item, either all results or results belonging to your user id.
         -   [x] Create route to create an item if it does not already exist.
         -   [x] Create route to check if user id exists when attempting to generate a unique user id.
-    -   [ ] Add support for Granblue Automation.
-        -   [ ] Add feature to opt-in and then provide a button to generate a unique user id for you.
+    -   [x] Add support for Granblue Automation.
+        -   [x] Add feature to opt-in and then provide a button to generate a unique user id for you.
     -   [ ] Add support for Granblue Automation Android.
         -   [ ] Add feature to opt-in and then provide a button to generate a unique user id for you.
 
--   [ ] Frontend
+-   [x] Frontend
 
     -   [x] Finish Home page.
-    -   [ ] Finish Gateway page.
+    -   [x] Finish Gateway page.
         -   [x] Complete Login component.
         -   [x] Complete Create Account component.
-        -   [ ] Complete Password Recovery component.
-            -   [ ] Add email service for successful account creation and password recovery(?).
-    -   [ ] Finish Dashboard page to display the fetched data.
+        -   [x] Complete Password Recovery component.
+            -   [x] Add email service for successful account creation and password recovery(?).
+    -   [x] Finish Dashboard page to display the fetched data.
         -   [x] Add ability to search for an item.
         -   [x] Display statistics as a table/graph.
         -   [x] Add ability to sort/filter.
-        -   [ ] Add button to refresh the data and fetch from MongoDB again.
+        -   [x] ~~Add button to refresh the data and fetch from MongoDB again.~~
 
 # Features
 
