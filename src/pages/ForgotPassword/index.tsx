@@ -93,7 +93,7 @@ const ForgotPassword = () => {
         setInProgress(true)
 
         axios
-            .post("http://localhost:4000/api/forgot-password", {
+            .post("https://granblue-automation-statistics.com/api/forgot-password", {
                 recoveryEntryPoint: recoveryEntryPoint,
             })
             .then(() => {

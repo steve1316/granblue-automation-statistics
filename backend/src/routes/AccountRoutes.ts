@@ -179,7 +179,7 @@ router.post("/api/forgot-password", (req, res) => {
             })
 
             // Construct the link and the body of the email.
-            const link = `http://localhost:3000/reset-password/${doc.username}/${token}`
+            const link = `https://granblue-automation-statistics.com/reset-password/${doc.username}/${token}`
             const body = `Hello ${doc.username},
 
 There was a request to reset your password. You can click the link below to change your password or disregard this email if you did not make this request.

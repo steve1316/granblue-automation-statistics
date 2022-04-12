@@ -93,7 +93,7 @@ const ResetPassword = () => {
     const verifyToken = () => {
         // Verify the jwt token.
         axios
-            .get(`http://localhost:4000/api/verify-token/${username}/${token}`)
+            .get(`https://granblue-automation-statistics.com/api/verify-token/${username}/${token}`)
             .then(() => {})
             .catch(() => {
                 setExpired(true)
@@ -106,7 +106,7 @@ const ResetPassword = () => {
         setInProgress(true)
 
         axios
-            .post("http://localhost:4000/api/reset-password", {
+            .post("https://granblue-automation-statistics.com/api/reset-password", {
                 username: username,
                 newPassword: newPassword,
             })
