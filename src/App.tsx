@@ -7,6 +7,8 @@ import Gateway from "./pages/Gateway"
 import { UserContext } from "./context/UserContext"
 import { useContext } from "react"
 import Dashboard from "./pages/Dashboard"
+import ForgotPassword from "./pages/ForgotPassword"
+import ResetPassword from "./pages/ResetPassword"
 
 function App() {
     const user = useContext(UserContext)
@@ -21,6 +23,10 @@ function App() {
                 <Route path="/gateway" exact>
                     {user ? <Redirect to="/dashboard" /> : <Gateway />}
                 </Route>
+                <Route path="/forgot-password" exact>
+                    {user ? <Redirect to="/dashboard" /> : <ForgotPassword />}
+                </Route>
+                <Route path="/reset-password/:username/:token">{user ? <Redirect to="/dashboard" /> : <ResetPassword />}</Route>
                 <Route path={["/dashboard"]} component={Dashboard} exact>
                     {user ? <Dashboard /> : <Redirect to="/gateway" />}
                 </Route>

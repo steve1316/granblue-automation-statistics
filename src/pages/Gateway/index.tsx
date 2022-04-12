@@ -5,6 +5,7 @@ import svgGatewayBackground1 from "../../assets/images/svgGatewayBackground1.svg
 import svgGatewayBackground2 from "../../assets/images/svgGatewayBackground2.svg"
 import CreateAccount from "../CreateAccount"
 import Login from "../Login"
+import { Link } from "react-router-dom"
 
 const Gateway = () => {
     const [tabValue, setTabValue] = useState(1)
@@ -86,8 +87,9 @@ const Gateway = () => {
                 <div style={{ height: "80%", overflowY: "auto" }}>{tabValue === 1 ? <Login /> : <CreateAccount />}</div>
 
                 <AppBar position="static" color="default" className={classes.bottomBar}>
-                    {/* TODO: Create Forgot Password functionality here. */}
-                    <p className={classes.bottomDiv}>Forgot password? Click here</p>
+                    <p className={classes.bottomDiv}>
+                        Forgot password?&nbsp;<Link to="/forgot-password">Click here</Link>
+                    </p>
                 </AppBar>
             </Paper>
         </section>
