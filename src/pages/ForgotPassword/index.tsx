@@ -119,7 +119,7 @@ const ForgotPassword = () => {
                         Forgot Password
                     </Typography>
 
-                    {!requestSent ? (
+                    {requestSent ? (
                         <Stack sx={{ height: "100%" }} justifyContent={"center"}>
                             <Typography component="p" variant="body1" sx={{ textAlign: "center" }}>
                                 An email with a password reset link has been sent. Please check your spam folder if it did not arrive in your inbox.
