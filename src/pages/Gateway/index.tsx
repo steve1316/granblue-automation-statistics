@@ -35,6 +35,9 @@ const Gateway = () => {
                 height: 650,
                 width: "80%",
             },
+            [theme.breakpoints.down("sm")]: {
+                marginTop: "30%",
+            },
         },
         tabBar: {
             borderTopLeftRadius: 25,
