@@ -25,17 +25,31 @@ mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MO
 ////////////////////
 // Middleware
 const app = express()
+
+// Parse incoming data.
 app.use(express.json())
-app.use(cors({ origin: ["http://localhost:3000", "https://granblue-automation-statistics.com", "https://tauri.localhost"], credentials: true })) //
+
+// CORS middleware.
+app.use(cors({ origin: ["http://localhost:3000", "https://granblue-automation-statistics.com", "https://tauri.localhost"], credentials: true }))
+const oneDaySession = 1000 * 60 * 60 * 24 // In milliseconds.
+
+// Session middleware.
 app.use(
     session({
-        secret: "secretcode",
-        resave: true,
-        saveUninitialized: true,
+        secret: process.env.EXPRESS_SESSION_SECRET ? process.env.EXPRESS_SESSION_SECRET : "devEnvironmentSecret",
+        resave: false,
+        saveUninitialized: false,
+        cookie: { maxAge: oneDaySession },
     })
 )
+
+// Allows server to save, read and access a cookie.
 app.use(cookieParser())
+
+// Initialize passport authentication.
 app.use(passport.initialize())
+
+// Persist passport sessions.
 app.use(passport.session())
 
 ////////////////////
