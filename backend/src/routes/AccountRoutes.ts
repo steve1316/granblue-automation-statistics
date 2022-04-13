@@ -8,8 +8,21 @@ import Item from "../schemas/Item"
 import Result from "../schemas/Result"
 import jwt from "jsonwebtoken"
 import nodemailer from "nodemailer"
+import axios from "axios"
 
 const router: Router = express.Router()
+
+// This workaround method is only for the use of Tauri to work around the fact that the headers are stripped in the response when Tauri receives it from the server.
+const authenticationWorkaround = async (username: string, password: string) => {
+    await axios
+        .post("http://localhost:4000/api/login", { username: username, password: password }, { withCredentials: true })
+        .then(() => {
+            return true
+        })
+        .catch(() => {
+            return false
+        })
+}
 
 // This middleware makes sure that user is an admin before continuing executing the route.
 const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -70,11 +83,14 @@ router.post("/api/login", passport.authenticate("local"), (req, res) => {
 
 // GET route to get the logged in user.
 router.get("/api/user", (req, res) => {
-    if (req.isAuthenticated()) {
-        res.status(200).send(req.user)
-    } else {
-        res.status(401).send("Not Authenticated.")
+    if (!req.isAuthenticated()) {
+        if (!authenticationWorkaround) {
+            res.status(401).send("Not Authenticated.")
+            return
+        }
     }
+
+    res.status(200).send(req.user)
 })
 
 // GET route to fetch a user by their username.

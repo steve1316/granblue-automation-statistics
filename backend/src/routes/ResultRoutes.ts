@@ -1,3 +1,4 @@
+import axios from "axios"
 import express, { Router } from "express"
 import { ResultInterface } from "../interfaces/ResultInterface"
 import { UserInterface } from "../interfaces/UserInterface"
@@ -7,11 +8,25 @@ import User from "../schemas/User"
 
 const router: Router = express.Router()
 
+// This workaround method is only for the use of Tauri to work around the fact that the headers are stripped in the response when Tauri receives it from the server.
+const authenticationWorkaround = async (username: string, password: string) => {
+    await axios
+        .post("http://localhost:4000/api/login", { username: username, password: password }, { withCredentials: true })
+        .then(() => {
+            return true
+        })
+        .catch(() => {
+            return false
+        })
+}
+
 // POST route to create a new result for an item. The bot at this point has already checked if the item exists before calling this.
 router.post("/api/create-result/:username/:itemName/:platform/:amount", async (req, res) => {
     if (!req.isAuthenticated()) {
-        res.status(401).send("Not Authenticated.")
-        return
+        if (!authenticationWorkaround) {
+            res.status(401).send("Not Authenticated.")
+            return
+        }
     }
 
     const { username, itemName, platform, amount } = req.params
@@ -52,8 +67,10 @@ router.post("/api/create-result/:username/:itemName/:platform/:amount", async (r
 // GET route to fetch multiple results via user ID.
 router.get("/api/get-result/user/:username", async (req, res) => {
     if (!req.isAuthenticated()) {
-        res.status(401).send("Not Authenticated.")
-        return
+        if (!authenticationWorkaround) {
+            res.status(401).send("Not Authenticated.")
+            return
+        }
     }
 
     const { username } = req.params
@@ -76,8 +93,10 @@ router.get("/api/get-result/user/:username", async (req, res) => {
 // GET route to fetch multiple results via the item name.
 router.get("/api/get-result/item/:itemName", async (req, res) => {
     if (!req.isAuthenticated()) {
-        res.status(401).send("Not Authenticated.")
-        return
+        if (!authenticationWorkaround) {
+            res.status(401).send("Not Authenticated.")
+            return
+        }
     }
 
     const { itemName } = req.params
@@ -100,8 +119,10 @@ router.get("/api/get-result/item/:itemName", async (req, res) => {
 // GET route to fetch multiple results via the Farming Mode.
 router.get("/api/get-result/farmingMode/:farmingMode", async (req, res) => {
     if (!req.isAuthenticated()) {
-        res.status(401).send("Not Authenticated.")
-        return
+        if (!authenticationWorkaround) {
+            res.status(401).send("Not Authenticated.")
+            return
+        }
     }
 
     const { farmingMode } = req.params
