@@ -84,7 +84,8 @@ router.post("/api/login", passport.authenticate("local"), (req, res) => {
 // GET route to get the logged in user.
 router.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) {
-        if (!authenticationWorkaround) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send("Not Authenticated.")
             return
         }

@@ -20,7 +20,8 @@ const authenticationWorkaround = async (username: string, password: string) => {
 // POST route to create an item if it does not already exist.
 router.post("/api/create-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
     if (!req.isAuthenticated()) {
-        if (!authenticationWorkaround) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send("Not Authenticated.")
             return
         }
@@ -54,7 +55,8 @@ router.post("/api/create-item/farmingMode/:farmingMode/:itemName", async (req, r
 // GET route to fetch multiple items via the Farming Mode.
 router.get("/api/get-item/farmingMode/:farmingMode", async (req, res) => {
     if (!req.isAuthenticated()) {
-        if (!authenticationWorkaround) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send("Not Authenticated.")
             return
         }
@@ -80,7 +82,8 @@ router.get("/api/get-item/farmingMode/:farmingMode", async (req, res) => {
 // GET route to fetch an item via the item name.
 router.get("/api/get-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
     if (!req.isAuthenticated()) {
-        if (!authenticationWorkaround) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send("Not Authenticated.")
             return
         }

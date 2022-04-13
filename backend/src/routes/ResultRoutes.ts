@@ -23,7 +23,8 @@ const authenticationWorkaround = async (username: string, password: string) => {
 // POST route to create a new result for an item. The bot at this point has already checked if the item exists before calling this.
 router.post("/api/create-result/:username/:farmingMode/:itemName/:platform/:amount", async (req, res) => {
     if (!req.isAuthenticated()) {
-        if (!authenticationWorkaround) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send("Not Authenticated.")
             return
         }
@@ -79,7 +80,8 @@ router.post("/api/create-result/:username/:farmingMode/:itemName/:platform/:amou
 // GET route to fetch multiple results via user ID.
 router.get("/api/get-result/user/:username", async (req, res) => {
     if (!req.isAuthenticated()) {
-        if (!authenticationWorkaround) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send("Not Authenticated.")
             return
         }
@@ -105,7 +107,8 @@ router.get("/api/get-result/user/:username", async (req, res) => {
 // GET route to fetch multiple results via the item name.
 router.get("/api/get-result/item/:itemName", async (req, res) => {
     if (!req.isAuthenticated()) {
-        if (!authenticationWorkaround) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send("Not Authenticated.")
             return
         }
@@ -131,7 +134,8 @@ router.get("/api/get-result/item/:itemName", async (req, res) => {
 // GET route to fetch multiple results via the Farming Mode.
 router.get("/api/get-result/farmingMode/:farmingMode", async (req, res) => {
     if (!req.isAuthenticated()) {
-        if (!authenticationWorkaround) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send("Not Authenticated.")
             return
         }
