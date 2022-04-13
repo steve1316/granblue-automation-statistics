@@ -118,7 +118,7 @@ const Dashboard = () => {
     useEffect(() => {
         if (searchSubmission) {
             if (search.indexOf("Farming Mode") !== -1) {
-                const newSearch = search.slice(0, search.indexOf("Farming Mode"))
+                const newSearch = search.slice(0, search.indexOf("Farming Mode")).trim()
                 console.log("Searching results for the Farming Mode: ", newSearch)
                 getFarmingModeResults(newSearch)
             } else {
