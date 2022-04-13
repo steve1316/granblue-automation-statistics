@@ -21,7 +21,7 @@ const authenticationWorkaround = async (username: string, password: string) => {
 }
 
 // POST route to create a new result for an item. The bot at this point has already checked if the item exists before calling this.
-router.post("/api/create-result/:username/:itemName/:platform/:amount", async (req, res) => {
+router.post("/api/create-result/:username/:farmingMode/:itemName/:platform/:amount", async (req, res) => {
     if (!req.isAuthenticated()) {
         if (!authenticationWorkaround) {
             res.status(401).send("Not Authenticated.")
@@ -29,8 +29,19 @@ router.post("/api/create-result/:username/:itemName/:platform/:amount", async (r
         }
     }
 
-    const { username, itemName, platform, amount } = req.params
-    if (!username || !itemName || !platform || !amount || typeof username !== "string" || typeof itemName !== "string" || typeof platform !== "string" || typeof amount !== "string") {
+    const { username, farmingMode, itemName, platform, amount } = req.params
+    if (
+        !username ||
+        !farmingMode ||
+        !itemName ||
+        !platform ||
+        !amount ||
+        typeof username !== "string" ||
+        typeof farmingMode !== "string" ||
+        typeof itemName !== "string" ||
+        typeof platform !== "string" ||
+        typeof amount !== "string"
+    ) {
         res.status(400).send("Improper values for parameters.")
         return
     } else if (Number(amount) === NaN) {
@@ -49,6 +60,7 @@ router.post("/api/create-result/:username/:itemName/:platform/:amount", async (r
                 itemName: itemName,
                 amount: amount,
                 platform: platform,
+                farmingMode: farmingMode,
                 date: `${date.getUTCMonth() + 1}.${date.getUTCDate()}.${date.getUTCFullYear()}`,
             })
 
