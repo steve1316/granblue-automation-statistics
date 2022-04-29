@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import { Avatar, Container, Grid, TextField, Typography, Theme, Alert, Snackbar, Paper, Stack } from "@mui/material"
 import makeStyles from "@mui/styles/makeStyles"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
@@ -6,6 +6,7 @@ import axios from "axios"
 import svgGatewayBackground2 from "../../assets/images/svgGatewayBackground2.svg"
 import { useParams } from "react-router-dom"
 import LoadingButton from "@mui/lab/LoadingButton"
+import { UserContext } from "../../context/UserContext"
 
 const ResetPassword = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -57,6 +58,8 @@ const ResetPassword = () => {
 
     const classes = useStyles()
 
+    const entryPoint: string = useContext(UserContext).entryPoint
+
     const [newPassword, setNewPassword] = useState("")
     const [confirmNewPassword, setConfirmNewPassword] = useState("")
     const [open, setOpen] = useState(false)
@@ -90,23 +93,22 @@ const ResetPassword = () => {
         setFailed(false)
     }
 
+    // Verify the jwt token.
     const verifyToken = () => {
-        // Verify the jwt token.
         axios
-            .get(`https://granblue-automation-statistics.com/api/verify-token/${username}/${token}`)
+            .get(`${entryPoint}/api/verify-token/${username}/${token}`)
             .then(() => {})
             .catch(() => {
                 setExpired(true)
             })
     }
 
+    // Send the request to the API.
     const sendPasswordResetRequest = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
-
         setInProgress(true)
-
         axios
-            .post("https://granblue-automation-statistics.com/api/reset-password", {
+            .post(`${entryPoint}/api/reset-password`, {
                 username: username,
                 newPassword: newPassword,
             })

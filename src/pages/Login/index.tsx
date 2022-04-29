@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import { Avatar, Container, Grid, IconButton, InputAdornment, TextField, Typography, Theme, Alert, Snackbar } from "@mui/material"
 import makeStyles from "@mui/styles/makeStyles"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
 import LoadingButton from "@mui/lab/LoadingButton"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
+import { UserContext } from "../../context/UserContext"
 
 const Login = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -43,6 +44,8 @@ const Login = () => {
 
     const classes = useStyles()
 
+    const entryPoint: string = useContext(UserContext).entryPoint
+
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
@@ -75,7 +78,7 @@ const Login = () => {
         setInProgress(true)
         axios
             .post(
-                "https://granblue-automation-statistics.com/api/login",
+                `${entryPoint}/api/login`,
                 {
                     username: username,
                     password: password,

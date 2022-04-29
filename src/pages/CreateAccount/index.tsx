@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Avatar, ClickAwayListener, Container, Grid, IconButton, InputAdornment, Snackbar, TextField, Theme, Typography } from "@mui/material"
 import MuiAlert, { AlertProps } from "@mui/material/Alert"
 import makeStyles from "@mui/styles/makeStyles"
@@ -7,6 +7,7 @@ import axios, { AxiosError, AxiosResponse } from "axios"
 import LoadingButton from "@mui/lab/LoadingButton"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import PasswordChecklist from "react-password-checklist"
+import { UserContext } from "../../context/UserContext"
 
 const CreateAccount = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -38,6 +39,8 @@ const CreateAccount = () => {
     }))
 
     const classes = useStyles()
+
+    const entryPoint: string = useContext(UserContext).entryPoint
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -80,7 +83,7 @@ const CreateAccount = () => {
         e.preventDefault()
         setInProgress(true)
         axios
-            .post("https://granblue-automation-statistics.com/api/register", { username: username, password: password, email: optionalEmail })
+            .post(`${entryPoint}/api/register`, { username: username, password: password, email: optionalEmail })
             .then((res: AxiosResponse) => {
                 console.log("[GAS] Received success response.")
                 if (res.status === 201) {

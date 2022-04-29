@@ -68,7 +68,8 @@ const Dashboard = () => {
 
     const classes = useStyles()
 
-    const user: UserInterface = useContext(UserContext)
+    const uc = useContext(UserContext)
+    const user: UserInterface = uc.user
 
     const [search, setSearch] = useState("")
     const [availableSearchTerms, setAvailableSearchTerms] = useState<string[]>([])
@@ -140,7 +141,7 @@ const Dashboard = () => {
 
     const getFarmingModeResults = (farmingMode: string) => {
         axios
-            .get(`https://granblue-automation-statistics.com/api/get-result/farmingMode/${farmingMode}`, { withCredentials: true })
+            .get(`${uc.entryPoint}/api/get-result/farmingMode/${farmingMode}`, { withCredentials: true })
             .then((data) => {
                 setResults(data.data)
             })
@@ -155,7 +156,7 @@ const Dashboard = () => {
     // Get all results for this item from the search term.
     const getItemResults = (itemName: string) => {
         axios
-            .get(`https://granblue-automation-statistics.com/api/get-result/item/${itemName}`, { withCredentials: true })
+            .get(`${uc.entryPoint}/api/get-result/item/${itemName}`, { withCredentials: true })
             .then((data) => {
                 setResults(data.data)
             })

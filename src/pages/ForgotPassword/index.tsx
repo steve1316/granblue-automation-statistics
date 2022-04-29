@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import { Avatar, Container, Grid, TextField, Typography, Theme, Alert, Snackbar, Paper, Stack } from "@mui/material"
 import makeStyles from "@mui/styles/makeStyles"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
 import svgGatewayBackground1 from "../../assets/images/svgGatewayBackground1.svg"
 import LoadingButton from "@mui/lab/LoadingButton"
+import { UserContext } from "../../context/UserContext"
 
 const ForgotPassword = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -56,6 +57,8 @@ const ForgotPassword = () => {
 
     const classes = useStyles()
 
+    const entryPoint: string = useContext(UserContext).entryPoint
+
     const [recoveryEntryPoint, setRecoveryEntryPoint] = useState("")
     const [ready, setReady] = useState(false)
     const [open, setOpen] = useState(false)
@@ -93,7 +96,7 @@ const ForgotPassword = () => {
         setInProgress(true)
 
         axios
-            .post("https://granblue-automation-statistics.com/api/forgot-password", {
+            .post(`${entryPoint}/api/forgot-password`, {
                 recoveryEntryPoint: recoveryEntryPoint,
             })
             .then(() => {

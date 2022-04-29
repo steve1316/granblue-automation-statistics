@@ -11,7 +11,7 @@ import ForgotPassword from "./pages/ForgotPassword"
 import ResetPassword from "./pages/ResetPassword"
 
 function App() {
-    const user = useContext(UserContext)
+    const user = useContext(UserContext).user
 
     return (
         <Router>

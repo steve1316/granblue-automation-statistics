@@ -1,14 +1,24 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
-import React, { createContext, PropsWithChildren, useEffect, useState } from "react"
+import React, { createContext, useEffect, useState } from "react"
 
-export const UserContext = createContext<any>({})
-export default function Context(props: PropsWithChildren<any>) {
+interface IProviderProps {
+    user: any
+    entryPoint: string
+}
+
+export const UserContext = createContext<IProviderProps>({} as IProviderProps)
+export const UserContextProvider = ({ children }: any): JSX.Element => {
     const [user, setUser] = useState<any>()
+
+    let entryPoint = "https://granblue-automation-statistics.com"
+    if (process.env.REACT_APP_ENVIRONMENT && process.env.REACT_APP_ENVIRONMENT === "development") {
+        entryPoint = "http://localhost:4000"
+    }
 
     // Check and retrieve the user if they were logged in.
     useEffect(() => {
         axios
-            .get("https://granblue-automation-statistics.com/api/user", { withCredentials: true })
+            .get(`${entryPoint}/api/user`, { withCredentials: true })
             .then((res: AxiosResponse) => {
                 if (res.data) {
                     console.log("[GAS] Successfully retrieved the logged in user. ", res.data)
@@ -18,7 +28,12 @@ export default function Context(props: PropsWithChildren<any>) {
             .catch((err: AxiosError) => {
                 console.error("[GAS] Unable to fetch previously logged in user: ", err.response?.data)
             })
-    }, [])
+    }, [entryPoint])
 
-    return <UserContext.Provider value={user}>{props.children}</UserContext.Provider>
+    const providerValues: IProviderProps = {
+        user,
+        entryPoint,
+    }
+
+    return <UserContext.Provider value={providerValues}>{children}</UserContext.Provider>
 }

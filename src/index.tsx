@@ -3,9 +3,10 @@ import ReactDOM from "react-dom"
 import "./index.css"
 import App from "./App"
 import { ThemeProvider, createTheme, StyledEngineProvider } from "@mui/material/styles"
-import UserContext from "./context/UserContext"
+import { UserContextProvider } from "./context/UserContext"
+import dotenv from "dotenv"
 
-require("dotenv").config()
+dotenv.config()
 
 const theme = createTheme()
 
@@ -13,9 +14,9 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
         <StyledEngineProvider injectFirst>
             <React.StrictMode>
-                <UserContext>
+                <UserContextProvider>
                     <App />
-                </UserContext>
+                </UserContextProvider>
             </React.StrictMode>
         </StyledEngineProvider>
     </ThemeProvider>,

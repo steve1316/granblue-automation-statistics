@@ -6,6 +6,7 @@ import { Link as RouterLink, useHistory } from "react-router-dom"
 import { AssignmentInd, Home, Logout, InsertChart } from "@mui/icons-material"
 import { UserContext } from "../../context/UserContext"
 import axios, { AxiosResponse } from "axios"
+import { UserInterface } from "../../interfaces/UserInterface"
 
 const NavBar = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -58,7 +59,9 @@ const NavBar = () => {
 
     const classes = useStyles()
     const history = useHistory()
-    const user = useContext(UserContext)
+    const uc = useContext(UserContext)
+    const user: UserInterface = uc.user
+    const entryPoint: string = uc.entryPoint
 
     const [scrollNav, setScrollNav] = useState(false)
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -75,7 +78,7 @@ const NavBar = () => {
 
     // Log out the user.
     const logout = () => {
-        axios.get("https://granblue-automation-statistics.com/api/logout", { withCredentials: true }).then((res: AxiosResponse) => {
+        axios.get(`${entryPoint}/api/logout`, { withCredentials: true }).then((res: AxiosResponse) => {
             if (res.status === 200) {
                 // This will forcibly reload the page so that conditional rendering can occur for the Navbar.
                 window.location.href = "/"
