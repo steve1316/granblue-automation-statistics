@@ -6,4 +6,5 @@ export interface ResultInterface {
     mission: string
     platform: string
     date: string
+    elapsedTime: string
 }

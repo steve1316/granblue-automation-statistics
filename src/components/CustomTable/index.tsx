@@ -13,7 +13,7 @@ import FormControlLabel from "@mui/material/FormControlLabel"
 import Switch from "@mui/material/Switch"
 import { ResultInterface } from "../../interfaces/ResultInterface"
 import makeStyles from "@mui/styles/makeStyles"
-import { Theme } from "@mui/material"
+import { Theme, Typography } from "@mui/material"
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -44,6 +44,12 @@ const headCells: readonly HeadCell[] = [
         numeric: false,
         disablePadding: true,
         label: "Date",
+    },
+    {
+        id: "elapsedTime",
+        numeric: false,
+        disablePadding: true,
+        label: "Elapsed Time*",
     },
     {
         id: "itemName",
@@ -123,6 +129,13 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
                 flexDirection: "column",
             },
         },
+        tableFooterNotes: {
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            paddingLeft: "12px",
+            paddingBottom: "12px",
+        },
     }))
 
     const classes = useStyles()
@@ -162,6 +175,7 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
                                             <TableCell component="th" id={labelId} scope="row" padding="none">
                                                 {date}
                                             </TableCell>
+                                            <TableCell>{row.elapsedTime}</TableCell>
                                             <TableCell>{row.itemName}</TableCell>
                                             <TableCell>{row.amount}</TableCell>
                                             <TableCell>{row.farmingMode}</TableCell>
@@ -196,6 +210,11 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
                             setPage(0)
                         }}
                     />
+                </div>
+                <div className={classes.tableFooterNotes}>
+                    <Typography fontSize={12}>
+                        * Time it takes from the start of a run to when the Loot Collection process completes. A time of 0:00:00 means that the result came from a Pending Battle.
+                    </Typography>
                 </div>
             </Paper>
         </Box>

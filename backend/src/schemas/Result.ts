@@ -27,6 +27,9 @@ const result = new mongoose.Schema({
     date: {
         type: String,
     },
+    elapsedTime: {
+        type: String,
+    },
 })
 
 export default mongoose.model("Result", result)

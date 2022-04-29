@@ -19,7 +19,7 @@ router.post("/api/create-result", async (req, res) => {
         }
     }
 
-    const { username, farmingMode, mission, itemName, platform, amount } = req.body
+    const { username, farmingMode, mission, itemName, platform, amount, elapsedTime } = req.body
     if (
         !username ||
         !farmingMode ||
@@ -27,12 +27,14 @@ router.post("/api/create-result", async (req, res) => {
         !itemName ||
         !platform ||
         !amount ||
+        !elapsedTime ||
         typeof username !== "string" ||
         typeof farmingMode !== "string" ||
         typeof mission !== "string" ||
         typeof itemName !== "string" ||
         typeof platform !== "string" ||
-        typeof amount !== "number"
+        typeof amount !== "number" ||
+        typeof elapsedTime !== "string"
     ) {
         res.status(400).send("Improper values for parameters.")
         return
@@ -55,6 +57,7 @@ router.post("/api/create-result", async (req, res) => {
                 farmingMode: farmingMode,
                 mission: mission,
                 date: `${date.toISOString()}`,
+                elapsedTime: elapsedTime,
             })
 
             // Save the new Result to the results collection.
@@ -62,7 +65,7 @@ router.post("/api/create-result", async (req, res) => {
 
             // Now update the total amount for this item.
             await Item.updateOne({ itemName: itemName, farmingMode: farmingMode, mission: mission }, { $inc: { totalAmount: amount } }).exec()
-            console.log(`Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode.`)
+            console.log(`Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode at ${date}.`)
             res.status(201).send(`Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode.`)
         } else {
             res.status(404).send("User does not exist.")
