@@ -54,7 +54,7 @@ router.post("/api/create-result", async (req, res) => {
                 platform: platform,
                 farmingMode: farmingMode,
                 mission: mission,
-                date: `${date.getUTCMonth() + 1}.${date.getUTCDate()}.${date.getUTCFullYear()}`,
+                date: `${date.toISOString()}`,
             })
 
             // Save the new Result to the results collection.
