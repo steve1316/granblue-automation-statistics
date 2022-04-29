@@ -10,7 +10,7 @@ import { authenticationWorkaround } from "./AccountRoutes"
 const router: Router = express.Router()
 
 // POST route to create a new result for an item. The bot at this point has already checked if the item exists before calling this.
-router.post("/api/create-result/:username/:farmingMode/:itemName/:platform/:amount", async (req, res) => {
+router.post("/api/create-result", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
@@ -19,18 +19,20 @@ router.post("/api/create-result/:username/:farmingMode/:itemName/:platform/:amou
         }
     }
 
-    const { username, farmingMode, itemName, platform, amount } = req.params
+    const { username, farmingMode, mission, itemName, platform, amount } = req.body
     if (
         !username ||
         !farmingMode ||
+        !mission ||
         !itemName ||
         !platform ||
         !amount ||
         typeof username !== "string" ||
         typeof farmingMode !== "string" ||
+        typeof mission !== "string" ||
         typeof itemName !== "string" ||
         typeof platform !== "string" ||
-        typeof amount !== "string"
+        typeof amount !== "number"
     ) {
         res.status(400).send("Improper values for parameters.")
         return
@@ -51,6 +53,7 @@ router.post("/api/create-result/:username/:farmingMode/:itemName/:platform/:amou
                 amount: amount,
                 platform: platform,
                 farmingMode: farmingMode,
+                mission: mission,
                 date: `${date.getUTCMonth() + 1}.${date.getUTCDate()}.${date.getUTCFullYear()}`,
             })
 
@@ -58,8 +61,9 @@ router.post("/api/create-result/:username/:farmingMode/:itemName/:platform/:amou
             await newResult.save()
 
             // Now update the total amount for this item.
-            await Item.updateOne({ itemName: itemName }, { $inc: { totalAmount: amount } }).exec()
-            res.status(201).send("Successfully sent the result and updated the total amount.")
+            await Item.updateOne({ itemName: itemName, farmingMode: farmingMode, mission: mission }, { $inc: { totalAmount: amount } }).exec()
+            console.log(`Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode.`)
+            res.status(201).send(`Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode.`)
         } else {
             res.status(404).send("User does not exist.")
         }
