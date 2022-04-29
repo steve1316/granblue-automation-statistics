@@ -49,19 +49,25 @@ const headCells: readonly HeadCell[] = [
         id: "itemName",
         numeric: true,
         disablePadding: false,
-        label: "Item Name",
+        label: "Item",
     },
     {
         id: "amount",
         numeric: true,
         disablePadding: false,
-        label: "Amount",
+        label: "#",
     },
     {
         id: "farmingMode",
         numeric: true,
         disablePadding: false,
         label: "Farming Mode",
+    },
+    {
+        id: "mission",
+        numeric: true,
+        disablePadding: false,
+        label: "Mission",
     },
     {
         id: "platform",
@@ -149,16 +155,17 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
                                     const labelId = `enhanced-table-checkbox-${index}`
-
+                                    const date = new Date(row.date).toLocaleString()
                                     return (
                                         <TableRow hover tabIndex={-1} key={row.itemName + "-" + index}>
                                             <TableCell />
                                             <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                {row.date}
+                                                {date}
                                             </TableCell>
                                             <TableCell>{row.itemName}</TableCell>
                                             <TableCell>{row.amount}</TableCell>
                                             <TableCell>{row.farmingMode}</TableCell>
+                                            <TableCell>{row.mission}</TableCell>
                                             <TableCell>{row.platform}</TableCell>
                                         </TableRow>
                                     )

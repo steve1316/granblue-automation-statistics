@@ -36,10 +36,10 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
     // Process each result in the data and set up the values and labels for the chart.
     data.forEach((result) => {
         // Destructure the date.
-        let splitDate: string[] = result.date.split(".")
-        let month = splitDate[0]
-        let day = splitDate[1]
-        let year = splitDate[2]
+        let date = new Date(result.date)
+        let month = (date.getMonth() + 1).toString()
+        let day = date.getDate().toString()
+        let year = date.getFullYear().toString()
 
         if (newResults[year]) {
             if (newResults[year][month]) {
