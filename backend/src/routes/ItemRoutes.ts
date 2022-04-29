@@ -7,7 +7,7 @@ import { authenticationWorkaround } from "./AccountRoutes"
 const router: Router = express.Router()
 
 // POST route to create an item if it does not already exist.
-router.post("/api/create-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
+router.post("/api/create-item", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
@@ -16,8 +16,8 @@ router.post("/api/create-item/farmingMode/:farmingMode/:itemName", async (req, r
         }
     }
 
-    const { farmingMode, itemName } = req.params
-    if (!farmingMode || !itemName || typeof farmingMode !== "string" || typeof itemName !== "string") {
+    const { farmingMode, mission, itemName } = req.body
+    if (!farmingMode || !mission || !itemName || typeof farmingMode !== "string" || typeof mission !== "string" || typeof itemName !== "string") {
         res.status(400).send("Improper values for parameters.")
         return
     }
@@ -32,11 +32,13 @@ router.post("/api/create-item/farmingMode/:farmingMode/:itemName", async (req, r
             const newItem = new Item({
                 itemName: itemName,
                 farmingMode: farmingMode,
+                mission: mission,
             })
 
             // Save the new Item.
             await newItem.save()
-            res.status(201).send(`Successfully created item ${itemName}.`)
+            console.log(`Successfully created item ${itemName} for ${mission} of ${farmingMode} Farming Mode.`)
+            res.status(201).send(`Successfully created item ${itemName} for ${mission} of ${farmingMode} Farming Mode.`)
         }
     }).clone()
 })
