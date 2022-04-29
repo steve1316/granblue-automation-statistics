@@ -13,7 +13,7 @@ import axios from "axios"
 const router: Router = express.Router()
 
 // This workaround method is only for the use of Tauri to work around the fact that the headers are stripped in the response when Tauri receives it from the server.
-const authenticationWorkaround = async (username: string, password: string) => {
+export const authenticationWorkaround = async (username: string, password: string) => {
     await axios
         .post("http://localhost:4000/api/login", { username: username, password: password }, { withCredentials: true })
         .then(() => {

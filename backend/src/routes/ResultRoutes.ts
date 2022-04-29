@@ -5,20 +5,9 @@ import { UserInterface } from "../interfaces/UserInterface"
 import Item from "../schemas/Item"
 import Result from "../schemas/Result"
 import User from "../schemas/User"
+import { authenticationWorkaround } from "./AccountRoutes"
 
 const router: Router = express.Router()
-
-// This workaround method is only for the use of Tauri to work around the fact that the headers are stripped in the response when Tauri receives it from the server.
-const authenticationWorkaround = async (username: string, password: string) => {
-    await axios
-        .post("http://localhost:4000/api/login", { username: username, password: password }, { withCredentials: true })
-        .then(() => {
-            return true
-        })
-        .catch(() => {
-            return false
-        })
-}
 
 // POST route to create a new result for an item. The bot at this point has already checked if the item exists before calling this.
 router.post("/api/create-result/:username/:farmingMode/:itemName/:platform/:amount", async (req, res) => {
