@@ -9,6 +9,9 @@ const item = new mongoose.Schema({
     farmingMode: {
         type: String,
     },
+    mission: {
+        type: String,
+    },
     totalAmount: {
         type: Number,
         default: 0,

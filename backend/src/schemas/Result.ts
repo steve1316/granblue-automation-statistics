@@ -14,6 +14,9 @@ const result = new mongoose.Schema({
     farmingMode: {
         type: String,
     },
+    mission: {
+        type: String,
+    },
     amount: {
         type: Number,
         default: 1,
