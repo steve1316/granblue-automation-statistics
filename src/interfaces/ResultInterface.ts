@@ -3,6 +3,7 @@ export interface ResultInterface {
     itemName: string
     amount: number
     farmingMode: string
+    mission: string
     platform: string
     date: string
 }
