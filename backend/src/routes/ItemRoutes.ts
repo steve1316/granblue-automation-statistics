@@ -70,6 +70,33 @@ router.get("/api/get-item/farmingMode/:farmingMode", async (req, res) => {
     }).clone()
 })
 
+// GET route to fetch multiple items via the Farming Mode and a specific Mission.
+router.get("/api/get-item/farmingMode/:farmingMode/mission/:mission", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
+            res.status(401).send("Not Authenticated.")
+            return
+        }
+    }
+
+    const { farmingMode, mission } = req.params
+    if (!farmingMode || !mission || typeof farmingMode !== "string" || typeof mission !== "string") {
+        res.status(400).send("Improper values for parameters.")
+        return
+    }
+
+    await Item.find({ farmingMode: farmingMode, mission: mission }, (err: Error, docs: ItemInterface[]) => {
+        if (err) throw err
+
+        if (docs) {
+            res.status(200).send(docs)
+        } else {
+            res.status(200).send(`No Items have been created for ${mission} of Farming Mode ${farmingMode} yet.`)
+        }
+    }).clone()
+})
+
 // GET route to fetch an item via the item name.
 router.get("/api/get-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
     if (!req.isAuthenticated()) {
