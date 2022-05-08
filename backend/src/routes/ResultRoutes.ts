@@ -1,4 +1,3 @@
-import axios from "axios"
 import express, { Router } from "express"
 import { ResultInterface } from "../interfaces/ResultInterface"
 import { UserInterface } from "../interfaces/UserInterface"
@@ -149,7 +148,34 @@ router.get("/api/get-result/farmingMode/:farmingMode", async (req, res) => {
         if (docs) {
             res.status(200).send(docs)
         } else {
-            res.status(200).send(`No results have been posted yet for the Farming Mode: ${farmingMode}.`)
+            res.status(200).send(`No results have been posted yet for ${farmingMode} Farming Mode.`)
+        }
+    }).clone()
+})
+
+// GET route to fetch multiple results via the Farming Mode's Mission.
+router.get("/api/get-result/farmingMode/:farmingMode/mission/:mission", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
+            res.status(401).send("Not Authenticated.")
+            return
+        }
+    }
+
+    const { farmingMode, mission } = req.params
+    if (!farmingMode || !mission || typeof farmingMode !== "string" || typeof mission !== "string") {
+        res.status(400).send("Improper values for parameters.")
+        return
+    }
+
+    await Result.find({ farmingMode: farmingMode, mission: mission }, (err: Error, docs: ResultInterface[]) => {
+        if (err) throw err
+
+        if (docs) {
+            res.status(200).send(docs)
+        } else {
+            res.status(200).send(`No results have been posted yet for ${mission} of ${farmingMode} Farming Mode.`)
         }
     }).clone()
 })
