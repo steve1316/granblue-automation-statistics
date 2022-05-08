@@ -97,4 +97,25 @@ router.get("/api/get-item/farmingMode/:farmingMode/:itemName", async (req, res) 
     }).clone()
 })
 
+// GET route to get all items.
+router.get("/api/get-item", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
+            res.status(401).send("Not Authenticated.")
+            return
+        }
+    }
+
+    await Item.find({}, (err: Error, docs: ItemInterface[]) => {
+        if (err) throw err
+
+        if (docs) {
+            res.status(200).send(docs)
+        } else {
+            res.status(200).send(`No Items found.`)
+        }
+    }).clone()
+})
+
 export default router
