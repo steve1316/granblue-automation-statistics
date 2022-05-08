@@ -1,4 +1,3 @@
-import axios from "axios"
 import express, { Router } from "express"
 import { ItemInterface } from "../interfaces/ItemInterface"
 import Item from "../schemas/Item"
@@ -98,7 +97,7 @@ router.get("/api/get-item/farmingMode/:farmingMode/mission/:mission", async (req
 })
 
 // GET route to fetch an item via the item name.
-router.get("/api/get-item/farmingMode/:farmingMode/:itemName", async (req, res) => {
+router.get("/api/get-item/farmingMode/:farmingMode/item/:itemName", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
