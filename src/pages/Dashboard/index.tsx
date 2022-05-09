@@ -114,7 +114,19 @@ const Dashboard = () => {
 
         // Remove any duplicate items and save it to state.
         setAvailableSearchTerms(Array.from(new Set(searchTerms)))
+
+        // Finally, fetch search term from localStorage if possible.
+        let tempSearch = localStorage.getItem("search")
+        if (tempSearch) {
+            setSearch(JSON.parse(tempSearch))
+            setSearchSubmission(true)
+        }
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        // Save search term to localStorage to persist across refreshes.
+        localStorage.setItem("search", JSON.stringify(search))
+    }, [search])
 
     // Only send the search request after the user's query matches a searchable term.
     useEffect(() => {
