@@ -17,17 +17,23 @@ export const UserContextProvider = ({ children }: any): JSX.Element => {
 
     // Check and retrieve the user if they were logged in.
     useEffect(() => {
-        axios
-            .get(`${entryPoint}/api/user`, { withCredentials: true })
-            .then((res: AxiosResponse) => {
-                if (res.data) {
-                    console.log("[GAS] Successfully retrieved the logged in user. ", res.data)
-                    setUser(res.data)
-                }
-            })
-            .catch((err: AxiosError) => {
-                console.error("[GAS] Unable to fetch previously logged in user: ", err.response?.data)
-            })
+        let tempUser = localStorage.getItem("user")
+        if (tempUser) {
+            setUser(JSON.parse(tempUser))
+        } else {
+            axios
+                .get(`${entryPoint}/api/user`, { withCredentials: true })
+                .then((res: AxiosResponse) => {
+                    if (res.data) {
+                        console.log("[GAS] Successfully retrieved the logged in user. ", res.data)
+                        setUser(res.data)
+                        localStorage.setItem("user", JSON.stringify(res.data))
+                    }
+                })
+                .catch((err: AxiosError) => {
+                    console.error("[GAS] Unable to fetch previously logged in user: ", err.response?.data)
+                })
+        }
     }, [entryPoint])
 
     const providerValues: IProviderProps = {
