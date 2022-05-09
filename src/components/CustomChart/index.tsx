@@ -1,6 +1,7 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement } from "chart.js"
 import { Bar, Line } from "react-chartjs-2"
 import { ResultInterface } from "../../interfaces/ResultInterface"
+import randomColor from "randomcolor"
 
 // Register elements to be used by chartjs.
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend)
@@ -9,13 +10,10 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
     const labels: string[] = []
     const dataValuesGA: number[] = []
     const dataValuesGAA: number[] = []
+    const barGABackgroundColors: string[] = []
+    const barGAABackgroundColors: string[] = []
     var dataValuesIndex = 0
     let newResults: { [key: string]: any } = {}
-
-    // Contains alternate colors for different chart types.
-    const colors: { [key: string]: string[] } = {
-        bar: ["rgba(255, 99, 132, 0.5)", "rgba(53, 162, 235, 0.5)"],
-    }
 
     // Contains the Month names.
     const months: { [key: string]: string } = {
@@ -115,6 +113,8 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
         if (dateFilter === "year") {
             if (labels.indexOf(year) === -1) {
                 labels.push(year)
+                barGABackgroundColors.push(randomColor())
+                barGAABackgroundColors.push(randomColor())
                 dataValuesGA.push(newResults[year].amountGA)
                 dataValuesGAA.push(newResults[year].amountGAA)
                 dataValuesIndex += 1
@@ -125,6 +125,8 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
         } else if (dateFilter === "month") {
             if (labels.indexOf(months[month]) === -1) {
                 labels.push(months[month])
+                barGABackgroundColors.push(randomColor())
+                barGAABackgroundColors.push(randomColor())
                 dataValuesGA.push(newResults[year][month].amountGA)
                 dataValuesGAA.push(newResults[year][month].amountGAA)
                 dataValuesIndex += 1
@@ -135,6 +137,8 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
         } else if (dateFilter === "day") {
             if (labels.indexOf(months[month] + " " + day) === -1) {
                 labels.push(months[month] + " " + day)
+                barGABackgroundColors.push(randomColor())
+                barGAABackgroundColors.push(randomColor())
                 dataValuesGA.push(newResults[year][month][day].amountGA)
                 dataValuesGAA.push(newResults[year][month][day].amountGAA)
                 dataValuesIndex += 1
@@ -162,29 +166,46 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
     }
 
     // Data set with the labels and values to display on the chart.
-    const dataSet = {
+    const barData = {
         labels: labels,
         datasets: [
             {
                 label: "GA",
                 data: dataValuesGA,
-                borderColor: "green",
-                backgroundColor: colors[type] ? colors[type][0] : "white",
+                borderColor: randomColor(),
+                backgroundColor: barGABackgroundColors,
             },
             {
                 label: "GAA",
                 data: dataValuesGAA,
-                borderColor: "red",
-                backgroundColor: colors[type] ? colors[type][1] : "white",
+                borderColor: randomColor(),
+                backgroundColor: barGAABackgroundColors,
+            },
+        ],
+    }
+    const lineData = {
+        labels: labels,
+        datasets: [
+            {
+                label: "GA",
+                data: dataValuesGA,
+                borderColor: randomColor(),
+                backgroundColor: randomColor(),
+            },
+            {
+                label: "GAA",
+                data: dataValuesGAA,
+                borderColor: randomColor(),
+                backgroundColor: randomColor(),
             },
         ],
     }
 
     // Conditional rendering of different chart types.
     if (type === "bar") {
-        return <Bar options={options} data={dataSet} />
+        return <Bar options={options} data={barData} />
     } else if (type === "line") {
-        return <Line options={options} data={dataSet} />
+        return <Line options={options} data={lineData} />
     } else {
         return null
     }

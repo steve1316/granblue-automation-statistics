@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import makeStyles from "@mui/styles/makeStyles"
-import { Autocomplete, Chip, Stack, TextField, Theme } from "@mui/material"
+import { Autocomplete, Chip, Grid, Stack, TextField, Theme } from "@mui/material"
 import { UserContext } from "../../context/UserContext"
 import axios from "axios"
 import { ResultInterface } from "../../interfaces/ResultInterface"
@@ -11,6 +11,7 @@ import match from "autosuggest-highlight/match"
 import parse from "autosuggest-highlight/parse"
 import { UserInterface } from "../../interfaces/UserInterface"
 import data from "../../data/data.json"
+import CustomPie from "../../components/CustomPie"
 
 const Dashboard = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -41,7 +42,7 @@ const Dashboard = () => {
         },
         chartContainer: {
             height: "500px",
-            width: "80%",
+            width: "100%",
             marginTop: "16px",
             marginBottom: "16px",
         },
@@ -207,14 +208,23 @@ const Dashboard = () => {
                 </Stack>
             </div>
 
-            <div className={classes.chartContainer}>
-                <CustomChart
-                    type={chartType}
-                    chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Missing Search Term`}
-                    data={showOnlyUserResults ? userResults : results}
-                    dateFilter={dateFilter}
-                />
-            </div>
+            <Grid container spacing={2} sx={{ width: "80%", display: "flex", justifyContent: "center" }}>
+                <Grid item xs={12} md={6}>
+                    <div className={classes.chartContainer}>
+                        <CustomChart
+                            type={chartType}
+                            chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Missing Search Term`}
+                            data={showOnlyUserResults ? userResults : results}
+                            dateFilter={dateFilter}
+                        />
+                    </div>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <div className={classes.chartContainer}>
+                        <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} dateFilter={dateFilter} />
+                    </div>
+                </Grid>
+            </Grid>
 
             <div className={classes.tableContainer}>
                 <Autocomplete
