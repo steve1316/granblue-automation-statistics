@@ -172,13 +172,11 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
             {
                 label: "GA",
                 data: dataValuesGA,
-                borderColor: randomColor(),
                 backgroundColor: barGABackgroundColors,
             },
             {
                 label: "GAA",
                 data: dataValuesGAA,
-                borderColor: randomColor(),
                 backgroundColor: barGAABackgroundColors,
             },
         ],
@@ -189,13 +187,11 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
             {
                 label: "GA",
                 data: dataValuesGA,
-                borderColor: randomColor(),
                 backgroundColor: randomColor(),
             },
             {
                 label: "GAA",
                 data: dataValuesGAA,
-                borderColor: randomColor(),
                 backgroundColor: randomColor(),
             },
         ],
