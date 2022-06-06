@@ -78,14 +78,19 @@ const NavBar = () => {
 
     // Log out the user.
     const logout = () => {
-        axios.get(`${entryPoint}/api/logout`, { withCredentials: true }).then((res: AxiosResponse) => {
-            if (res.status === 200) {
-                // This will forcibly reload the page so that conditional rendering can occur for the Navbar.
-                window.location.href = "/"
-            } else {
-                console.error("[GAS] Failed to log user out: ", res.data)
-            }
-        })
+        axios
+            .get(`${entryPoint}/api/logout`, { withCredentials: true })
+            .then((res: AxiosResponse) => {
+                if (res.status === 200) {
+                    // This will forcibly reload the page so that conditional rendering can occur for the Navbar.
+                    window.location.href = "/"
+                } else {
+                    console.error("[GAS] Failed to log user out: ", res.data)
+                }
+            })
+            .finally(() => {
+                localStorage.removeItem("user")
+            })
     }
 
     // If user's y-position is greater than the specified offset, allow the page to send the user back to the top of the page.
