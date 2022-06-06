@@ -20,11 +20,13 @@ jobs:
                     git checkout deploy
                     git status
             - name: Pull Changes from main.
+              uses: appleboy/ssh-action@master
               with:
                 script: |
                     git pull origin main
                     git status
             - name: Build and Deploy Changes
+              uses: appleboy/ssh-action@master
               with:
                 script: |
                     yarn build
