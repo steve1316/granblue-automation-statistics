@@ -27,6 +27,8 @@ jobs:
                 key: ${{secrets.DIGITALOCEAN_SECRET}}
                 port: 22
                 script: |
+                    cd deploy
+                    git checkout deploy
                     git pull origin main
                     git status
             - name: Build and Deploy Changes
@@ -37,4 +39,6 @@ jobs:
                 key: ${{secrets.DIGITALOCEAN_SECRET}}
                 port: 22
                 script: |
+                    cd deploy
+                    git checkout deploy
                     yarn build
