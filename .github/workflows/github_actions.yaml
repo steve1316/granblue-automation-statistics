@@ -41,4 +41,8 @@ jobs:
                 script: |
                     cd deploy
                     git checkout deploy
+                    yarn install
+                    cd backend
+                    yarn install
+                    cd ../
                     yarn build
