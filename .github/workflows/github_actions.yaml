@@ -22,11 +22,19 @@ jobs:
             - name: Pull Changes from main.
               uses: appleboy/ssh-action@master
               with:
+                host: 143.198.229.142
+                username: root
+                key: ${{secrets.DIGITALOCEAN_SECRET}}
+                port: 22
                 script: |
                     git pull origin main
                     git status
             - name: Build and Deploy Changes
               uses: appleboy/ssh-action@master
               with:
+                host: 143.198.229.142
+                username: root
+                key: ${{secrets.DIGITALOCEAN_SECRET}}
+                port: 22
                 script: |
                     yarn build
