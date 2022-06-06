@@ -1,0 +1,20 @@
+name: Deployment Workflow
+on:
+    push:
+        branches: [deploy]
+
+jobs:
+    job_one:
+        name: Deploy
+        runs-on: ubuntu-latest
+        steps:
+            - name: Testing SSH connection with server.
+              uses: appleboy/ssh-action@master
+              with:
+                  host: 143.198.229.142
+                  username: root
+                  key: ${{secrets.DIGITALOCEAN_SECRET}}
+                  port: 22
+                  script: |
+                      cd deploy
+                      git status
