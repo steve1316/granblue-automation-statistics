@@ -9,22 +9,22 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Testing SSH connection with server.
-                uses: appleboy/ssh-action@master
-                with:
-                    host: 143.198.229.142
-                    username: root
-                    key: ${{secrets.DIGITALOCEAN_SECRET}}
-                    port: 22
-                    script: |
-                        cd deploy
-                        git checkout deploy
-                        git status
+              uses: appleboy/ssh-action@master
+              with:
+                host: 143.198.229.142
+                username: root
+                key: ${{secrets.DIGITALOCEAN_SECRET}}
+                port: 22
+                script: |
+                    cd deploy
+                    git checkout deploy
+                    git status
             - name: Pull Changes from main.
-                with:
-                    script: |
-                        git pull origin main
-                        git status
+              with:
+                script: |
+                    git pull origin main
+                    git status
             - name: Build and Deploy Changes
-                with:
-                    script: |
-                        yarn build
+              with:
+                script: |
+                    yarn build
