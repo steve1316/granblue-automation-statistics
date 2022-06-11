@@ -5,6 +5,7 @@ import Item from "../schemas/Item"
 import Result from "../schemas/Result"
 import User from "../schemas/User"
 import { authenticationWorkaround } from "./AccountRoutes"
+import fetch from "cross-fetch"
 
 const router: Router = express.Router()
 
@@ -17,6 +18,30 @@ router.post("/api/create-result", async (req, res) => {
             return
         }
     }
+
+    const { appVersion } = req.body
+    if (appVersion) {
+        await fetch("https://raw.githubusercontent.com/steve1316/granblue-automation-pyautogui/main/src-tauri/update.json")
+            .then((jsonRes) => {
+                if (jsonRes.status !== 200) {
+                    res.status(400).send(`Cannot fetch current App version due to status code ${jsonRes.status}.`)
+                    return
+                }
+
+                jsonRes.json().then((data) => {
+                    if (appVersion !== data.version) {
+                        res.status(400).send("Wrong App version.")
+                        return
+                    }
+                })
+            })
+            .catch((err) => {
+                res.status(400).send(`Cannot fetch current App version using link with error: ${err}`)
+                return
+            })
+    }
+
+    return
 
     const { username, farmingMode, mission, itemName, platform, amount, elapsedTime } = req.body
     if (
