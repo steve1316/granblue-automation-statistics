@@ -41,8 +41,6 @@ router.post("/api/create-result", async (req, res) => {
             })
     }
 
-    return
-
     const { username, farmingMode, mission, itemName, platform, amount, elapsedTime } = req.body
     if (
         !username ||
