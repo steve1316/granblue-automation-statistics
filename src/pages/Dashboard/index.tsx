@@ -80,6 +80,7 @@ const Dashboard = () => {
     const [chartType, setChartType] = useState("line")
     const [dateFilter, setDateFilter] = useState("month")
     const [showOnlyUserResults, setShowOnlyUserResults] = useState(false)
+    const [showMissionsInsteadOfItems, setShowMissionsInsteadOfItems] = useState(false)
 
     // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
@@ -217,6 +218,14 @@ const Dashboard = () => {
                         icon={showOnlyUserResults ? <Done /> : undefined}
                         variant={showOnlyUserResults ? "filled" : "outlined"}
                     />
+
+                    <Chip
+                        label="Show missions instead of items"
+                        color="primary"
+                        onClick={() => setShowMissionsInsteadOfItems(!showMissionsInsteadOfItems)}
+                        icon={showMissionsInsteadOfItems ? <Done /> : undefined}
+                        variant={showMissionsInsteadOfItems ? "filled" : "outlined"}
+                    />
                 </Stack>
             </div>
 
@@ -233,7 +242,7 @@ const Dashboard = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <div className={classes.chartContainer}>
-                        <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} dateFilter={dateFilter} />
+                        <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} dateFilter={dateFilter} showOnlyMissions={showMissionsInsteadOfItems} />
                     </div>
                 </Grid>
             </Grid>
