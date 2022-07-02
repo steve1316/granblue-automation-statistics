@@ -95,8 +95,8 @@ router.get("/api/user", (req, res) => {
 })
 
 // GET route to fetch a user by their username.
-router.get("/api/get-user", (req, res) => {
-    const { username } = req?.body
+router.get("/api/get-user/:username", (req, res) => {
+    const { username } = req.params
     if (!username || typeof username !== "string") {
         res.status(400).send("Improper values for parameters.")
         return
