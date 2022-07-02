@@ -102,6 +102,11 @@ router.post("/api/create-result", async (req, res) => {
         if (doc) {
             // Create the new Result object.
             let date = new Date()
+            let newElapsedTime = "00:00:00"
+            if (elapsedTime !== "0.0" && elapsedTime !== "0") {
+                newElapsedTime = elapsedTime
+            }
+
             const newResult = new Result({
                 username: username,
                 itemName: itemName,
@@ -110,7 +115,7 @@ router.post("/api/create-result", async (req, res) => {
                 farmingMode: farmingMode,
                 mission: mission,
                 date: `${date.toISOString()}`,
-                elapsedTime: elapsedTime,
+                elapsedTime: newElapsedTime,
             })
 
             // Save the new Result to the results collection.
