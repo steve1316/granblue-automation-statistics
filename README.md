@@ -4,6 +4,13 @@
 
 > https://granblue-automation-statistics.com/
 
+> Checkout the associated projects of [Granblue Automation](https://github.com/steve1316/granblue-automation-pyautogui) and [Granblue Automation Android](https://github.com/steve1316/granblue-automation-android)
+
+<p align="center">
+    <img src="src/assets/images/preview1.png" height="400px" width="700px" />
+    <img src="src/assets/images/preview2.png" height="400px" width="700px" />
+</p>
+
 Granblue Automation Statistics aims to provide users who choose to opt-in valuable information regarding which Farming Modes and Raids have been popular with what and how many item drops the user and others have been getting.
 
 How it works is every time the Loot Collection process detects 1 or more item drops after a run, it will send a POST request to the MongoDB cluster and add a new entry into the specific Item table with the various information such as item name, amount it acquired, and how long it took.
@@ -19,11 +26,6 @@ Information collected by Granblue Automation Statistics do not contain any perso
 -   Create an account to login and use in both GA/GAA to send run results via the website's API.
 -   Displays results in charts for visual representation.
 -   Displays results in a table for easy sort/filter.
-
-# TODO
-
--   [ ] Backend
-    -   [ ] Add support for Granblue Automation Android.
 
 # Build Instructions
 
