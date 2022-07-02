@@ -6,6 +6,7 @@ import Result from "../schemas/Result"
 import User from "../schemas/User"
 import { authenticationWorkaround } from "./AccountRoutes"
 import fetch from "cross-fetch"
+import parser from "xml2json"
 
 const router: Router = express.Router()
 
@@ -20,25 +21,55 @@ router.post("/api/create-result", async (req, res) => {
     }
 
     const { appVersion } = req.body
+    let returnNow = false
     if (appVersion) {
-        await fetch("https://raw.githubusercontent.com/steve1316/granblue-automation-pyautogui/main/src-tauri/update.json")
-            .then((jsonRes) => {
-                if (jsonRes.status !== 200) {
-                    res.status(400).send(`Cannot fetch current App version due to status code ${jsonRes.status}.`)
-                    return
-                }
+        const { platform } = req.body
+        if (platform === "GA") {
+            await fetch("https://raw.githubusercontent.com/steve1316/granblue-automation-pyautogui/main/src-tauri/update.json")
+                .then(async (jsonRes) => {
+                    if (jsonRes.status !== 200) {
+                        res.status(400).send(`Cannot fetch current desktop app version due to status code ${jsonRes.status}.`)
+                        returnNow = true
+                    }
 
-                jsonRes.json().then((data) => {
-                    if (appVersion !== data.version) {
-                        res.status(400).send("Wrong App version.")
-                        return
+                    await jsonRes.json().then((data) => {
+                        if (appVersion !== data.version) {
+                            res.status(401).send("Wrong App version for GA.")
+                            returnNow = true
+                        }
+                    })
+                })
+                .catch((err) => {
+                    res.status(400).send(`Cannot fetch current desktop app version using link with error: ${err}`)
+                    returnNow = true
+                })
+        } else if (platform === "GAA") {
+            await fetch("https://raw.githubusercontent.com/steve1316/granblue-automation-android/main/android/app/update.xml")
+                .then(async (xmlRes) => {
+                    if (xmlRes.status !== 200) {
+                        res.status(400).send(`Cannot fetch current mobile app version due to status code ${xmlRes.status}.`)
+                        returnNow = true
+                    }
+
+                    // Convert XML to JSON object.
+                    let xmlJSONObj = JSON.parse(parser.toJson(await xmlRes.text()))
+                    if (appVersion !== xmlJSONObj["AppUpdater"]["update"]["latestVersion"]) {
+                        res.status(401).send("Wrong App version for GAA.")
+                        returnNow = true
                     }
                 })
-            })
-            .catch((err) => {
-                res.status(400).send(`Cannot fetch current App version using link with error: ${err}`)
-                return
-            })
+                .catch((err) => {
+                    res.status(400).send(`Cannot fetch current mobile app version using link with error: ${err}`)
+                    returnNow = true
+                })
+        } else {
+            res.status(400).send(`API request came from an supported platform.`)
+            returnNow = true
+        }
+    }
+
+    if (returnNow) {
+        return
     }
 
     const { username, farmingMode, mission, itemName, platform, amount, elapsedTime } = req.body
