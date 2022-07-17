@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Box from "@mui/material/Box"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
@@ -140,11 +140,33 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
 
     const classes = useStyles()
 
-    const [order, setOrder] = useState<Order>("asc")
+    const [order, setOrder] = useState<Order>("desc")
     const [orderBy, setOrderBy] = useState<keyof ResultInterface>("date")
     const [page, setPage] = useState(0)
     const [dense, setDense] = useState(false)
     const [rowsPerPage, setRowsPerPage] = useState(5)
+
+    useEffect(() => {
+        let newOrder = localStorage.getItem("order") as Order
+        if (newOrder !== null) {
+            setOrder(newOrder)
+        }
+
+        let newRowsPerPage = localStorage.getItem("rowsPerPage")
+        if (newRowsPerPage !== null) {
+            try {
+                setRowsPerPage(Number.parseInt(newRowsPerPage))
+            } catch {}
+        }
+    }, [])
+
+    useEffect(() => {
+        localStorage.setItem("rowsPerPage", rowsPerPage.toString())
+    }, [rowsPerPage])
+
+    useEffect(() => {
+        localStorage.setItem("order", order.toString())
+    }, [order])
 
     // Adjust the ordering of the column according to the provided property key.
     const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof ResultInterface) => {
