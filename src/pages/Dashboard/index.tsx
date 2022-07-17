@@ -57,6 +57,8 @@ const Dashboard = () => {
         },
     }))
 
+    type Order = "asc" | "desc"
+
     const classes = useStyles()
 
     const uc = useContext(UserContext)
@@ -172,6 +174,36 @@ const Dashboard = () => {
             })
     }
 
+    const getResults = () => {
+        // Get all results for this item from the search term.
+        // Set the values for the order and number of rows shown for search queries involving searching X number of all results.
+        let newOrder = localStorage.getItem("order") as Order
+        if (newOrder !== null) {
+            newOrder = "desc"
+        }
+
+        let temp = localStorage.getItem("rowsPerPage")
+        let newRowsPerPage = 5
+        if (temp !== null) {
+            try {
+                newRowsPerPage = Number.parseInt(temp)
+            } catch {}
+        }
+
+        axios
+            .get(`${uc.entryPoint}/api/get-result?sort=${newOrder}&limit=${newRowsPerPage}`, { withCredentials: true })
+            .then((data) => {
+                setResults(data.data)
+            })
+            .catch(() => {
+                setResults([])
+            })
+            .finally(() => {
+                setSearchSubmission(false)
+                setSearch("")
+            })
+    }
+
     return (
         <section className={classes.root}>
             <div className={classes.container}>
@@ -217,6 +249,16 @@ const Dashboard = () => {
                         variant={showMissionsInsteadOfItems ? "filled" : "outlined"}
                     />
                 </Stack>
+
+                <Stack direction="row" spacing={1} sx={{ marginTop: "16px" }}>
+                    <Chip
+                        label="Search All Results"
+                        color="primary"
+                        onClick={() => getResults()}
+                        icon={showMissionsInsteadOfItems ? <Done /> : undefined}
+                        variant={showMissionsInsteadOfItems ? "filled" : "outlined"}
+                    />
+                </Stack>
             </div>
 
             <Grid container spacing={2} sx={{ width: "80%", display: "flex", justifyContent: "center" }}>
@@ -224,7 +266,7 @@ const Dashboard = () => {
                     <div className={classes.chartContainer}>
                         <CustomChart
                             type={chartType}
-                            chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Missing Search Term`}
+                            chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Showing All Results`}
                             data={showOnlyUserResults ? userResults : results}
                             dateFilter={dateFilter}
                         />
