@@ -188,11 +188,15 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
                 label: "GA",
                 data: dataValuesGA,
                 backgroundColor: randomColor(),
+                fill: true,
+                borderColor: randomColor(),
             },
             {
                 label: "GAA",
                 data: dataValuesGAA,
                 backgroundColor: randomColor(),
+                fill: true,
+                borderColor: randomColor(),
             },
         ],
     }
