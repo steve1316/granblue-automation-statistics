@@ -54,7 +54,6 @@ const NavBar = () => {
             height: "100%",
             width: "250px",
         },
-        drawerIcon: {},
     }))
 
     const classes = useStyles()
@@ -122,7 +121,7 @@ const NavBar = () => {
                         <List>
                             <RouterLink to="/" className={classes.link}>
                                 <ListItem button key="home">
-                                    <ListItemIcon className={classes.drawerIcon}>
+                                    <ListItemIcon>
                                         <Home />
                                     </ListItemIcon>
                                     <ListItemText primary="Home" />
@@ -133,7 +132,7 @@ const NavBar = () => {
                                 <>
                                     <RouterLink to="/dashboard" className={classes.link}>
                                         <ListItem button key="dashboard">
-                                            <ListItemIcon className={classes.drawerIcon}>
+                                            <ListItemIcon>
                                                 <InsertChart />
                                             </ListItemIcon>
                                             <ListItemText primary="Dashboard" />
@@ -142,7 +141,7 @@ const NavBar = () => {
                                     <Divider />
                                     <RouterLink to="/logout" className={classes.link} onClick={() => logout()}>
                                         <ListItem button key="logout">
-                                            <ListItemIcon className={classes.drawerIcon}>
+                                            <ListItemIcon>
                                                 <Logout />
                                             </ListItemIcon>
                                             <ListItemText primary="Logout" />
@@ -152,7 +151,7 @@ const NavBar = () => {
                             ) : (
                                 <RouterLink to="/gateway" className={classes.link}>
                                     <ListItem button key="getstarted">
-                                        <ListItemIcon className={classes.drawerIcon}>
+                                        <ListItemIcon>
                                             <AssignmentInd />
                                         </ListItemIcon>
                                         <ListItemText primary="Get Started" />

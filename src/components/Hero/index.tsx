@@ -74,11 +74,6 @@ const Hero = () => {
                 margin: "0 25px",
             },
         },
-        heroButtonLink: {
-            color: "#fff",
-            textDecoration: "none",
-            fontWeight: "bold",
-        },
     }))
 
     const classes = useStyles()

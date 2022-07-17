@@ -31,15 +31,6 @@ const Login = () => {
             margin: "32px 32px 0 0",
             color: "#000",
         },
-        flexDiv: {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-        },
-        checkbox: {
-            margin: "32px 0 0 0",
-            color: "#000",
-        },
     }))
 
     const classes = useStyles()

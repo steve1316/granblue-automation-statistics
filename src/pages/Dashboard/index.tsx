@@ -36,21 +36,11 @@ const Dashboard = () => {
             fontSize: "40px",
             margin: "16px auto",
         },
-        subtitle: {
-            fontSize: "16px",
-            margin: "16px auto",
-        },
         chartContainer: {
             height: "500px",
             width: "100%",
             marginTop: "16px",
             marginBottom: "16px",
-        },
-        buttonWrapper: {
-            marginTop: "32px",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
         },
         tableContainer: {
             position: "relative",
