@@ -159,10 +159,10 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
     return (
         <Box>
             <Paper sx={{ width: "100%" }}>
-                <TableContainer>
-                    <Table size={dense ? "small" : "medium"}>
+                <TableContainer sx={{ height: 500 }}>
+                    <Table size={dense ? "small" : "medium"} stickyHeader>
                         <EnhancedTableHead order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
-                        <TableBody>
+                        <TableBody sx={{ height: "max-content" }}>
                             {rows
                                 .sort(getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
