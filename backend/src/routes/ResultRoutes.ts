@@ -239,4 +239,49 @@ router.get("/api/get-result/farmingMode/:farmingMode/mission/:mission", async (r
     }).clone()
 })
 
+router.get("/api/get-result", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
+            res.status(401).send("Not Authenticated.")
+            return
+        }
+    }
+
+    let sort = req.query.sort
+    let limit = req.query.limit
+    if (!limit || typeof limit !== "string") {
+        res.status(400).send("Limit parameter needs to be provided.")
+        return
+    }
+
+    if (sort === undefined) {
+        sort = "desc"
+    }
+
+    let newSort = sort === "asc" ? 1 : -1
+
+    let newLimit = 0
+    try {
+        newLimit = Number.parseInt(limit)
+    } catch {
+        res.status(400).send("Failed to convert string parameter to integer number.")
+        return
+    }
+
+    await Result.find()
+        .sort({ _id: newSort })
+        .limit(newLimit)
+        .then((docs: ResultInterface[]) => {
+            if (docs) {
+                res.status(200).send(docs)
+            } else {
+                res.status(200).send(`Failed to get ${newLimit} results sorted ${newSort}.`)
+            }
+        })
+        .catch((error: Error) => {
+            throw error
+        })
+})
+
 export default router
