@@ -135,8 +135,8 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
                 dataValuesGAA[dataValuesIndex - 1] = newResults[year][month].amountGAA
             }
         } else if (dateFilter === "day") {
-            if (labels.indexOf(months[month] + " " + day) === -1) {
-                labels.push(months[month] + " " + day)
+            if (labels.indexOf(months[month] + " " + day + " " + year) === -1) {
+                labels.push(months[month] + " " + day + " " + year)
                 barGABackgroundColors.push(randomColor())
                 barGAABackgroundColors.push(randomColor())
                 dataValuesGA.push(newResults[year][month][day].amountGA)
@@ -148,6 +148,20 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
             }
         }
     })
+
+    // Sort the arrays by date.
+    const allMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    if (dateFilter === "month") {
+        labels.sort((a, b) => {
+            return allMonths.indexOf(a) - allMonths.indexOf(b)
+        })
+    } else if (dateFilter === "day") {
+        labels.sort((a, b) => {
+            return new Date(a).valueOf() - new Date(b).valueOf()
+        })
+    } else if (dateFilter === "year") {
+        labels.sort()
+    }
 
     // Configuration options for customizing the chart.
     const options = {
