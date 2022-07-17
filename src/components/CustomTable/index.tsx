@@ -199,7 +199,7 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
                 <div className={classes.tableFooter}>
                     <FormControlLabel control={<Switch checked={dense} onChange={(e) => setDense(e.target.checked)} />} label="Dense padding" />
                     <TablePagination
-                        rowsPerPageOptions={[5, 10, 25, 50, 100]}
+                        rowsPerPageOptions={[5, 10, 25, 50, 100, 250]}
                         component="div"
                         count={rows.length}
                         rowsPerPage={rowsPerPage}
