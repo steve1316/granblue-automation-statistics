@@ -72,7 +72,6 @@ const Dashboard = () => {
     const [chartType, setChartType] = useState("line")
     const [dateFilter, setDateFilter] = useState("month")
     const [showOnlyUserResults, setShowOnlyUserResults] = useState(false)
-    const [showMissionsInsteadOfItems, setShowMissionsInsteadOfItems] = useState(false)
 
     // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
@@ -80,7 +79,7 @@ const Dashboard = () => {
         window.scrollTo(0, 0)
 
         // Now construct the available search terms by reading the data json file.
-        var searchTerms: string[] = []
+        var searchTerms: string[] = [" "]
         Object.keys(data).forEach((key) => {
             if (
                 key === "Quest" ||
@@ -135,6 +134,8 @@ const Dashboard = () => {
                 const newSearch = search.replace("[Mission] ", "").trim()
                 console.log("Searching results for the Mission: ", newSearch)
                 getMissionResults(newSearch)
+            } else if (search === "" || search === " ") {
+                getAllResults()
             } else {
                 const newSearch = search.replace("[Item] ", "").trim()
                 console.log("Searching results for the Item: ", newSearch)
@@ -196,7 +197,7 @@ const Dashboard = () => {
             })
     }
 
-    const getResults = () => {
+    const getAllResults = () => {
         // Get all results for this item from the search term.
         // Set the values for the order and number of rows shown for search queries involving searching X number of all results.
         let newOrder = localStorage.getItem("order") as Order
@@ -261,16 +262,6 @@ const Dashboard = () => {
                         onClick={() => setShowOnlyUserResults(!showOnlyUserResults)}
                         icon={showOnlyUserResults ? <Done /> : undefined}
                         variant={showOnlyUserResults ? "filled" : "outlined"}
-                    />
-                </Stack>
-
-                <Stack direction="row" spacing={1} sx={{ marginTop: "16px" }}>
-                    <Chip
-                        label="Search All Results"
-                        color="primary"
-                        onClick={() => getResults()}
-                        icon={showMissionsInsteadOfItems ? <Done /> : undefined}
-                        variant={showMissionsInsteadOfItems ? "filled" : "outlined"}
                     />
                 </Stack>
             </div>
