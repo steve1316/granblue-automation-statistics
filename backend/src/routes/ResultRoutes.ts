@@ -239,6 +239,33 @@ router.get("/api/get-result/farmingMode/:farmingMode/mission/:mission", async (r
     }).clone()
 })
 
+// GET route to fetch multiple results via just the Mission.
+router.get("/api/get-result/mission/:mission", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        const { username, password } = req?.body
+        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
+            res.status(401).send("Not Authenticated.")
+            return
+        }
+    }
+
+    const { mission } = req.params
+    if (!mission || typeof mission !== "string") {
+        res.status(400).send("Improper values for parameters.")
+        return
+    }
+
+    await Result.find({ mission: mission }, (err: Error, docs: ResultInterface[]) => {
+        if (err) throw err
+
+        if (docs) {
+            res.status(200).send(docs)
+        } else {
+            res.status(200).send(`No results have been posted yet for the mission: ${mission}.`)
+        }
+    }).clone()
+})
+
 router.get("/api/get-result", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body

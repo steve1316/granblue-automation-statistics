@@ -6,7 +6,7 @@ import randomColor from "randomcolor"
 // Register elements to be used by chartjs.
 ChartJS.register(ArcElement, Title, Tooltip, Legend)
 
-const CustomPie = ({ chartTitle, data, dateFilter, showOnlyMissions }: { chartTitle: string; data: ResultInterface[]; dateFilter: string; showOnlyMissions: boolean | null }) => {
+const CustomPie = ({ chartTitle, data, dateFilter }: { chartTitle: string; data: ResultInterface[]; dateFilter: string }) => {
     const labels: string[] = []
     const values: number[] = []
     const backgroundColors: string[] = []
@@ -70,8 +70,8 @@ const CustomPie = ({ chartTitle, data, dateFilter, showOnlyMissions }: { chartTi
 
         // Now populate the values based on the date filter. If an existing date exists, then replace the value as the sums for that same date were already calculated above.
         if (dateFilter === "year") {
-            if (labels.indexOf(showOnlyMissions ? result.mission : result.itemName) === -1) {
-                labels.push(showOnlyMissions ? result.mission : result.itemName)
+            if (labels.indexOf(result.itemName) === -1) {
+                labels.push(result.itemName)
                 backgroundColors.push(randomColor())
                 values.push(newResults[year].amount)
                 dataValuesIndex += 1
@@ -79,8 +79,8 @@ const CustomPie = ({ chartTitle, data, dateFilter, showOnlyMissions }: { chartTi
                 values[dataValuesIndex - 1] = newResults[year].amount
             }
         } else if (dateFilter === "month") {
-            if (labels.indexOf(showOnlyMissions ? result.mission : result.itemName) === -1) {
-                labels.push(showOnlyMissions ? result.mission : result.itemName)
+            if (labels.indexOf(result.itemName) === -1) {
+                labels.push(result.itemName)
                 backgroundColors.push(randomColor())
                 values.push(newResults[year][month].amount)
                 dataValuesIndex += 1
@@ -88,8 +88,8 @@ const CustomPie = ({ chartTitle, data, dateFilter, showOnlyMissions }: { chartTi
                 values[dataValuesIndex - 1] = newResults[year][month].amount
             }
         } else if (dateFilter === "day") {
-            if (labels.indexOf(showOnlyMissions ? result.mission : result.itemName) === -1) {
-                labels.push(showOnlyMissions ? result.mission : result.itemName)
+            if (labels.indexOf(result.itemName) === -1) {
+                labels.push(result.itemName)
                 backgroundColors.push(randomColor())
                 values.push(newResults[year][month][day].amount)
                 dataValuesIndex += 1

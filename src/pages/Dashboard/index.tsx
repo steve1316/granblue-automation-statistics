@@ -98,11 +98,14 @@ const Dashboard = () => {
                 key === "Generic"
             )
                 Object.entries(data[key]).forEach((missionObj) => {
-                    searchTerms = searchTerms.concat(missionObj[1].items)
+                    searchTerms = searchTerms.concat("[Mission] " + missionObj[0])
+                    missionObj[1].items.forEach((item) => {
+                        searchTerms = searchTerms.concat("[Item] " + item)
+                    })
                 })
 
             // Save the Farming Mode as a search term as well.
-            searchTerms.push(key + " Farming Mode")
+            searchTerms.push("[Farming Mode] " + key)
         })
 
         // Remove any duplicate items and save it to state.
@@ -124,13 +127,18 @@ const Dashboard = () => {
     // Only send the search request after the user's query matches a searchable term.
     useEffect(() => {
         if (searchSubmission) {
-            if (search.indexOf("Farming Mode") !== -1) {
-                const newSearch = search.slice(0, search.indexOf("Farming Mode")).trim()
+            if (search.indexOf("[Farming Mode]") !== -1) {
+                const newSearch = search.replace("[Farming Mode] ", "").trim()
                 console.log("Searching results for the Farming Mode: ", newSearch)
                 getFarmingModeResults(newSearch)
+            } else if (search.indexOf("[Mission]") !== -1) {
+                const newSearch = search.replace("[Mission] ", "").trim()
+                console.log("Searching results for the Mission: ", newSearch)
+                getMissionResults(newSearch)
             } else {
-                console.log("Searching results for the item: ", search)
-                getItemResults(search)
+                const newSearch = search.replace("[Item] ", "").trim()
+                console.log("Searching results for the Item: ", newSearch)
+                getItemResults(newSearch)
             }
         }
     }, [searchSubmission]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -148,6 +156,20 @@ const Dashboard = () => {
     const getFarmingModeResults = (farmingMode: string) => {
         axios
             .get(`${uc.entryPoint}/api/get-result/farmingMode/${farmingMode}`, { withCredentials: true })
+            .then((data) => {
+                setResults(data.data)
+            })
+            .catch(() => {
+                setResults([])
+            })
+            .finally(() => {
+                setSearchSubmission(false)
+            })
+    }
+
+    const getMissionResults = (mission: string) => {
+        axios
+            .get(`${uc.entryPoint}/api/get-result/mission/${mission}`, { withCredentials: true })
             .then((data) => {
                 setResults(data.data)
             })
@@ -240,14 +262,6 @@ const Dashboard = () => {
                         icon={showOnlyUserResults ? <Done /> : undefined}
                         variant={showOnlyUserResults ? "filled" : "outlined"}
                     />
-
-                    <Chip
-                        label="Show missions instead of items"
-                        color="primary"
-                        onClick={() => setShowMissionsInsteadOfItems(!showMissionsInsteadOfItems)}
-                        icon={showMissionsInsteadOfItems ? <Done /> : undefined}
-                        variant={showMissionsInsteadOfItems ? "filled" : "outlined"}
-                    />
                 </Stack>
 
                 <Stack direction="row" spacing={1} sx={{ marginTop: "16px" }}>
@@ -274,7 +288,7 @@ const Dashboard = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <div className={classes.chartContainer}>
-                        <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} dateFilter={dateFilter} showOnlyMissions={showMissionsInsteadOfItems} />
+                        <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} dateFilter={dateFilter} />
                     </div>
                 </Grid>
             </Grid>
