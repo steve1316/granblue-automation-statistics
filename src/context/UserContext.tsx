@@ -13,6 +13,7 @@ export const UserContextProvider = ({ children }: any): JSX.Element => {
     let entryPoint = "https://granblue-automation-statistics.com"
     if (process.env.REACT_APP_ENVIRONMENT && process.env.REACT_APP_ENVIRONMENT === "development") {
         entryPoint = "http://localhost:4000"
+        console.log("This is running in a development environment.")
     }
 
     // Check and retrieve the user if they were logged in.
