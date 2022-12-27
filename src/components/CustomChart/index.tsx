@@ -32,43 +32,98 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
         "12": "December",
     }
 
+    const initialSetup = (resultYear: number = -1) => {
+        let now = new Date()
+        if (dateFilter === "month") {
+            if (firstTimeSetup) {
+                Object.keys(months).forEach((monthKey) => {
+                    // Set up the initial contents of the object for each month.
+                    const newKey = `${resultYear !== -1 ? resultYear : now.getFullYear()}-${monthKey}`
+                    newResults[newKey] = { amountGA: 0, amountGAA: 0 }
+
+                    // Setup the labels object for the chart.
+                    labels.push(months[monthKey])
+                    barGABackgroundColors.push(randomColor())
+                    barGAABackgroundColors.push(randomColor())
+
+                    dataValuesGA.push(newResults[newKey].amountGA)
+                    dataValuesGAA.push(newResults[newKey].amountGAA)
+                })
+
+                firstTimeSetup = false
+            }
+        } else if (dateFilter === "day") {
+            if (firstTimeSetup) {
+                let currentDate = new Date()
+                let currentMonth = currentDate.getMonth() + 1
+
+                // Iterate through the days of the current month until the last day is reached.
+                let iterativeDate = new Date()
+                const totalDaysInCurrentMonth: number = new Date(iterativeDate.getFullYear(), currentMonth, 0).getDate()
+                let days: number[] = []
+                var i = 1
+                while (i <= totalDaysInCurrentMonth) {
+                    days.push(i)
+                    i++
+                }
+
+                // Set up the initial contents of the object for the current month of each day.
+                days.forEach((dayElement) => {
+                    const newKey = `${resultYear !== -1 ? resultYear : now.getFullYear()}-${currentMonth}-${dayElement - 1}`
+                    newResults[newKey] = { amountGA: 0, amountGAA: 0 }
+
+                    // Setup the labels object for the chart.
+                    labels.push(currentMonth + "-" + dayElement)
+                    barGABackgroundColors.push(randomColor())
+                    barGAABackgroundColors.push(randomColor())
+
+                    dataValuesGA.push(newResults[newKey].amountGA)
+                    dataValuesGAA.push(newResults[newKey].amountGAA)
+                })
+
+                firstTimeSetup = false
+            }
+        }
+    }
+
+    if (data.length === 0) {
+        initialSetup()
+    }
+
     // Process each result in the data and set up the values and labels for the chart.
     data.forEach((result) => {
         // Destructure the date.
-        let date = new Date(result.date)
-        let month = date.getMonth() + 1
-        let day = date.getDate()
-        let year = date.getFullYear()
+        let resultDate = new Date(result.date)
+        let resultMonth = resultDate.getMonth() + 1
+        let resultDay = resultDate.getDate() - 1
+        let resultYear = resultDate.getFullYear()
 
         // TODO: Add a year selector in preparation for 2023 and to allow viewing of the previous year's data.
-        if (year === 2022) {
+        if (resultYear === 2022) {
             if (dateFilter === "month") {
-                if (firstTimeSetup) {
-                    Object.keys(months).forEach((monthKey) => {
-                        // Set up the initial contents of the object for each month.
-                        const newKey = `${year}-${monthKey}`
-                        newResults[newKey] = { amountGA: 0, amountGAA: 0 }
-
-                        // Setup the labels object for the chart.
-                        labels.push(months[monthKey])
-                        barGABackgroundColors.push(randomColor())
-                        barGAABackgroundColors.push(randomColor())
-
-                        dataValuesGA.push(newResults[newKey].amountGA)
-                        dataValuesGAA.push(newResults[newKey].amountGAA)
-                    })
-
-                    firstTimeSetup = false
-                }
+                initialSetup(resultYear)
 
                 // Now add the amount value to the month's sum.
-                const newKey = `${year}-${month}`
+                const newKey = `${resultYear}-${resultMonth}`
                 if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
                 else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
 
                 // Finally, set the summed value amount as the data value for the chart.
-                dataValuesGA[month - 1] = newResults[newKey].amountGA
-                dataValuesGAA[month - 1] = newResults[newKey].amountGAA
+                dataValuesGA[resultMonth - 1] = newResults[newKey].amountGA
+                dataValuesGAA[resultMonth - 1] = newResults[newKey].amountGAA
+            } else if (dateFilter === "day") {
+                let currentDate = new Date()
+                let currentMonth = currentDate.getMonth() + 1
+
+                initialSetup(resultYear)
+
+                const newKey = `${resultYear}-${currentMonth}-${resultDay}`
+                if (result.platform === "GA" && currentMonth === resultMonth) newResults[newKey]["amountGA"] += result.amount
+                else if (result.platform === "GAA" && currentMonth === resultMonth) newResults[newKey]["amountGAA"] += result.amount
+
+                // Finally, set the summed value amount as the data value for the chart.
+                dataValuesGA[resultDay] = newResults[newKey].amountGA
+                dataValuesGAA[resultDay] = newResults[newKey].amountGAA
             }
         }
     })
