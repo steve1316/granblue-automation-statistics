@@ -184,8 +184,10 @@ const Dashboard = () => {
 
     // Get all results for this item from the search term.
     const getItemResults = (itemName: string) => {
+        let queryLink = `${uc.entryPoint}/api/get-result/item/${itemName}?sort=asc`
+        if (dateFilter === "day") queryLink += `&dateFilter=${dateFilter}`
         axios
-            .get(`${uc.entryPoint}/api/get-result/item/${itemName}`, { withCredentials: true })
+            .get(queryLink, { withCredentials: true })
             .then((data) => {
                 setResults(data.data)
             })
