@@ -83,6 +83,24 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
 
                 firstTimeSetup = false
             }
+        } else {
+            if (firstTimeSetup) {
+                let currentDate = new Date()
+
+                // Set up the initial contents of the object for the year.
+                const newKey = `${resultYear !== -1 ? resultYear : now.getFullYear()}`
+                newResults[newKey] = { amountGA: 0, amountGAA: 0 }
+
+                // Setup the labels object for the chart.
+                labels.push(currentDate.getFullYear().toString())
+                barGABackgroundColors.push(randomColor())
+                barGAABackgroundColors.push(randomColor())
+
+                dataValuesGA.push(newResults[newKey].amountGA)
+                dataValuesGAA.push(newResults[newKey].amountGAA)
+
+                firstTimeSetup = false
+            }
         }
     }
 
@@ -124,6 +142,17 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
                 // Finally, set the summed value amount as the data value for the chart.
                 dataValuesGA[resultDay] = newResults[newKey].amountGA
                 dataValuesGAA[resultDay] = newResults[newKey].amountGAA
+            } else if (dateFilter === "year") {
+                initialSetup(resultYear)
+
+                const newKey = `${resultYear}`
+                if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
+                else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
+
+                // Finally, set the summed value amount as the data value for the chart.
+                // TODO: Adjust this after implemention of year selector.
+                dataValuesGA[0] = newResults[newKey].amountGA
+                dataValuesGAA[0] = newResults[newKey].amountGAA
             }
         }
     })
