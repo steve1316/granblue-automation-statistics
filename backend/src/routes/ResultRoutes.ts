@@ -91,7 +91,7 @@ router.post("/api/create-result", async (req, res) => {
     ) {
         res.status(400).send("Improper values for parameters.")
         return
-    } else if (Number(amount) === NaN) {
+    } else if (Number.isNaN(Number(amount))) {
         res.status(400).send("Improper value for the item amount.")
         return
     }
@@ -174,15 +174,56 @@ router.get("/api/get-result/item/:itemName", async (req, res) => {
         return
     }
 
-    await Result.find({ itemName: itemName }, (err: Error, docs: ResultInterface[]) => {
-        if (err) throw err
+    let sort = req.query.sort
+    if (sort === undefined) {
+        sort = "desc"
+    }
 
-        if (docs) {
-            res.status(200).send(docs)
-        } else {
-            res.status(200).send(`No results have been posted yet for this item ${itemName}.`)
-        }
-    }).clone()
+    let newSort = sort === "asc" ? 1 : -1
+
+    const { dateFilter } = req.query
+
+    if (dateFilter === "day") {
+        // Create the sorting filter for the date so that the query returns all results of each day of the current month.
+        const now = new Date()
+        const lastDayDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+        const firstDay = `${now.getFullYear()}-${now.getMonth()}-1`
+        const lastDay = `${now.getFullYear()}-${now.getMonth() + 1}-${lastDayDate}`
+
+        await Result.find({
+            itemName: itemName,
+            date: {
+                $gte: firstDay,
+                $lt: lastDay,
+            },
+        })
+            .sort({ _id: newSort })
+            .then((docs: ResultInterface[]) => {
+                if (docs) {
+                    res.status(200).send(docs)
+                } else {
+                    res.status(200).send(`No results have been posted yet for this item ${itemName}.`)
+                }
+            })
+            .catch((error: Error) => {
+                throw error
+            })
+    } else {
+        await Result.find({
+            itemName: itemName,
+        })
+            .sort({ _id: newSort })
+            .then((docs: ResultInterface[]) => {
+                if (docs) {
+                    res.status(200).send(docs)
+                } else {
+                    res.status(200).send(`No results have been posted yet for this item ${itemName}.`)
+                }
+            })
+            .catch((error: Error) => {
+                throw error
+            })
+    }
 })
 
 // GET route to fetch multiple results via the Farming Mode.
