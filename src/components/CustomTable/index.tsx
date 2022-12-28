@@ -143,8 +143,8 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
     const [order, setOrder] = useState<Order>("desc")
     const [orderBy, setOrderBy] = useState<keyof ResultInterface>("date")
     const [page, setPage] = useState(0)
-    const [dense, setDense] = useState(false)
-    const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [dense, setDense] = useState(localStorage.getItem("dense") !== null ? Boolean(localStorage.getItem("dense")) : false)
+    const [rowsPerPage, setRowsPerPage] = useState(100)
 
     useEffect(() => {
         let newOrder = localStorage.getItem("order") as Order
@@ -159,6 +159,10 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
             } catch {}
         }
     }, [])
+
+    useEffect(() => {
+        localStorage.setItem("dense", dense.toString())
+    }, [dense])
 
     useEffect(() => {
         localStorage.setItem("rowsPerPage", rowsPerPage.toString())
