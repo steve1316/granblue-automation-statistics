@@ -299,7 +299,7 @@ const Dashboard = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <div className={classes.chartContainer}>
-                        <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} dateFilter={dateFilter} />
+                        <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} />
                     </div>
                 </Grid>
             </Grid>
