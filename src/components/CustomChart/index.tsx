@@ -12,8 +12,9 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
     const dataValuesGAA: number[] = []
     const barGABackgroundColors: string[] = []
     const barGAABackgroundColors: string[] = []
-    var dataValuesIndex = 0
     let newResults: { [key: string]: any } = {}
+
+    let firstTimeSetup = true
 
     // Contains the Month names.
     const months: { [key: string]: string } = {
@@ -31,120 +32,127 @@ const CustomChart = ({ type, chartTitle, data, dateFilter }: { type: string; cha
         "12": "December",
     }
 
+    const initialSetup = (resultYear: number = -1) => {
+        let now = new Date()
+        if (dateFilter === "month") {
+            if (firstTimeSetup) {
+                Object.keys(months).forEach((monthKey) => {
+                    // Set up the initial contents of the object for each month.
+                    const newKey = `${resultYear !== -1 ? resultYear : now.getFullYear()}-${monthKey}`
+                    newResults[newKey] = { amountGA: 0, amountGAA: 0 }
+
+                    // Setup the labels object for the chart.
+                    labels.push(months[monthKey])
+                    barGABackgroundColors.push(randomColor())
+                    barGAABackgroundColors.push(randomColor())
+
+                    dataValuesGA.push(newResults[newKey].amountGA)
+                    dataValuesGAA.push(newResults[newKey].amountGAA)
+                })
+
+                firstTimeSetup = false
+            }
+        } else if (dateFilter === "day") {
+            if (firstTimeSetup) {
+                let currentDate = new Date()
+                let currentMonth = currentDate.getMonth() + 1
+
+                // Iterate through the days of the current month until the last day is reached.
+                let iterativeDate = new Date()
+                const totalDaysInCurrentMonth: number = new Date(iterativeDate.getFullYear(), currentMonth, 0).getDate()
+                let days: number[] = []
+                var i = 1
+                while (i <= totalDaysInCurrentMonth) {
+                    days.push(i)
+                    i++
+                }
+
+                // Set up the initial contents of the object for the current month of each day.
+                days.forEach((dayElement) => {
+                    const newKey = `${resultYear !== -1 ? resultYear : now.getFullYear()}-${currentMonth}-${dayElement - 1}`
+                    newResults[newKey] = { amountGA: 0, amountGAA: 0 }
+
+                    // Setup the labels object for the chart.
+                    labels.push(currentMonth + "-" + dayElement)
+                    barGABackgroundColors.push(randomColor())
+                    barGAABackgroundColors.push(randomColor())
+
+                    dataValuesGA.push(newResults[newKey].amountGA)
+                    dataValuesGAA.push(newResults[newKey].amountGAA)
+                })
+
+                firstTimeSetup = false
+            }
+        } else {
+            if (firstTimeSetup) {
+                let currentDate = new Date()
+
+                // Set up the initial contents of the object for the year.
+                const newKey = `${resultYear !== -1 ? resultYear : now.getFullYear()}`
+                newResults[newKey] = { amountGA: 0, amountGAA: 0 }
+
+                // Setup the labels object for the chart.
+                labels.push(currentDate.getFullYear().toString())
+                barGABackgroundColors.push(randomColor())
+                barGAABackgroundColors.push(randomColor())
+
+                dataValuesGA.push(newResults[newKey].amountGA)
+                dataValuesGAA.push(newResults[newKey].amountGAA)
+
+                firstTimeSetup = false
+            }
+        }
+    }
+
+    if (data.length === 0) {
+        initialSetup()
+    }
+
     // Process each result in the data and set up the values and labels for the chart.
     data.forEach((result) => {
         // Destructure the date.
-        let date = new Date(result.date)
-        let month = (date.getMonth() + 1).toString()
-        let day = date.getDate().toString()
-        let year = date.getFullYear().toString()
+        let resultDate = new Date(result.date)
+        let resultMonth = resultDate.getMonth() + 1
+        let resultDay = resultDate.getDate() - 1
+        let resultYear = resultDate.getFullYear()
 
-        if (newResults[year]) {
-            if (newResults[year][month]) {
-                if (newResults[year][month][day]) {
-                    // Increment the year, month and day amounts.
-                    if (result.platform === "GA") {
-                        newResults[year]["amountGA"] += result.amount
-                        newResults[year][month]["amountGA"] += result.amount
-                        newResults[year][month][day]["amountGA"] += result.amount
-                    } else if (result.platform === "GAA") {
-                        newResults[year]["amountGAA"] += result.amount
-                        newResults[year][month]["amountGAA"] += result.amount
-                        newResults[year][month][day]["amountGAA"] += result.amount
-                    }
-                } else {
-                    // Day does not exist in object so create it and increment the year and month totals.
-                    if (result.platform === "GA") {
-                        newResults[year][month][day] = {
-                            amountGA: result.amount,
-                            amountGAA: 0,
-                        }
+        // TODO: Add a year selector in preparation for 2023 and to allow viewing of the previous year's data.
+        if (resultYear === 2022) {
+            if (dateFilter === "month") {
+                initialSetup(resultYear)
 
-                        newResults[year]["amountGA"] += result.amount
-                        newResults[year][month]["amountGA"] += result.amount
-                    } else if (result.platform === "GAA") {
-                        newResults[year][month][day] = {
-                            amountGA: 0,
-                            amountGAA: result.amount,
-                        }
+                // Now add the amount value to the month's sum.
+                const newKey = `${resultYear}-${resultMonth}`
+                if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
+                else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
 
-                        newResults[year]["amountGAA"] += result.amount
-                        newResults[year][month]["amountGAA"] += result.amount
-                    }
-                }
-            } else {
-                // Month does not exist in object so create it.
-                newResults[year][month] = {
-                    amountGA: result.platform === "GA" ? result.amount : 0,
-                    amountGAA: result.platform === "GAA" ? result.amount : 0,
-                }
+                // Finally, set the summed value amount as the data value for the chart.
+                dataValuesGA[resultMonth - 1] = newResults[newKey].amountGA
+                dataValuesGAA[resultMonth - 1] = newResults[newKey].amountGAA
+            } else if (dateFilter === "day") {
+                let currentDate = new Date()
+                let currentMonth = currentDate.getMonth() + 1
 
-                // Create the day in object as well.
-                newResults[year][month][day] = {
-                    amountGA: result.platform === "GA" ? result.amount : 0,
-                    amountGAA: result.platform === "GAA" ? result.amount : 0,
-                }
+                initialSetup(resultYear)
 
-                // Now increment the existing total for the year.
-                newResults[year]["amountGA"] += newResults[year][month][day]["amountGA"]
-                newResults[year]["amountGAA"] += newResults[year][month][day]["amountGAA"]
-            }
-        } else {
-            // Year does not exist in object so create it.
-            newResults[year] = {
-                amountGA: result.platform === "GA" ? result.amount : 0,
-                amountGAA: result.platform === "GAA" ? result.amount : 0,
-            }
+                const newKey = `${resultYear}-${currentMonth}-${resultDay}`
+                if (result.platform === "GA" && currentMonth === resultMonth) newResults[newKey]["amountGA"] += result.amount
+                else if (result.platform === "GAA" && currentMonth === resultMonth) newResults[newKey]["amountGAA"] += result.amount
 
-            // Create the month in object as well.
-            newResults[year][month] = {
-                amountGA: result.platform === "GA" ? result.amount : 0,
-                amountGAA: result.platform === "GAA" ? result.amount : 0,
-            }
+                // Finally, set the summed value amount as the data value for the chart.
+                dataValuesGA[resultDay] = newResults[newKey].amountGA
+                dataValuesGAA[resultDay] = newResults[newKey].amountGAA
+            } else if (dateFilter === "year") {
+                initialSetup(resultYear)
 
-            // Create the day in object as well.
-            newResults[year][month][day] = {
-                amountGA: result.platform === "GA" ? result.amount : 0,
-                amountGAA: result.platform === "GAA" ? result.amount : 0,
-            }
-        }
+                const newKey = `${resultYear}`
+                if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
+                else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
 
-        // Now populate the values based on the date filter. If an existing date exists, then replace the value as the sums for that same date were already calculated above.
-        if (dateFilter === "year") {
-            if (labels.indexOf(year) === -1) {
-                labels.push(year)
-                barGABackgroundColors.push(randomColor())
-                barGAABackgroundColors.push(randomColor())
-                dataValuesGA.push(newResults[year].amountGA)
-                dataValuesGAA.push(newResults[year].amountGAA)
-                dataValuesIndex += 1
-            } else {
-                dataValuesGA[dataValuesIndex - 1] = newResults[year].amountGA
-                dataValuesGAA[dataValuesIndex - 1] = newResults[year].amountGAA
-            }
-        } else if (dateFilter === "month") {
-            if (labels.indexOf(months[month]) === -1) {
-                labels.push(months[month])
-                barGABackgroundColors.push(randomColor())
-                barGAABackgroundColors.push(randomColor())
-                dataValuesGA.push(newResults[year][month].amountGA)
-                dataValuesGAA.push(newResults[year][month].amountGAA)
-                dataValuesIndex += 1
-            } else {
-                dataValuesGA[dataValuesIndex - 1] = newResults[year][month].amountGA
-                dataValuesGAA[dataValuesIndex - 1] = newResults[year][month].amountGAA
-            }
-        } else if (dateFilter === "day") {
-            if (labels.indexOf(months[month] + " " + day + " " + year) === -1) {
-                labels.push(months[month] + " " + day + " " + year)
-                barGABackgroundColors.push(randomColor())
-                barGAABackgroundColors.push(randomColor())
-                dataValuesGA.push(newResults[year][month][day].amountGA)
-                dataValuesGAA.push(newResults[year][month][day].amountGAA)
-                dataValuesIndex += 1
-            } else {
-                dataValuesGA[dataValuesIndex - 1] = newResults[year][month][day].amountGA
-                dataValuesGAA[dataValuesIndex - 1] = newResults[year][month][day].amountGAA
+                // Finally, set the summed value amount as the data value for the chart.
+                // TODO: Adjust this after implemention of year selector.
+                dataValuesGA[0] = newResults[newKey].amountGA
+                dataValuesGAA[0] = newResults[newKey].amountGAA
             }
         }
     })

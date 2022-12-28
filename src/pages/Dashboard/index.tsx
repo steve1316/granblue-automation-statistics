@@ -123,6 +123,24 @@ const Dashboard = () => {
         localStorage.setItem("search", JSON.stringify(search))
     }, [search])
 
+    useEffect(() => {
+        if (search.indexOf("[Farming Mode]") !== -1) {
+            const newSearch = search.replace("[Farming Mode] ", "").trim()
+            console.log("Searching results for the Farming Mode after changing the date filter: ", newSearch)
+            getFarmingModeResults(newSearch)
+        } else if (search.indexOf("[Mission]") !== -1) {
+            const newSearch = search.replace("[Mission] ", "").trim()
+            console.log("Searching results for the Mission after changing the date filter: ", newSearch)
+            getMissionResults(newSearch)
+        } else if (search === "" || search === " ") {
+            getAllResults()
+        } else {
+            const newSearch = search.replace("[Item] ", "").trim()
+            console.log("Searching results for the Item after changing the date filter: ", newSearch)
+            getItemResults(newSearch)
+        }
+    }, [dateFilter])
+
     // Only send the search request after the user's query matches a searchable term.
     useEffect(() => {
         if (searchSubmission) {
@@ -184,8 +202,10 @@ const Dashboard = () => {
 
     // Get all results for this item from the search term.
     const getItemResults = (itemName: string) => {
+        let queryLink = `${uc.entryPoint}/api/get-result/item/${itemName}?sort=asc`
+        if (dateFilter === "day") queryLink += `&dateFilter=${dateFilter}`
         axios
-            .get(`${uc.entryPoint}/api/get-result/item/${itemName}`, { withCredentials: true })
+            .get(queryLink, { withCredentials: true })
             .then((data) => {
                 setResults(data.data)
             })
@@ -205,16 +225,8 @@ const Dashboard = () => {
             newOrder = "desc"
         }
 
-        let temp = localStorage.getItem("rowsPerPage")
-        let newRowsPerPage = 5
-        if (temp !== null) {
-            try {
-                newRowsPerPage = Number.parseInt(temp)
-            } catch {}
-        }
-
         axios
-            .get(`${uc.entryPoint}/api/get-result?sort=${newOrder}&limit=${newRowsPerPage}`, { withCredentials: true })
+            .get(`${uc.entryPoint}/api/get-result?sort=${newOrder}`, { withCredentials: true })
             .then((data) => {
                 setResults(data.data)
             })
@@ -279,7 +291,7 @@ const Dashboard = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <div className={classes.chartContainer}>
-                        <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} dateFilter={dateFilter} />
+                        <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} />
                     </div>
                 </Grid>
             </Grid>
