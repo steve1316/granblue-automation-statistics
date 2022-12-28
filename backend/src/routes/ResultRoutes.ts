@@ -317,34 +317,19 @@ router.get("/api/get-result", async (req, res) => {
     }
 
     let sort = req.query.sort
-    let limit = req.query.limit
-    if (!limit || typeof limit !== "string") {
-        res.status(400).send("Limit parameter needs to be provided.")
-        return
-    }
-
     if (sort === undefined) {
         sort = "desc"
     }
 
     let newSort = sort === "asc" ? 1 : -1
 
-    let newLimit = 0
-    try {
-        newLimit = Number.parseInt(limit)
-    } catch {
-        res.status(400).send("Failed to convert string parameter to integer number.")
-        return
-    }
-
     await Result.find()
         .sort({ _id: newSort })
-        .limit(newLimit)
         .then((docs: ResultInterface[]) => {
             if (docs) {
                 res.status(200).send(docs)
             } else {
-                res.status(200).send(`Failed to get ${newLimit} results sorted ${newSort}.`)
+                res.status(200).send(`Failed to get all results sorted ${newSort}.`)
             }
         })
         .catch((error: Error) => {

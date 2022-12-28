@@ -225,16 +225,8 @@ const Dashboard = () => {
             newOrder = "desc"
         }
 
-        let temp = localStorage.getItem("rowsPerPage")
-        let newRowsPerPage = 5
-        if (temp !== null) {
-            try {
-                newRowsPerPage = Number.parseInt(temp)
-            } catch {}
-        }
-
         axios
-            .get(`${uc.entryPoint}/api/get-result?sort=${newOrder}&limit=${newRowsPerPage}`, { withCredentials: true })
+            .get(`${uc.entryPoint}/api/get-result?sort=${newOrder}`, { withCredentials: true })
             .then((data) => {
                 setResults(data.data)
             })
