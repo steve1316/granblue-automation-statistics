@@ -23,6 +23,8 @@ const Dashboard = () => {
             alignItems: "center",
             flexDirection: "column",
             minHeight: "100vh",
+            // backgroundColor: "#222020",
+            padding: 15,
         },
         container: {
             color: "#fff",
@@ -45,7 +47,7 @@ const Dashboard = () => {
         tableContainer: {
             position: "relative",
             height: "60%",
-            width: "80%",
+            width: "100%",
             marginTop: "16px",
             marginBottom: "16px",
             [theme.breakpoints.down("sm")]: {
