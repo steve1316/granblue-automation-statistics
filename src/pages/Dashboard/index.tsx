@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import makeStyles from "@mui/styles/makeStyles"
-import { Autocomplete, Chip, Grid, Stack, TextField, Theme } from "@mui/material"
+import { Autocomplete, Chip, Grid, Stack, Tab, Tabs, TextField, Theme } from "@mui/material"
 import { UserContext } from "../../context/UserContext"
 import axios from "axios"
 import { ResultInterface } from "../../interfaces/ResultInterface"
@@ -12,6 +12,8 @@ import parse from "autosuggest-highlight/parse"
 import { UserInterface } from "../../interfaces/UserInterface"
 import data from "../../data/data.json"
 import CustomPie from "../../components/CustomPie"
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment"
 
 const Dashboard = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -76,6 +78,10 @@ const Dashboard = () => {
     const [showOnlyUserResults, setShowOnlyUserResults] = useState(false)
 
     const [showDistributionOfRuns, setShowDistributionOfRuns] = useState(false)
+    const [tabValue, setTabValue] = useState(0)
+    const [startDate, setStartDate] = useState<Date>(new Date(new Date().getFullYear() - 1, 12, 1))
+    const [endDate, setEndDate] = useState<Date>(new Date())
+
     // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
         document.title = "Dashboard"
@@ -312,10 +318,44 @@ const Dashboard = () => {
                 </div>
             ) : null}
 
-                </Grid>
-            </Grid>
-
             <div className={classes.tableContainer}>
+                <Grid container spacing={2} columns={{ xs: 4, md: 12 }} sx={{ marginBottom: "16px" }} justifyContent="space-between" alignItems="center">
+                    <Grid item xs={4}>
+                        <Tabs value={tabValue} onChange={(_, value) => setTabValue(value)} sx={{ color: "white" }} textColor="inherit">
+                            <Tab value={0} label="All" disableRipple />
+                            <Tab value={1} label="GA" disableRipple />
+                            <Tab value={2} label="GAA" disableRipple />
+                        </Tabs>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <DatePicker
+                                label="Select Start Date"
+                                value={startDate}
+                                onChange={(e: Date | null) => {
+                                    if (e !== null) setStartDate(e)
+                                }}
+                                minDate={new Date(2021, 12, 1)}
+                                maxDate={new Date()}
+                                renderInput={(params) => <TextField {...params} variant="filled" sx={{ backgroundColor: "white", borderRadius: "5px" }} fullWidth />}
+                            />
+                        </LocalizationProvider>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <DatePicker
+                                label="Select End Date"
+                                value={endDate}
+                                onChange={(e: Date | null) => {
+                                    if (e !== null) setEndDate(e)
+                                }}
+                                minDate={startDate}
+                                maxDate={new Date()}
+                                renderInput={(params) => <TextField {...params} variant="filled" sx={{ backgroundColor: "white", borderRadius: "5px" }} fullWidth />}
+                            />
+                        </LocalizationProvider>
+                    </Grid>
+                </Grid>
                 <Autocomplete
                     options={availableSearchTerms.map((result) => result)}
                     value={search}
