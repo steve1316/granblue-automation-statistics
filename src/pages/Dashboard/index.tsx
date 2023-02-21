@@ -191,7 +191,7 @@ const Dashboard = () => {
         axios
             .get(`${uc.entryPoint}/api/get-result/farmingMode/${farmingMode}`, { withCredentials: true })
             .then((data) => {
-                setResults(data.data)
+                setResults(filterData(data.data))
             })
             .catch(() => {
                 setResults([])
@@ -206,7 +206,7 @@ const Dashboard = () => {
         axios
             .get(`${uc.entryPoint}/api/get-result/mission/${mission}`, { withCredentials: true })
             .then((data) => {
-                setResults(data.data)
+                setResults(filterData(data.data))
             })
             .catch(() => {
                 setResults([])
@@ -224,7 +224,7 @@ const Dashboard = () => {
         axios
             .get(queryLink, { withCredentials: true })
             .then((data) => {
-                setResults(data.data)
+                setResults(filterData(data.data))
             })
             .catch(() => {
                 setResults([])
@@ -246,7 +246,7 @@ const Dashboard = () => {
         axios
             .get(`${uc.entryPoint}/api/get-result?sort=${newOrder}`, { withCredentials: true })
             .then((data) => {
-                setResults(data.data)
+                setResults(filterData(data.data))
             })
             .catch(() => {
                 setResults([])
@@ -256,6 +256,17 @@ const Dashboard = () => {
                 setSearch("")
                 setLoading(false)
             })
+    }
+
+    // Filter the data received from the API using the given start and end dates.
+    const filterData = (tempData: ResultInterface[]) => {
+        let processedData: ResultInterface[] = tempData.filter((record) => {
+            let tempDate = new Date(record.date)
+            return tempDate >= startDate && tempDate <= endDate
+        })
+
+        console.log(`[DEBUG] After filtering, there are ${processedData.length} / ${tempData.length} records left.`)
+        return processedData
     }
 
     return (
