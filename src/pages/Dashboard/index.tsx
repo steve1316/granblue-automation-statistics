@@ -75,6 +75,7 @@ const Dashboard = () => {
     const [dateFilter, setDateFilter] = useState("month")
     const [showOnlyUserResults, setShowOnlyUserResults] = useState(false)
 
+    const [showDistributionOfRuns, setShowDistributionOfRuns] = useState(false)
     // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
         document.title = "Dashboard"
@@ -112,11 +113,16 @@ const Dashboard = () => {
         // Remove any duplicate items and save it to state.
         setAvailableSearchTerms(Array.from(new Set(searchTerms)))
 
-        // Finally, fetch search term from localStorage if possible.
+        // Finally, fetch search term from localStorage if possible and any other flag.
         let tempSearch = localStorage.getItem("search")
         if (tempSearch) {
             setSearch(JSON.parse(tempSearch))
             setSearchSubmission(true)
+        }
+
+        let flag: string | null = localStorage.getItem("showDistributionOfRuns")
+        if (flag !== null) {
+            setShowDistributionOfRuns(Boolean(flag))
         }
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -271,6 +277,17 @@ const Dashboard = () => {
 
                 <Stack direction="row" spacing={1} sx={{ marginTop: "16px" }}>
                     <Chip
+                        label="Show distribution of runs"
+                        color="primary"
+                        onClick={() => {
+                            localStorage.setItem("showDistributionOfRuns", String(!showDistributionOfRuns))
+                            setShowDistributionOfRuns(!showDistributionOfRuns)
+                        }}
+                        icon={showDistributionOfRuns ? <Done /> : undefined}
+                        variant={showDistributionOfRuns ? "filled" : "outlined"}
+                    />
+
+                    <Chip
                         label="Show only my results"
                         color="primary"
                         onClick={() => setShowOnlyUserResults(!showOnlyUserResults)}
@@ -280,21 +297,21 @@ const Dashboard = () => {
                 </Stack>
             </div>
 
-            <Grid container spacing={2} sx={{ width: "80%", display: "flex", justifyContent: "center" }}>
-                <Grid item xs={12} md={6}>
-                    <div className={classes.chartContainer}>
-                        <CustomChart
-                            type={chartType}
-                            chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Showing All Results`}
-                            data={showOnlyUserResults ? userResults : results}
-                            dateFilter={dateFilter}
-                        />
-                    </div>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <div className={classes.chartContainer}>
-                        <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} />
-                    </div>
+            <div className={classes.chartContainer}>
+                <CustomChart
+                    type={chartType}
+                    chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Showing All Results`}
+                    data={showOnlyUserResults ? userResults : results}
+                    dateFilter={dateFilter}
+                />
+            </div>
+
+            {showDistributionOfRuns ? (
+                <div className={classes.chartContainer}>
+                    <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} />
+                </div>
+            ) : null}
+
                 </Grid>
             </Grid>
 
