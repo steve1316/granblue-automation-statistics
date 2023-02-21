@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react"
 import makeStyles from "@mui/styles/makeStyles"
-import { Autocomplete, Chip, Grid, Stack, Tab, Tabs, TextField, Theme } from "@mui/material"
+import { Autocomplete, Box, Button, Chip, CircularProgress, Grid, Stack, Tab, Tabs, TextField, Theme } from "@mui/material"
 import { UserContext } from "../../context/UserContext"
 import axios from "axios"
 import { ResultInterface } from "../../interfaces/ResultInterface"
 import CustomChart from "../../components/CustomChart"
 import CustomTable from "../../components/CustomTable"
-import { Done } from "@mui/icons-material"
+import { Done, RefreshOutlined } from "@mui/icons-material"
 import match from "autosuggest-highlight/match"
 import parse from "autosuggest-highlight/parse"
 import { UserInterface } from "../../interfaces/UserInterface"
@@ -77,6 +77,7 @@ const Dashboard = () => {
     const [dateFilter, setDateFilter] = useState("month")
     const [showOnlyUserResults, setShowOnlyUserResults] = useState(false)
 
+    const [loading, setLoading] = useState(false)
     const [showDistributionOfRuns, setShowDistributionOfRuns] = useState(false)
     const [tabValue, setTabValue] = useState(0)
     const [startDate, setStartDate] = useState<Date>(new Date(new Date().getFullYear() - 1, 12, 1))
@@ -197,6 +198,7 @@ const Dashboard = () => {
             })
             .finally(() => {
                 setSearchSubmission(false)
+                setLoading(false)
             })
     }
 
@@ -211,6 +213,7 @@ const Dashboard = () => {
             })
             .finally(() => {
                 setSearchSubmission(false)
+                setLoading(false)
             })
     }
 
@@ -228,6 +231,7 @@ const Dashboard = () => {
             })
             .finally(() => {
                 setSearchSubmission(false)
+                setLoading(false)
             })
     }
 
@@ -250,6 +254,7 @@ const Dashboard = () => {
             .finally(() => {
                 setSearchSubmission(false)
                 setSearch("")
+                setLoading(false)
             })
     }
 
@@ -320,14 +325,36 @@ const Dashboard = () => {
 
             <div className={classes.tableContainer}>
                 <Grid container spacing={2} columns={{ xs: 4, md: 12 }} sx={{ marginBottom: "16px" }} justifyContent="space-between" alignItems="center">
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                         <Tabs value={tabValue} onChange={(_, value) => setTabValue(value)} sx={{ color: "white" }} textColor="inherit">
                             <Tab value={0} label="All" disableRipple />
                             <Tab value={1} label="GA" disableRipple />
                             <Tab value={2} label="GAA" disableRipple />
                         </Tabs>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
+                        <Box sx={{ width: "160px" }}>
+                            <Button
+                                variant="contained"
+                                startIcon={loading ? null : <RefreshOutlined />}
+                                onClick={() => {
+                                    setLoading(true)
+                                    setSearchSubmission(true)
+                                }}
+                                disabled={loading}
+                                sx={{
+                                    width: "100%",
+                                    justifyContent: "center",
+                                    "&.Mui-disabled": {
+                                        background: "#1976d2",
+                                    },
+                                }}
+                            >
+                                {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Refresh Data"}
+                            </Button>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={3}>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <DatePicker
                                 label="Select Start Date"
@@ -341,7 +368,7 @@ const Dashboard = () => {
                             />
                         </LocalizationProvider>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <DatePicker
                                 label="Select End Date"
