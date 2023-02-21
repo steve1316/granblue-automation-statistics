@@ -80,7 +80,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(false)
     const [showDistributionOfRuns, setShowDistributionOfRuns] = useState(false)
     const [tabValue, setTabValue] = useState(0)
-    const [startDate, setStartDate] = useState<Date>(new Date(new Date().getFullYear() - 1, 12, 1))
+    const [startDate, setStartDate] = useState<Date>(new Date(new Date().getFullYear(), 0, 1))
     const [endDate, setEndDate] = useState<Date>(new Date())
 
     // Reset the screen position back to the top of the page and update the title of the page.
