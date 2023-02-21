@@ -325,6 +325,8 @@ const Dashboard = () => {
                     chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Showing All Results`}
                     data={showOnlyUserResults ? userResults : results}
                     dateFilter={dateFilter}
+                    startDate={startDate}
+                    endDate={endDate}
                 />
             </div>
 
