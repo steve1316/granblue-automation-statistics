@@ -154,7 +154,7 @@ const Dashboard = () => {
             console.log("Searching results for the Item after changing the date filter: ", newSearch)
             getItemResults(newSearch)
         }
-    }, [dateFilter])
+    }, [dateFilter]) // eslint-disable-line react-hooks/exhaustive-deps
 
     // Only send the search request after the user's query matches a searchable term.
     useEffect(() => {
