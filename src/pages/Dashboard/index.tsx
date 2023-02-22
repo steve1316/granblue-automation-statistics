@@ -71,6 +71,7 @@ const Dashboard = () => {
     const [search, setSearch] = useState("")
     const [availableSearchTerms, setAvailableSearchTerms] = useState<string[]>([])
     const [searchSubmission, setSearchSubmission] = useState(false)
+    const [rawResults, setRawResults] = useState<ResultInterface[]>([])
     const [results, setResults] = useState<ResultInterface[]>([])
     const [userResults, setUserResults] = useState<ResultInterface[]>([])
     const [chartType, setChartType] = useState("line")
@@ -191,9 +192,11 @@ const Dashboard = () => {
         axios
             .get(`${uc.entryPoint}/api/get-result/farmingMode/${farmingMode}`, { withCredentials: true })
             .then((data) => {
+                setRawResults(data.data)
                 setResults(filterData(data.data))
             })
             .catch(() => {
+                setRawResults([])
                 setResults([])
             })
             .finally(() => {
@@ -206,9 +209,11 @@ const Dashboard = () => {
         axios
             .get(`${uc.entryPoint}/api/get-result/mission/${mission}`, { withCredentials: true })
             .then((data) => {
+                setRawResults(data.data)
                 setResults(filterData(data.data))
             })
             .catch(() => {
+                setRawResults([])
                 setResults([])
             })
             .finally(() => {
@@ -224,9 +229,11 @@ const Dashboard = () => {
         axios
             .get(queryLink, { withCredentials: true })
             .then((data) => {
+                setRawResults(data.data)
                 setResults(filterData(data.data))
             })
             .catch(() => {
+                setRawResults([])
                 setResults([])
             })
             .finally(() => {
@@ -246,9 +253,11 @@ const Dashboard = () => {
         axios
             .get(`${uc.entryPoint}/api/get-result?sort=${newOrder}`, { withCredentials: true })
             .then((data) => {
+                setRawResults(data.data)
                 setResults(filterData(data.data))
             })
             .catch(() => {
+                setRawResults([])
                 setResults([])
             })
             .finally(() => {
