@@ -19,18 +19,14 @@ const CustomPie = ({ chartTitle, data }: { chartTitle: string; data: ResultInter
         data.forEach((result) => {
             const resultYear = new Date(result.date).getFullYear()
             const itemName = result.itemName
-
-            // TODO: Add a year selector in preparation for 2023 and to allow viewing of the previous year's data.
-            if (resultYear === 2022) {
-                if (!labels.includes(itemName)) {
-                    labels.push(itemName)
-                    values.push(0)
-                    backgroundColors.push(randomColor())
-                }
-
-                const newKey = `${result.itemName}`
-                values[labels.indexOf(newKey)] += result.amount
+            if (!labels.includes(itemName)) {
+                labels.push(itemName)
+                values.push(0)
+                backgroundColors.push(randomColor())
             }
+
+            const newKey = `${result.itemName}`
+            values[labels.indexOf(newKey)] += result.amount
         })
     }
 
