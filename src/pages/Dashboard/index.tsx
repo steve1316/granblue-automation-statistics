@@ -341,7 +341,7 @@ const Dashboard = () => {
 
             {showDistributionOfRuns ? (
                 <div className={classes.chartContainer}>
-                    <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} />
+                    <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} startDate={startDate} />
                 </div>
             ) : null}
 
