@@ -184,18 +184,8 @@ router.get("/api/get-result/item/:itemName", async (req, res) => {
     const { dateFilter } = req.query
 
     if (dateFilter === "day") {
-        // Create the sorting filter for the date so that the query returns all results of each day of the current month.
-        const now = new Date()
-        const lastDayDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
-        const firstDay = `${now.getFullYear()}-${now.getMonth()}-1`
-        const lastDay = `${now.getFullYear()}-${now.getMonth() + 1}-${lastDayDate}`
-
         await Result.find({
             itemName: itemName,
-            date: {
-                $gte: firstDay,
-                $lt: lastDay,
-            },
         })
             .sort({ _id: newSort })
             .then((docs: ResultInterface[]) => {
