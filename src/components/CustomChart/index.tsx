@@ -137,7 +137,6 @@ const CustomChart = ({ type, chartTitle, data, dateFilter, startDate, endDate }:
     })
 
     // Sort the arrays by date.
-    const allMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     if (dateFilter === "month") {
         chartElements.sort((ele1, ele2) => {
             return ele1.date.getTime() - ele2.date.getTime()
