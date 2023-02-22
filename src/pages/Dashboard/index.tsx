@@ -81,7 +81,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(false)
     const [refreshDate, setRefreshDate] = useState<Date>(new Date())
     const [showDistributionOfRuns, setShowDistributionOfRuns] = useState(false)
-    const [tabValue, setTabValue] = useState(0)
+    const [tabValue, setTabValue] = useState<string>("All")
     const [startDate, setStartDate] = useState<Date>(new Date(new Date().getFullYear(), 0, 1))
     const [endDate, setEndDate] = useState<Date>(new Date())
 
@@ -142,7 +142,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         setResults(filterData(rawResults))
-    }, [startDate, endDate]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [startDate, endDate, tabValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
     // Only send the search request after the user's query matches a searchable term.
     useEffect(() => {
@@ -260,7 +260,7 @@ const Dashboard = () => {
     const filterData = (tempData: ResultInterface[]) => {
         let processedData: ResultInterface[] = tempData.filter((record) => {
             let tempDate = new Date(record.date)
-            return tempDate >= startDate && tempDate <= endDate
+            return tempDate >= startDate && tempDate <= endDate && (tabValue === "All" || tabValue === record.platform)
         })
 
         console.log(`[DEBUG] After filtering, there are ${processedData.length} / ${tempData.length} records left.`)
@@ -338,9 +338,9 @@ const Dashboard = () => {
                 <Grid container spacing={2} columns={{ xs: 4, md: 12 }} sx={{ marginBottom: "16px" }} justifyContent="space-between" alignItems="center">
                     <Grid item xs={3}>
                         <Tabs value={tabValue} onChange={(_, value) => setTabValue(value)} sx={{ color: "white" }} textColor="inherit">
-                            <Tab value={0} label="All" disableRipple />
-                            <Tab value={1} label="GA" disableRipple />
-                            <Tab value={2} label="GAA" disableRipple />
+                            <Tab value={"All"} label="All" disableRipple />
+                            <Tab value={"GA"} label="GA" disableRipple />
+                            <Tab value={"GAA"} label="GAA" disableRipple />
                         </Tabs>
                     </Grid>
                     <Grid item xs={3}>
