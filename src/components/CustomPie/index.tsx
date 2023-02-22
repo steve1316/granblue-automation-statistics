@@ -6,7 +6,7 @@ import randomColor from "randomcolor"
 // Register elements to be used by chartjs.
 ChartJS.register(ArcElement, Title, Tooltip, Legend)
 
-const CustomPie = ({ chartTitle, data }: { chartTitle: string; data: ResultInterface[] }) => {
+const CustomPie = ({ chartTitle, data, startDate }: { chartTitle: string; data: ResultInterface[]; startDate: Date }) => {
     const labels: string[] = []
     const values: number[] = []
     const backgroundColors: string[] = []
@@ -17,7 +17,9 @@ const CustomPie = ({ chartTitle, data }: { chartTitle: string; data: ResultInter
         backgroundColors.push(randomColor())
     } else {
         data.forEach((result) => {
-            const resultYear = new Date(result.date).getFullYear()
+            const resultDate = new Date(result.date)
+            if (resultDate < startDate) return
+
             const itemName = result.itemName
             if (!labels.includes(itemName)) {
                 labels.push(itemName)

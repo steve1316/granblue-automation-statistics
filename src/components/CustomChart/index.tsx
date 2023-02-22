@@ -97,6 +97,8 @@ const CustomChart = ({ type, chartTitle, data, dateFilter, startDate, endDate }:
         let resultDay = resultDate.getDate()
         let resultYear = resultDate.getFullYear()
 
+        if (resultDate < startDate) return
+
         if (dateFilter === "month") {
             initialSetup()
 
