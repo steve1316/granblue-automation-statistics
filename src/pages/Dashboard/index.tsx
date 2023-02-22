@@ -140,22 +140,8 @@ const Dashboard = () => {
     }, [search])
 
     useEffect(() => {
-        if (search.indexOf("[Farming Mode]") !== -1) {
-            const newSearch = search.replace("[Farming Mode] ", "").trim()
-            console.log("Searching results for the Farming Mode after changing the date filter: ", newSearch)
-            getFarmingModeResults(newSearch)
-        } else if (search.indexOf("[Mission]") !== -1) {
-            const newSearch = search.replace("[Mission] ", "").trim()
-            console.log("Searching results for the Mission after changing the date filter: ", newSearch)
-            getMissionResults(newSearch)
-        } else if (search === "" || search === " ") {
-            getAllResults()
-        } else {
-            const newSearch = search.replace("[Item] ", "").trim()
-            console.log("Searching results for the Item after changing the date filter: ", newSearch)
-            getItemResults(newSearch)
-        }
-    }, [dateFilter]) // eslint-disable-line react-hooks/exhaustive-deps
+        setResults(filterData(rawResults))
+    }, [startDate, endDate]) // eslint-disable-line react-hooks/exhaustive-deps
 
     // Only send the search request after the user's query matches a searchable term.
     useEffect(() => {
