@@ -179,9 +179,6 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
         setOrderBy(property)
     }
 
-    // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
-
     return (
         <Box>
             <Paper sx={{ width: "100%" }}>
@@ -210,15 +207,6 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
                                         </TableRow>
                                     )
                                 })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: (dense ? 33 : 53) * emptyRows,
-                                    }}
-                                >
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
