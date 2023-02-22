@@ -79,6 +79,7 @@ const Dashboard = () => {
     const [showOnlyUserResults, setShowOnlyUserResults] = useState(false)
 
     const [loading, setLoading] = useState(false)
+    const [refreshDate, setRefreshDate] = useState<Date>(new Date())
     const [showDistributionOfRuns, setShowDistributionOfRuns] = useState(false)
     const [tabValue, setTabValue] = useState(0)
     const [startDate, setStartDate] = useState<Date>(new Date(new Date().getFullYear(), 0, 1))
@@ -161,6 +162,8 @@ const Dashboard = () => {
                 console.log("Searching results for the Item: ", newSearch)
                 getItemResults(newSearch)
             }
+
+            setRefreshDate(new Date())
         }
     }, [searchSubmission]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -436,7 +439,7 @@ const Dashboard = () => {
                         )
                     }}
                 />
-                <CustomTable rows={showOnlyUserResults ? userResults : results} />
+                <CustomTable rows={showOnlyUserResults ? userResults : results} refreshDate={refreshDate} />
             </div>
         </section>
     )

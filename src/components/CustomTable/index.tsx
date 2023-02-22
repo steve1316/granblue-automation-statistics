@@ -118,7 +118,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     )
 }
 
-const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
+const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDate: Date }) => {
     const useStyles = makeStyles((theme: Theme) => ({
         tableFooter: {
             display: "flex",
@@ -226,6 +226,7 @@ const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
                     />
                 </div>
                 <div className={classes.tableFooterNotes}>
+                    <Typography fontSize={12}>Data last updated on: {refreshDate.toString()}</Typography>
                     <Typography fontSize={12}>
                         * Time it takes from the start of a run to when the Loot Collection process completes. A time of 0:00:00 means that the result came from a Pending Battle.
                     </Typography>
