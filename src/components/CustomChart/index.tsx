@@ -104,8 +104,16 @@ const CustomChart = ({ type, chartTitle, data, dateFilter, startDate, endDate }:
 
             // Now add the amount value to the month's sum.
             const newKey = `${resultYear}-${resultMonth}`
-            if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
-            else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
+            try {
+                if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
+                else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
+            } catch (e) {
+                if (result.platform === "GA") newResults[newKey] = { amountGA: result.amount, amountGAA: 0 }
+                else if (result.platform === "GAA") newResults[newKey] = { amountGA: 0, amountGAA: result.amount }
+                chartElements.push({ date: new Date(resultDate), valueGA: newResults[newKey].amountGA, valueGAA: newResults[newKey].amountGAA })
+                barGABackgroundColors.push(randomColor())
+                barGAABackgroundColors.push(randomColor())
+            }
 
             let index = chartElements.findIndex((element) => element.date.getMonth() === resultDate.getMonth() && element.date.getFullYear() === resultDate.getFullYear())
             chartElements[index].valueGA = newResults[newKey].amountGA
@@ -115,8 +123,16 @@ const CustomChart = ({ type, chartTitle, data, dateFilter, startDate, endDate }:
 
             // Now add the amount value to the day's sum.
             const newKey = `${resultYear}-${resultMonth}-${resultDay}`
-            if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
-            else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
+            try {
+                if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
+                else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
+            } catch (e) {
+                if (result.platform === "GA") newResults[newKey] = { amountGA: result.amount, amountGAA: 0 }
+                else if (result.platform === "GAA") newResults[newKey] = { amountGA: 0, amountGAA: result.amount }
+                chartElements.push({ date: new Date(resultDate), valueGA: newResults[newKey].amountGA, valueGAA: newResults[newKey].amountGAA })
+                barGABackgroundColors.push(randomColor())
+                barGAABackgroundColors.push(randomColor())
+            }
 
             let index = chartElements.findIndex(
                 (element) => element.date.getMonth() === resultDate.getMonth() && element.date.getDate() === resultDate.getDate() && element.date.getFullYear() === resultDate.getFullYear()
@@ -127,8 +143,16 @@ const CustomChart = ({ type, chartTitle, data, dateFilter, startDate, endDate }:
             initialSetup()
 
             const newKey = `${resultYear}`
-            if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
-            else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
+            try {
+                if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
+                else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
+            } catch (e) {
+                if (result.platform === "GA") newResults[newKey] = { amountGA: result.amount, amountGAA: 0 }
+                else if (result.platform === "GAA") newResults[newKey] = { amountGA: 0, amountGAA: result.amount }
+                chartElements.push({ date: new Date(resultDate), valueGA: newResults[newKey].amountGA, valueGAA: newResults[newKey].amountGAA })
+                barGABackgroundColors.push(randomColor())
+                barGAABackgroundColors.push(randomColor())
+            }
 
             let index = chartElements.findIndex((element) => element.date.getFullYear() === resultDate.getFullYear())
             chartElements[index].valueGA = newResults[newKey].amountGA
