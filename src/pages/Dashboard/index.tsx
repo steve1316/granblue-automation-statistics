@@ -373,7 +373,7 @@ const Dashboard = () => {
                                 onChange={(e: Date | null) => {
                                     if (e !== null) setStartDate(e)
                                 }}
-                                minDate={new Date(2021, 12, 1)}
+                                minDate={new Date(2022, 5, 1)}
                                 maxDate={new Date()}
                                 renderInput={(params) => <TextField {...params} variant="filled" sx={{ backgroundColor: "white", borderRadius: "5px" }} fullWidth />}
                             />
