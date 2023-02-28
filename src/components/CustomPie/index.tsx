@@ -20,14 +20,14 @@ const CustomPie = ({ chartTitle, data, startDate }: { chartTitle: string; data: 
             const resultDate = new Date(result.date)
             if (resultDate < startDate) return
 
-            const itemName = result.itemName
-            if (!labels.includes(itemName)) {
-                labels.push(itemName)
+            const missionName = result.mission
+            if (!labels.includes(missionName)) {
+                labels.push(missionName)
                 values.push(0)
                 backgroundColors.push(randomColor())
             }
 
-            const newKey = `${result.itemName}`
+            const newKey = `${result.mission}`
             values[labels.indexOf(newKey)] += result.amount
         })
     }
