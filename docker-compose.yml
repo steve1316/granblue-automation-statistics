@@ -1,30 +1,44 @@
 services:
-  # Self-hosted Postfix mail server that delivers password-recovery emails directly (see ./mail).
-  mail:
-    build: ./mail
-    hostname: mail.granblue-automation-statistics.com
+  db:
+    image: postgres:17-alpine
+    # Holds POSTGRES_USER, POSTGRES_PASSWORD and POSTGRES_DB. Copy postgres.env.example to start.
     env_file:
-      - ./mail/.env
+      - ./postgres.env
     volumes:
-      - ./mail/dkim:/etc/opendkim/keys
+      - pgdata:/var/lib/postgresql/data
+    # No published port. Only the backend reaches the database, over the compose network.
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   backend:
     build: ./backend
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+    env_file:
+      - ./backend/.env
     ports:
       - 4000:4000
-    environment:
-      - SMTP_HOST=mail
-      - SMTP_PORT=587
-      - SMTP_SECURE=false
+    restart: unless-stopped
     depends_on:
-      - mail
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:4000/api/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   frontend:
     build: ./
     ports:
       # SWS in the Dockerfile defaults to port 80.
       - 5173:80
+    restart: unless-stopped
+
+volumes:
+  # The database files. Survives `docker compose down`, but not `docker compose down -v`.
+  pgdata:

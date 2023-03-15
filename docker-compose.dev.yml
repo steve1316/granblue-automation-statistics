@@ -1,0 +1,18 @@
+# Development override, used as:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+#
+# It mounts the source over the image and runs the file watcher. The production compose file
+# deliberately does neither: the bind mount shadows the built image, and the anonymous node_modules
+# volume that has to come with it goes stale as soon as a dependency changes.
+services:
+  backend:
+    command: ["yarn", "dev"]
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  # Lets a backend or psql running on the host reach the database. Bound to localhost only.
+  db:
+    ports:
+      - 127.0.0.1:5432:5432
