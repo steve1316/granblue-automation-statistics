@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext } from "react"
 import { styled } from "@mui/system"
-import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider, ListItemIcon, Box, Theme } from "@mui/material"
+import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItemButton, ListItemText, Divider, ListItemIcon, Box } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import { Link as RouterLink, useNavigate } from "react-router-dom"
-import { AssignmentInd, Home, Logout, InsertChart } from "@mui/icons-material"
+import { AssignmentInd, Home, Logout, InsertChart, Info } from "@mui/icons-material"
 import { UserContext } from "../../context/UserContext"
 import axios, { AxiosResponse } from "axios"
 import { UserInterface } from "../../interfaces/UserInterface"
@@ -129,42 +129,51 @@ const NavBar = () => {
                     <StyledBox>
                         <List>
                             <StyledRouterLink to="/">
-                                <ListItem button key="home">
+                                <ListItemButton key="home">
                                     <ListItemIcon>
                                         <Home />
                                     </ListItemIcon>
                                     <ListItemText primary="Home" />
-                                </ListItem>
+                                </ListItemButton>
+                            </StyledRouterLink>
+
+                            <StyledRouterLink to="/about">
+                                <ListItemButton key="about">
+                                    <ListItemIcon>
+                                        <Info />
+                                    </ListItemIcon>
+                                    <ListItemText primary="About" />
+                                </ListItemButton>
                             </StyledRouterLink>
 
                             {user ? (
                                 <>
                                     <StyledRouterLink to="/dashboard">
-                                        <ListItem button key="dashboard">
+                                        <ListItemButton key="dashboard">
                                             <ListItemIcon>
                                                 <InsertChart />
                                             </ListItemIcon>
                                             <ListItemText primary="Dashboard" />
-                                        </ListItem>
+                                        </ListItemButton>
                                     </StyledRouterLink>
                                     <Divider />
                                     <StyledRouterLink to="/logout" onClick={() => logout()}>
-                                        <ListItem button key="logout">
+                                        <ListItemButton key="logout">
                                             <ListItemIcon>
                                                 <Logout />
                                             </ListItemIcon>
                                             <ListItemText primary="Logout" />
-                                        </ListItem>
+                                        </ListItemButton>
                                     </StyledRouterLink>
                                 </>
                             ) : (
                                 <StyledRouterLink to="/gateway">
-                                    <ListItem button key="getstarted">
+                                    <ListItemButton key="getstarted">
                                         <ListItemIcon>
                                             <AssignmentInd />
                                         </ListItemIcon>
                                         <ListItemText primary="Get Started" />
-                                    </ListItem>
+                                    </ListItemButton>
                                 </StyledRouterLink>
                             )}
                         </List>

@@ -1,25 +1,30 @@
-version: '3'
 services:
-  # backend:
-  #   build: ./backend
-  #   volumes:
-  #     - ./backend:/app
-  #     - /app/node_modules
-  #   ports:
-  #     - 4000:4000
+  # Self-hosted Postfix mail server that delivers password-recovery emails directly (see ./mail).
+  mail:
+    build: ./mail
+    hostname: mail.granblue-automation-statistics.com
+    env_file:
+      - ./mail/.env
+    volumes:
+      - ./mail/dkim:/etc/opendkim/keys
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - 4000:4000
+    environment:
+      - SMTP_HOST=mail
+      - SMTP_PORT=587
+      - SMTP_SECURE=false
+    depends_on:
+      - mail
 
   frontend:
     build: ./
-    volumes:
-      - ./:/app
-      - /node_modules
     ports:
-      - 7000:3000
-
-  # nginx:
-  #   build: ./nginx
-  #   ports:
-  #     - 80:80
-  #   depends_on:
-  #     - backend
-  #     - frontend
+      # SWS in the Dockerfile defaults to port 80.
+      - 5173:80

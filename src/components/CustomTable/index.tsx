@@ -13,7 +13,7 @@ import FormControlLabel from "@mui/material/FormControlLabel"
 import Switch from "@mui/material/Switch"
 import { ResultInterface } from "../../interfaces/ResultInterface"
 import { styled } from "@mui/system"
-import { Theme, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -165,7 +165,7 @@ const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDa
     }, [order])
 
     // Adjust the ordering of the column according to the provided property key.
-    const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof ResultInterface) => {
+    const handleRequestSort = (_event: React.MouseEvent<unknown>, property: keyof ResultInterface) => {
         const isAsc = orderBy === property && order === "asc"
         setOrder(isAsc ? "desc" : "asc")
         setOrderBy(property)
@@ -210,7 +210,7 @@ const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDa
                         count={rows.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
-                        onPageChange={(e, newPage) => setPage(newPage)}
+                        onPageChange={(_e, newPage) => setPage(newPage)}
                         onRowsPerPageChange={(e) => {
                             setRowsPerPage(parseInt(e.target.value, 10))
                             setPage(0)
@@ -218,8 +218,8 @@ const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDa
                     />
                 </StyledTableFooter>
                 <StyledTableFooterNotes>
-                    <Typography fontSize={12}>Data last updated on: {refreshDate.toString()}</Typography>
-                    <Typography fontSize={12}>* Time it takes from the start of a run to when the Loot Collection process completes. A time of 0:00:00 means that the result came from a Pending Battle.</Typography>
+                    <Typography sx={{ fontSize: 12 }}>Data last updated on: {refreshDate.toString()}</Typography>
+                    <Typography sx={{ fontSize: 12 }}>* Time it takes from the start of a run to when the Loot Collection process completes. A time of 0:00:00 means that the result came from a Pending Battle.</Typography>
                 </StyledTableFooterNotes>
             </Paper>
         </Box>

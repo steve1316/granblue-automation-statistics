@@ -1,9 +1,7 @@
-import React from "react"
 import { styled } from "@mui/system"
 import Icon1 from "../../assets/images/svgNumber.svg"
 import Icon2 from "../../assets/images/svgItem.svg"
 import Icon3 from "../../assets/images/svgTime.svg"
-import { Theme } from "@mui/material"
 
 const StyledRoot = styled("div")(({ theme }) => ({
     height: "800px",

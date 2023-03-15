@@ -1,4 +1,5 @@
 import Home from "./pages/Home"
+import About from "./pages/About"
 import NotFound from "./pages/NotFound"
 import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom"
 import NavBar from "./components/Navbar"
@@ -18,6 +19,7 @@ function App() {
             <NavBar />
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
                 <Route path="/gateway" element={user ? <Navigate to="/dashboard" replace /> : <Gateway />} />
                 <Route path="/forgot-password" element={user ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
                 <Route path="/reset-password/:username/:token" element={user ? <Navigate to="/dashboard" replace /> : <ResetPassword />} />
