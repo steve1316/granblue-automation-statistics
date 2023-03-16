@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from "react"
-import { Avatar, Button, Container, Grid, TextField, Typography, Alert, Snackbar, Paper, Stack } from "@mui/material"
+import { Avatar, Button, Container, Grid, Typography, Alert, Snackbar, Paper, Stack } from "@mui/material"
 import { styled } from "@mui/system"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
+import { useSearchParams } from "react-router-dom"
 import svgGatewayBackground2 from "../../assets/images/svgGatewayBackground2.svg"
-import { useParams } from "react-router-dom"
 import { UserContext } from "../../context/UserContext"
+import PasswordField from "../../components/PasswordField"
 
 const Root = styled("section")({
     backgroundColor: "#000",
@@ -56,29 +57,40 @@ const Form = styled("form")(({ theme }) => ({
 }))
 
 const ResetPassword = () => {
-    const entryPoint: string = useContext(UserContext).entryPoint
+    const { entryPoint } = useContext(UserContext)
+    const [searchParams] = useSearchParams()
+    const token = searchParams.get("token") ?? ""
 
     const [newPassword, setNewPassword] = useState("")
     const [confirmNewPassword, setConfirmNewPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false)
     const [open, setOpen] = useState(false)
     const [inProgress, setInProgress] = useState(false)
     const [requestSent, setRequestSent] = useState(false)
     const [failed, setFailed] = useState(false)
-    const [expired, setExpired] = useState(false)
+    // Null while the link is still being checked.
+    const [linkValid, setLinkValid] = useState<boolean | null>(null)
 
-    // Grab the jwt token from the url params.
-    const params = useParams()
-    const username: string = params?.username || ""
-    const token: string = params?.token || ""
+    const expired = linkValid === false && !requestSent
 
     // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
         document.title = "Password Reset"
         window.scrollTo(0, 0)
+    }, [])
 
-        // Verify the jwt token from the url params.
-        verifyToken()
-    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    // Check the link up front, so an expired one says so before the user types a new password.
+    useEffect(() => {
+        if (token === "") {
+            setLinkValid(false)
+            return
+        }
+
+        axios
+            .get<{ valid: boolean }>(`${entryPoint}/api/reset-password/${encodeURIComponent(token)}`)
+            .then((res) => setLinkValid(res.data.valid))
+            .catch(() => setLinkValid(false))
+    }, [entryPoint, token])
 
     // Show the Snackbar for success or failure.
     useEffect(() => {
@@ -93,35 +105,21 @@ const ResetPassword = () => {
         setFailed(false)
     }
 
-    // Verify the jwt token.
-    const verifyToken = () => {
-        axios
-            .get(`${entryPoint}/api/verify-token/${username}/${token}`)
-            .then(() => {})
-            .catch(() => {
-                setExpired(true)
-            })
-    }
-
-    // Send the request to the API.
-    const sendPasswordResetRequest = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    // Set the new password using the one-time token from the emailed link.
+    const sendPasswordResetRequest = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         setInProgress(true)
-        axios
-            .post(`${entryPoint}/api/reset-password`, {
-                username: username,
-                newPassword: newPassword,
-            })
-            .then(() => {
-                setFailed(false)
-                setRequestSent(true)
-            })
-            .catch(() => {
-                setFailed(true)
-            })
-            .finally(() => {
-                setInProgress(false)
-            })
+
+        try {
+            await axios.post(`${entryPoint}/api/reset-password`, { token: token, password: newPassword })
+            setFailed(false)
+            setRequestSent(true)
+        } catch (err) {
+            console.error("[GAS] Failed to reset the password: ", err)
+            setFailed(true)
+        } finally {
+            setInProgress(false)
+        }
     }
 
     return (
@@ -138,7 +136,7 @@ const ResetPassword = () => {
                     {requestSent || expired ? (
                         <Stack sx={{ height: "100%", justifyContent: "center" }}>
                             <Typography component="p" variant="body1">
-                                {expired ? "Password reset link expired." : "Password successfully reset."}
+                                {expired ? "Password reset link is invalid or has expired." : "Password successfully reset."}
                             </Typography>
                         </Stack>
                     ) : (
@@ -146,13 +144,13 @@ const ResetPassword = () => {
                             <Form>
                                 <Grid container spacing={3}>
                                     <Grid size={12}>
-                                        <TextField label="New Password" placeholder="Enter your new password" required fullWidth onChange={(e) => setNewPassword(e.target.value)} />
+                                        <PasswordField label="New Password" placeholder="Enter your new password" required fullWidth onChange={(e) => setNewPassword(e.target.value)} showPassword={showPassword} setShowPassword={setShowPassword} />
                                     </Grid>
                                     <Grid size={12}>
-                                        <TextField label="Confirm Password" placeholder="Confirm password" required fullWidth onChange={(e) => setConfirmNewPassword(e.target.value)} error={newPassword !== confirmNewPassword} helperText={newPassword !== confirmNewPassword ? "Passwords do not match." : ""} />
+                                        <PasswordField label="Confirm Password" placeholder="Confirm password" required fullWidth onChange={(e) => setConfirmNewPassword(e.target.value)} error={newPassword !== confirmNewPassword} helperText={newPassword !== confirmNewPassword ? "Passwords do not match." : ""} showPassword={showPassword} setShowPassword={setShowPassword} />
                                     </Grid>
                                     <Grid size={12}>
-                                        <Button loading={inProgress} type="submit" variant="contained" color="primary" disabled={newPassword === "" && confirmNewPassword === "" && newPassword !== confirmNewPassword} onClick={(e) => sendPasswordResetRequest(e)} sx={{ width: "100%" }}>
+                                        <Button loading={inProgress} type="submit" variant="contained" color="primary" disabled={newPassword === "" || confirmNewPassword === "" || newPassword !== confirmNewPassword} onClick={(e) => sendPasswordResetRequest(e)} sx={{ width: "100%" }}>
                                             Reset Password
                                         </Button>
                                     </Grid>

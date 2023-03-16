@@ -3,6 +3,7 @@ import { Avatar, Container, Grid, TextField, Typography, Alert, Snackbar } from 
 import { styled } from "@mui/system"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 import { UserContext } from "../../context/UserContext"
 import PasswordField from "../../components/PasswordField"
 import { StyledFormButton } from "../../components/StyledFormButton"
@@ -28,7 +29,8 @@ const StyledForm = styled("form")(({ theme }) => ({
 }))
 
 const Login = () => {
-    const entryPoint: string = useContext(UserContext).entryPoint
+    const { entryPoint, refreshUser } = useContext(UserContext)
+    const navigate = useNavigate()
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -56,31 +58,20 @@ const Login = () => {
         }
     }, [loginFailed])
 
-    // Send a POST request to the Express server to login.
-    const login = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    // Sign in through the API server. It sets the session cookie, then the user context reads the new user back.
+    const login = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         setInProgress(true)
-        axios
-            .post(
-                `${entryPoint}/api/login`,
-                {
-                    username: username,
-                    password: password,
-                },
-                {
-                    withCredentials: true,
-                }
-            )
-            .then(() => {
-                // After login was authenticated, send user to the Dashboard.
-                window.location.href = "/dashboard"
-            })
-            .catch(() => {
-                setLoginFailed(true)
-            })
-            .finally(() => {
-                setInProgress(false)
-            })
+
+        try {
+            await axios.post(`${entryPoint}/api/v2/login`, { username: username, password: password })
+            await refreshUser()
+            navigate("/dashboard")
+        } catch {
+            setLoginFailed(true)
+        } finally {
+            setInProgress(false)
+        }
     }
 
     // Close the Snackbar.

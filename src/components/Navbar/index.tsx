@@ -5,8 +5,6 @@ import MenuIcon from "@mui/icons-material/Menu"
 import { Link as RouterLink, useNavigate } from "react-router-dom"
 import { AssignmentInd, Home, Logout, InsertChart, Info } from "@mui/icons-material"
 import { UserContext } from "../../context/UserContext"
-import axios, { AxiosResponse } from "axios"
-import { UserInterface } from "../../interfaces/UserInterface"
 
 const StyledAppBar = styled(AppBar)({
     background: "transparent",
@@ -68,8 +66,7 @@ const StyledBox = styled(Box)({
 const NavBar = () => {
     const navigate = useNavigate()
     const uc = useContext(UserContext)
-    const user: UserInterface = uc.user
-    const entryPoint: string = uc.entryPoint
+    const user = uc.user
 
     const [scrollNav, setScrollNav] = useState(false)
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -84,21 +81,10 @@ const NavBar = () => {
         setIsDrawerOpen(!isDrawerOpen)
     }
 
-    // Log out the user.
-    const logout = () => {
-        axios
-            .get(`${entryPoint}/api/logout`, { withCredentials: true })
-            .then((res: AxiosResponse) => {
-                if (res.status === 200) {
-                    // This will forcibly reload the page so that conditional rendering can occur for the Navbar.
-                    window.location.href = "/"
-                } else {
-                    console.error("[GAS] Failed to log user out: ", res.data)
-                }
-            })
-            .finally(() => {
-                localStorage.removeItem("user")
-            })
+    // Log out the user. No page reload needed - the user context reacts to the sign-out itself.
+    const logout = async () => {
+        await uc.signOut()
+        navigate("/")
     }
 
     // If user's y-position is greater than the specified offset, allow the page to send the user back to the top of the page.
@@ -157,7 +143,7 @@ const NavBar = () => {
                                         </ListItemButton>
                                     </StyledRouterLink>
                                     <Divider />
-                                    <StyledRouterLink to="/logout" onClick={() => logout()}>
+                                    <StyledRouterLink to="/" onClick={() => logout()}>
                                         <ListItemButton key="logout">
                                             <ListItemIcon>
                                                 <Logout />

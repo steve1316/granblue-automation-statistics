@@ -3,11 +3,19 @@ import { Avatar, Container, Grid, Snackbar, TextField, Typography } from "@mui/m
 import MuiAlert, { AlertProps } from "@mui/material/Alert"
 import { styled } from "@mui/system"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
-import axios, { AxiosError, AxiosResponse } from "axios"
-import PasswordChecklist from "react-password-checklist"
+import axios, { AxiosError } from "axios"
 import { UserContext } from "../../context/UserContext"
+import PasswordChecklist from "react-password-checklist"
 import PasswordField from "../../components/PasswordField"
 import { StyledFormButton } from "../../components/StyledFormButton"
+
+/** A single piece of feedback shown to the user after a sign-up attempt. */
+interface Notice {
+    /** Which colour the Snackbar takes. */
+    severity: "success" | "error"
+    /** The message to show. */
+    text: string
+}
 
 const StyledPaperContainer = styled(Container)({
     display: "flex",
@@ -40,12 +48,12 @@ const CreateAccount = () => {
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
-    const [optionalEmail, setOptionalEmail] = useState("")
-    const [ready, setReady] = useState(false)
+    const [email, setEmail] = useState("")
     const [inProgress, setInProgress] = useState(false)
-    const [creationSuccess, setCreationSuccess] = useState(false)
-    const [usernameExists, setUsernameExists] = useState(false)
-    const [open, setOpen] = useState(false)
+    const [notice, setNotice] = useState<Notice | null>(null)
+
+    // Derived, not stored. The button's enabled state is a pure function of the fields.
+    const ready = username !== "" && email !== "" && password !== "" && password === confirmPassword
 
     const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
         return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -57,50 +65,30 @@ const CreateAccount = () => {
         window.scrollTo(0, 0)
     }, [])
 
-    // Enable the Create Account button if the required fields have been filled in.
-    useEffect(() => {
-        setReady(username !== "" && password !== "" && password === confirmPassword)
-    }, [username, password, confirmPassword])
-
-    // Show the Snackbar for success or failure.
-    useEffect(() => {
-        if (creationSuccess) {
-            setOpen(true)
-        } else if (usernameExists) {
-            setOpen(true)
-        }
-    }, [creationSuccess, usernameExists])
-
-    // Create the account via POST request and receive the result whether success or failure.
-    const createAccount = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    // Create the account through the API server. It does not sign the visitor in, so they stay on this page to see the result.
+    const createAccount = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         setInProgress(true)
-        axios
-            .post(`${entryPoint}/api/register`, { username: username, password: password, email: optionalEmail })
-            .then((res: AxiosResponse) => {
-                console.log("[GAS] Received success response.")
-                if (res.status === 201) {
-                    setCreationSuccess(true)
-                    setUsernameExists(false)
-                }
-            })
-            .catch((err: AxiosError) => {
-                console.warn("[GAS] Failed to create account: ", err.response?.data)
-                if (err.response?.status === 409) {
-                    setCreationSuccess(false)
-                    setUsernameExists(true)
-                }
-            })
-            .finally(() => {
-                setInProgress(false)
-            })
+
+        try {
+            await axios.post(`${entryPoint}/api/register`, { username: username, password: password, email: email })
+            setNotice({ severity: "success", text: "Success! You can now log in." })
+        } catch (err) {
+            const message = (err as AxiosError<{ message?: string }>).response?.data?.message
+            if (message === "Username already exists." || message === "Email already registered.") {
+                setNotice({ severity: "error", text: message === "Username already exists." ? "The username already exists." : "That email is already registered to an account." })
+            } else {
+                console.error("[GAS] Failed to create account: ", message ?? err)
+                setNotice({ severity: "error", text: "Could not create the account. Please try again." })
+            }
+        } finally {
+            setInProgress(false)
+        }
     }
 
     // Close the Snackbar.
     const handleClose = () => {
-        setOpen(false)
-        setCreationSuccess(false)
-        setUsernameExists(false)
+        setNotice(null)
     }
 
     return (
@@ -142,7 +130,7 @@ const CreateAccount = () => {
                             />
                         </Grid>
                         <Grid size={12}>
-                            <TextField label="Email (optional)" placeholder="Enter your email address (used for account recovery)" fullWidth onChange={(e) => setOptionalEmail(e.target.value)} />
+                            <TextField label="Email" placeholder="Enter your email address" type="email" required fullWidth onChange={(e) => setEmail(e.target.value)} helperText="Used to recover your account if you forget your password." />
                         </Grid>
                     </Grid>
 
@@ -152,18 +140,10 @@ const CreateAccount = () => {
                 </StyledForm>
             </StyledPaperContainer>
 
-            {creationSuccess ? (
-                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
-                    <Alert onClose={() => handleClose()} severity="success">
-                        Success! You can now log in.
-                    </Alert>
-                </Snackbar>
-            ) : null}
-
-            {usernameExists ? (
-                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
-                    <Alert onClose={() => handleClose()} severity="error">
-                        The username already exists.
+            {notice !== null ? (
+                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
+                    <Alert onClose={() => handleClose()} severity={notice.severity}>
+                        {notice.text}
                     </Alert>
                 </Snackbar>
             ) : null}

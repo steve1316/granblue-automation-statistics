@@ -124,7 +124,7 @@ const ForgotPassword = () => {
                     {requestSent ? (
                         <Stack sx={{ height: "100%", justifyContent: "center" }}>
                             <Typography component="p" variant="body1" sx={{ textAlign: "center" }}>
-                                An email with a password reset link has been sent. Please check your spam folder if it did not arrive in your inbox.
+                                If an account with that username or email exists, a password reset link is on its way. Please check your spam folder if it does not arrive in your inbox.
                             </Typography>
                         </Stack>
                     ) : (
@@ -149,7 +149,7 @@ const ForgotPassword = () => {
             {requestSent ? (
                 <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
                     <Alert onClose={() => handleClose()} severity="success">
-                        Email successfully sent.
+                        Request sent.
                     </Alert>
                 </Snackbar>
             ) : null}
@@ -157,7 +157,7 @@ const ForgotPassword = () => {
             {failed ? (
                 <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
                     <Alert onClose={() => handleClose()} severity="error">
-                        Username/Email does not exist.
+                        Could not send the request. Please try again.
                     </Alert>
                 </Snackbar>
             ) : null}
