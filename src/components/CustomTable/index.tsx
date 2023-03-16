@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import Box from "@mui/material/Box"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
@@ -100,9 +100,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     return (
         <TableHead>
             <TableRow>
-                <TableCell sx={{ backgroundColor: "gray" }} />
+                <TableCell />
                 {headCells.map((headCell) => (
-                    <TableCell sx={{ backgroundColor: "gray", color: "white" }} key={headCell.id} padding={headCell.disablePadding ? "none" : "normal"} sortDirection={orderBy === headCell.id ? order : false}>
+                    <TableCell key={headCell.id} padding={headCell.disablePadding ? "none" : "normal"} sortDirection={orderBy === headCell.id ? order : false}>
                         <TableSortLabel active={orderBy === headCell.id} direction={orderBy === headCell.id ? order : "asc"} onClick={createSortHandler(headCell.id)}>
                             {headCell.label}
                         </TableSortLabel>
@@ -131,11 +131,11 @@ const StyledTableFooterNotes = styled("div")({
     paddingBottom: "12px",
 })
 
-const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDate: Date }) => {
+const CustomTable = ({ rows }: { rows: ResultInterface[] }) => {
     const [order, setOrder] = useState<Order>("desc")
     const [orderBy, setOrderBy] = useState<keyof ResultInterface>("date")
     const [page, setPage] = useState(0)
-    const [dense, setDense] = useState(localStorage.getItem("dense") !== null ? Boolean(localStorage.getItem("dense")) : false)
+    const [dense, setDense] = useState(localStorage.getItem("dense") === "true")
     const [rowsPerPage, setRowsPerPage] = useState(100)
 
     useEffect(() => {
@@ -164,6 +164,9 @@ const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDa
         localStorage.setItem("order", order.toString())
     }, [order])
 
+    // Sorting copies the array rather than sorting in place, because `rows` is the parent's state.
+    const sortedRows = useMemo(() => [...rows].sort(getComparator(order, orderBy)), [rows, order, orderBy])
+
     // Adjust the ordering of the column according to the provided property key.
     const handleRequestSort = (_event: React.MouseEvent<unknown>, property: keyof ResultInterface) => {
         const isAsc = orderBy === property && order === "asc"
@@ -173,13 +176,12 @@ const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDa
 
     return (
         <Box>
-            <Paper sx={{ width: "100%" }}>
+            <Paper variant="outlined" sx={{ width: "100%" }}>
                 <TableContainer sx={{ height: 500 }}>
                     <Table size={dense ? "small" : "medium"} stickyHeader>
                         <EnhancedTableHead order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
                         <TableBody sx={{ height: "max-content" }}>
-                            {rows
-                                .sort(getComparator(order, orderBy))
+                            {sortedRows
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
                                     const labelId = `enhanced-table-checkbox-${index}`
@@ -218,8 +220,7 @@ const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDa
                     />
                 </StyledTableFooter>
                 <StyledTableFooterNotes>
-                    <Typography sx={{ fontSize: 12 }}>Data last updated on: {refreshDate.toString()}</Typography>
-                    <Typography sx={{ fontSize: 12 }}>* Time it takes from the start of a run to when the Loot Collection process completes. A time of 0:00:00 means that the result came from a Pending Battle.</Typography>
+                    <Typography sx={{ fontSize: 12 }} color="text.secondary">* Time it takes from the start of a run to when the Loot Collection process completes. A time of 00:00:00 means that the result came from a Pending Battle.</Typography>
                 </StyledTableFooterNotes>
             </Paper>
         </Box>
