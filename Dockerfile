@@ -8,6 +8,6 @@ ADD . /app
 RUN NODE_OPTIONS=--openssl-legacy-provider yarn install
 RUN NODE_OPTIONS=--openssl-legacy-provider yarn build
 
-EXPOSE 3000
+EXPOSE 5173
 
 CMD [ "yarn", "start" ]

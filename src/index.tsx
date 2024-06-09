@@ -4,9 +4,6 @@ import "./index.css"
 import App from "./App"
 import { ThemeProvider, createTheme, StyledEngineProvider } from "@mui/material/styles"
 import { UserContextProvider } from "./context/UserContext"
-import dotenv from "dotenv"
-
-dotenv.config()
 
 const theme = createTheme()
 

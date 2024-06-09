@@ -1,3 +1,6 @@
+import section1Img from "../../assets/images/svgMultipleDevices.svg"
+import section2Img from "../../assets/images/svgChartsAndGraphs.svg"
+
 export interface Section {
     id: string
     lightBg: boolean
@@ -18,7 +21,7 @@ export const section1: Section = {
     topLine: "Currently supports 2 versions",
     headLine: "Windows and Android Devices",
     description: "View their respective repositories on GitHub for instructions on how to opt-in. Links are at the bottom of the page.",
-    img: require("../../assets/images/svgMultipleDevices.svg").default,
+    img: section1Img,
     imgStart: false,
     imgWidth: "400px",
     imgHeight: "500px",
@@ -32,7 +35,7 @@ export const section2: Section = {
     topLine: "Completely optional",
     headLine: "Optional submission of stats to MongoDB",
     description: "All stats collected by MongoDB does not contain any identifiable information.",
-    img: require("../../assets/images/svgChartsAndGraphs.svg").default,
+    img: section2Img,
     imgStart: true,
     imgWidth: "400px",
     imgHeight: "500px",
