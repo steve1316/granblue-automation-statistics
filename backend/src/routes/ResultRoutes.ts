@@ -6,7 +6,7 @@ import Result from "../schemas/Result"
 import User from "../schemas/User"
 import { authenticationWorkaround } from "./AccountRoutes"
 import fetch from "cross-fetch"
-import parser from "xml2json"
+import * as xml2js from "xml2js"
 
 const router: Router = express.Router()
 
@@ -52,11 +52,15 @@ router.post("/api/create-result", async (req, res) => {
                     }
 
                     // Convert XML to JSON object.
-                    let xmlJSONObj = JSON.parse(parser.toJson(await xmlRes.text()))
-                    if (appVersion !== xmlJSONObj["AppUpdater"]["update"]["latestVersion"]) {
-                        res.status(401).send("Wrong App version for GAA.")
-                        returnNow = true
-                    }
+                    xml2js.parseString(xmlRes.text(), (err, result) => {
+                        if (err) {
+                            res.status(500).send("Failed to parse the XML to JSON when reading in the mobile app version.")
+                            returnNow = true
+                        } else if (appVersion !== result.AppUpdater.update[0].latestVersion[0]) {
+                            res.status(401).send("Wrong App version for GAA.")
+                            returnNow = true
+                        }
+                    })
                 })
                 .catch((err) => {
                     res.status(400).send(`Cannot fetch current mobile app version using link with error: ${err}`)
