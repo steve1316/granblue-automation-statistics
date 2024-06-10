@@ -1,62 +1,62 @@
 import React, { useEffect, useState, useContext } from "react"
 import { Avatar, Container, Grid, TextField, Typography, Theme, Alert, Snackbar, Paper, Stack } from "@mui/material"
-import makeStyles from "@mui/styles/makeStyles"
+import { styled } from "@mui/system"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
 import svgGatewayBackground1 from "../../assets/images/svgGatewayBackground1.svg"
 import LoadingButton from "@mui/lab/LoadingButton"
 import { UserContext } from "../../context/UserContext"
 
+const StyledRoot = styled("section")({
+    // Background image from bgjar.com
+    backgroundColor: "#000",
+    backgroundAttachment: "fill",
+    backgroundPosition: "center",
+    backgroundImage: `url(${svgGatewayBackground1})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    overflow: "hidden",
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+})
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+    position: "relative",
+    background: "#fff",
+    borderRadius: 50,
+    height: 600,
+    width: 600,
+    margin: 16,
+    [theme.breakpoints.down("md")]: {
+        height: 650,
+        width: "80%",
+    },
+}))
+
+const StyledPaperContainer = styled(Container)({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "32px",
+    width: "100%",
+})
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+    margin: theme.spacing(1),
+    height: 64,
+    width: 64,
+    backgroundColor: "#1565C0",
+}))
+
+const StyledForm = styled("form")(({ theme }) => ({
+    marginTop: theme.spacing(3),
+}))
+
 const ForgotPassword = () => {
-    const useStyles = makeStyles((theme: Theme) => ({
-        root: {
-            // Background image from bgjar.com
-            backgroundColor: "#000",
-            backgroundAttachment: "fill",
-            backgroundPosition: "center",
-            backgroundImage: `url(${svgGatewayBackground1})`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            overflow: "hidden",
-            minHeight: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-        },
-        paper: {
-            position: "relative",
-            background: "#fff",
-            borderRadius: 50,
-            height: 600,
-            width: 600,
-            margin: 16,
-            [theme.breakpoints.down("md")]: {
-                height: 650,
-                width: "80%",
-            },
-        },
-        paperContainer: {
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "32px",
-            width: "100%",
-        },
-        avatar: {
-            margin: theme.spacing(1),
-            height: 64,
-            width: 64,
-            backgroundColor: "#1565C0",
-        },
-        form: {
-            marginTop: theme.spacing(3),
-        },
-    }))
-
-    const classes = useStyles()
-
     const entryPoint: string = useContext(UserContext).entryPoint
 
     const [recoveryEntryPoint, setRecoveryEntryPoint] = useState("")
@@ -112,12 +112,12 @@ const ForgotPassword = () => {
     }
 
     return (
-        <section id="forgot-password" className={classes.root}>
-            <Paper className={classes.paper}>
-                <Container className={classes.paperContainer} sx={{ height: "100%" }}>
-                    <Avatar className={classes.avatar}>
+        <StyledRoot id="forgot-password">
+            <StyledPaper>
+                <StyledPaperContainer sx={{ height: "100%" }}>
+                    <StyledAvatar>
                         <LockOpenIcon style={{ height: 48, width: 48 }} />
-                    </Avatar>
+                    </StyledAvatar>
                     <Typography component="h1" variant="h5">
                         Forgot Password
                     </Typography>
@@ -130,30 +130,22 @@ const ForgotPassword = () => {
                         </Stack>
                     ) : (
                         <Stack sx={{ height: "100%" }} justifyContent={"center"}>
-                            <form className={classes.form}>
+                            <StyledForm>
                                 <Grid container spacing={3} flexDirection={"column"}>
                                     <Grid item xs={12}>
                                         <TextField label="Username/Email" placeholder="Enter your username/email" required fullWidth onChange={(e) => setRecoveryEntryPoint(e.target.value)} />
                                     </Grid>
                                     <Grid item xs={12}></Grid>
                                 </Grid>
-                            </form>
+                            </StyledForm>
 
-                            <LoadingButton
-                                loading={inProgress}
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                disabled={!ready}
-                                onClick={(e) => sendPasswordRecoveryRequest(e)}
-                                sx={{ width: "100%" }}
-                            >
+                            <LoadingButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => sendPasswordRecoveryRequest(e)} sx={{ width: "100%" }}>
                                 Request a password reset
                             </LoadingButton>
                         </Stack>
                     )}
-                </Container>
-            </Paper>
+                </StyledPaperContainer>
+            </StyledPaper>
 
             {requestSent ? (
                 <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
@@ -170,7 +162,7 @@ const ForgotPassword = () => {
                     </Alert>
                 </Snackbar>
             ) : null}
-        </section>
+        </StyledRoot>
     )
 }
 

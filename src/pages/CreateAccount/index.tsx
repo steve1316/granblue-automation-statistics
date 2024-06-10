@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Avatar, ClickAwayListener, Container, Grid, IconButton, InputAdornment, Snackbar, TextField, Theme, Typography } from "@mui/material"
 import MuiAlert, { AlertProps } from "@mui/material/Alert"
-import makeStyles from "@mui/styles/makeStyles"
+import { styled } from "@mui/system"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import axios, { AxiosError, AxiosResponse } from "axios"
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -9,37 +9,37 @@ import { Visibility, VisibilityOff } from "@mui/icons-material"
 import PasswordChecklist from "react-password-checklist"
 import { UserContext } from "../../context/UserContext"
 
+const StyledPaperContainer = styled(Container)({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "32px",
+    width: "100%",
+})
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+    margin: theme.spacing(1),
+    height: 64,
+    width: 64,
+    backgroundColor: "#1565C0",
+}))
+
+const StyledSubtitle = styled(Typography)({
+    textAlign: "center",
+})
+
+const StyledForm = styled("form")(({ theme }) => ({
+    marginTop: theme.spacing(3),
+}))
+
+const StyledFormButton = styled(LoadingButton)({
+    backgroundColor: "#01bf71",
+    margin: "32px 32px 0 0",
+    color: "#000",
+})
+
 const CreateAccount = () => {
-    const useStyles = makeStyles((theme: Theme) => ({
-        paperContainer: {
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "32px",
-            width: "100%",
-        },
-        avatar: {
-            margin: theme.spacing(1),
-            height: 64,
-            width: 64,
-            backgroundColor: "#1565C0",
-        },
-        subtitle: {
-            textAlign: "center",
-        },
-        form: {
-            marginTop: theme.spacing(3),
-        },
-        formButton: {
-            backgroundColor: "#01bf71",
-            margin: "32px 32px 0 0",
-            color: "#000",
-        },
-    }))
-
-    const classes = useStyles()
-
     const entryPoint: string = useContext(UserContext).entryPoint
 
     const [username, setUsername] = useState("")
@@ -119,17 +119,15 @@ const CreateAccount = () => {
 
     return (
         <section id="createaccount">
-            <Container className={classes.paperContainer}>
-                <Avatar className={classes.avatar}>
+            <StyledPaperContainer>
+                <StyledAvatar>
                     <AccountCircleIcon style={{ height: 48, width: 48 }} />
-                </Avatar>
+                </StyledAvatar>
                 <Typography component="h1" variant="h5">
                     Create Account
                 </Typography>
-                <Typography variant="caption" className={classes.subtitle}>
-                    You can use the username and password for GA/GAA after you create your account.
-                </Typography>
-                <form className={classes.form}>
+                <StyledSubtitle variant="caption">You can use the username and password for GA/GAA after you create your account.</StyledSubtitle>
+                <StyledForm>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField label="Username" placeholder="Enter your username" required fullWidth onChange={(e) => setUsername(e.target.value)} />
@@ -181,11 +179,11 @@ const CreateAccount = () => {
                         </Grid>
                     </Grid>
 
-                    <LoadingButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => createAccount(e)} className={classes.formButton}>
+                    <StyledFormButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => createAccount(e)}>
                         Create Account
-                    </LoadingButton>
-                </form>
-            </Container>
+                    </StyledFormButton>
+                </StyledForm>
+            </StyledPaperContainer>
 
             {creationSuccess ? (
                 <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">

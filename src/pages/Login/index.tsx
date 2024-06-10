@@ -1,40 +1,39 @@
 import React, { useEffect, useState, useContext } from "react"
 import { Avatar, Container, Grid, IconButton, InputAdornment, TextField, Typography, Theme, Alert, Snackbar } from "@mui/material"
-import makeStyles from "@mui/styles/makeStyles"
+import { styled } from "@mui/system"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
 import LoadingButton from "@mui/lab/LoadingButton"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import { UserContext } from "../../context/UserContext"
 
+const StyledPaperContainer = styled(Container)({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "32px",
+    width: "100%",
+})
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+    margin: theme.spacing(1),
+    height: 64,
+    width: 64,
+    backgroundColor: "#1565C0",
+}))
+
+const StyledForm = styled("form")(({ theme }) => ({
+    marginTop: theme.spacing(3),
+}))
+
+const StyledFormButton = styled(LoadingButton)({
+    backgroundColor: "#01bf71",
+    margin: "32px 32px 0 0",
+    color: "#000",
+})
+
 const Login = () => {
-    const useStyles = makeStyles((theme: Theme) => ({
-        paperContainer: {
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "32px",
-            width: "100%",
-        },
-        avatar: {
-            margin: theme.spacing(1),
-            height: 64,
-            width: 64,
-            backgroundColor: "#1565C0",
-        },
-        form: {
-            marginTop: theme.spacing(3),
-        },
-        formButton: {
-            backgroundColor: "#01bf71",
-            margin: "32px 32px 0 0",
-            color: "#000",
-        },
-    }))
-
-    const classes = useStyles()
-
     const entryPoint: string = useContext(UserContext).entryPoint
 
     const [username, setUsername] = useState("")
@@ -98,14 +97,14 @@ const Login = () => {
 
     return (
         <section id="login">
-            <Container className={classes.paperContainer}>
-                <Avatar className={classes.avatar}>
+            <StyledPaperContainer>
+                <StyledAvatar>
                     <LockOpenIcon style={{ height: 48, width: 48 }} />
-                </Avatar>
+                </StyledAvatar>
                 <Typography component="h1" variant="h5">
                     Login
                 </Typography>
-                <form className={classes.form}>
+                <StyledForm>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField label="Username" placeholder="Enter your username" required fullWidth onChange={(e) => setUsername(e.target.value)} />
@@ -130,11 +129,11 @@ const Login = () => {
                             />
                         </Grid>
                     </Grid>
-                    <LoadingButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => login(e)} className={classes.formButton}>
+                    <StyledFormButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => login(e)}>
                         Login
-                    </LoadingButton>
-                </form>
-            </Container>
+                    </StyledFormButton>
+                </StyledForm>
+            </StyledPaperContainer>
 
             {loginFailed ? (
                 <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
