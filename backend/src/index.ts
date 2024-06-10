@@ -17,7 +17,7 @@ dotenv.config()
 
 ////////////////////
 // Connect to MongoDB cluster.
-mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_URI}`, (err: MongooseError) => {
+mongoose.connect(process.env.MONGODB_URI as string, (err: MongooseError) => {
     if (err) throw err
     console.log("Connected to MongoDB Cluster.")
 })
