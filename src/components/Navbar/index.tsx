@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react"
 import makeStyles from "@mui/styles/makeStyles"
 import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider, ListItemIcon, Box, Theme } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
-import { Link as RouterLink, useHistory } from "react-router-dom"
+import { Link as RouterLink, useNavigate } from "react-router-dom"
 import { AssignmentInd, Home, Logout, InsertChart } from "@mui/icons-material"
 import { UserContext } from "../../context/UserContext"
 import axios, { AxiosResponse } from "axios"
@@ -57,7 +57,7 @@ const NavBar = () => {
     }))
 
     const classes = useStyles()
-    const history = useHistory()
+    const navigate = useNavigate()
     const uc = useContext(UserContext)
     const user: UserInterface = uc.user
     const entryPoint: string = uc.entryPoint
@@ -166,7 +166,7 @@ const NavBar = () => {
                     variant="h6"
                     className={classes.title}
                     onClick={() => {
-                        history.push("/")
+                        navigate("/")
                         scrollToTop()
                     }}
                 >
@@ -184,7 +184,7 @@ const NavBar = () => {
                         color="inherit"
                         className={classes.loginButton}
                         onClick={() => {
-                            history.push("/gateway")
+                            navigate("/gateway")
                         }}
                     >
                         Log In

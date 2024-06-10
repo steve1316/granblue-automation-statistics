@@ -3,7 +3,7 @@ import makeStyles from "@mui/styles/makeStyles"
 import ReactPlayer from "react-player"
 import heroVideo from "../../assets/hero_video.mp4"
 import { Box, Button, Theme, Typography } from "@mui/material"
-import { useHistory } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 const Hero = () => {
     const useStyles = makeStyles((theme: Theme) => ({
@@ -77,7 +77,7 @@ const Hero = () => {
     }))
 
     const classes = useStyles()
-    const history = useHistory()
+    const navigate = useNavigate()
 
     return (
         <section className={classes.root}>
@@ -94,7 +94,7 @@ const Hero = () => {
                     </Typography>
 
                     <Box className={classes.heroButtonWrapper}>
-                        <Button color="primary" variant="contained" className={classes.heroButton} onClick={() => history.push("/gateway")}>
+                        <Button color="primary" variant="contained" className={classes.heroButton} onClick={() => navigate("/gateway")}>
                             Get Started
                         </Button>
                         <Button color="primary" variant="contained" className={classes.heroButton} onClick={() => window.open("https://github.com/steve1316/granblue-automation-statistics", "_blank")}>
