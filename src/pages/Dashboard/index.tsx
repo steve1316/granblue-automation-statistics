@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import makeStyles from "@mui/styles/makeStyles"
+import { styled } from "@mui/system"
 import { Autocomplete, Box, Button, Chip, CircularProgress, Grid, Stack, Tab, Tabs, TextField, Theme } from "@mui/material"
 import { UserContext } from "../../context/UserContext"
 import axios from "axios"
@@ -14,56 +14,58 @@ import data from "../../data/data.json"
 import CustomPie from "../../components/CustomPie"
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment"
+import moment, { Moment } from "moment"
+
+const StyledRoot = styled("section")({
+    background: "#000",
+    overflow: "hidden",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+    minHeight: "100vh",
+    // backgroundColor: "#222020",
+    padding: 15,
+})
+
+const StyledContainer = styled("div")({
+    color: "#fff",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: "10%",
+})
+
+const StyledTitle = styled("h2")({
+    fontSize: "40px",
+    margin: "16px auto",
+})
+
+const StyledChartContainer = styled("div")({
+    height: "500px",
+    width: "100%",
+    marginTop: "16px",
+    marginBottom: "16px",
+})
+
+const StyledTableContainer = styled("div")(({ theme }) => ({
+    position: "relative",
+    height: "60%",
+    width: "100%",
+    marginTop: "16px",
+    marginBottom: "16px",
+    [theme.breakpoints.down("sm")]: {
+        height: "100%",
+    },
+}))
+
+const StyledSearchBar = styled(TextField)({
+    backgroundColor: "white",
+})
 
 const Dashboard = () => {
-    const useStyles = makeStyles((theme: Theme) => ({
-        root: {
-            background: "#000",
-            overflow: "hidden",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-            minHeight: "100vh",
-            // backgroundColor: "#222020",
-            padding: 15,
-        },
-        container: {
-            color: "#fff",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: "10%",
-        },
-        title: {
-            fontSize: "40px",
-            margin: "16px auto",
-        },
-        chartContainer: {
-            height: "500px",
-            width: "100%",
-            marginTop: "16px",
-            marginBottom: "16px",
-        },
-        tableContainer: {
-            position: "relative",
-            height: "60%",
-            width: "100%",
-            marginTop: "16px",
-            marginBottom: "16px",
-            [theme.breakpoints.down("sm")]: {
-                height: "100%",
-            },
-        },
-        searchBar: {
-            backgroundColor: "white",
-        },
-    }))
-
     type Order = "asc" | "desc"
-
-    const classes = useStyles()
 
     const uc = useContext(UserContext)
     const user: UserInterface = uc.user
@@ -79,11 +81,11 @@ const Dashboard = () => {
     const [showOnlyUserResults, setShowOnlyUserResults] = useState(false)
 
     const [loading, setLoading] = useState(false)
-    const [refreshDate, setRefreshDate] = useState<Date>(new Date())
+    const [refreshDate, setRefreshDate] = useState<Moment>(moment())
     const [showDistributionOfRuns, setShowDistributionOfRuns] = useState(false)
     const [tabValue, setTabValue] = useState<string>("All")
-    const [startDate, setStartDate] = useState<Date>(new Date(new Date().getFullYear(), 0, 1))
-    const [endDate, setEndDate] = useState<Date>(new Date())
+    const [startDate, setStartDate] = useState<Moment>(moment().startOf("year"))
+    const [endDate, setEndDate] = useState<Moment>(moment())
 
     // Reset the screen position back to the top of the page and update the title of the page.
     useEffect(() => {
@@ -163,7 +165,7 @@ const Dashboard = () => {
                 getItemResults(newSearch)
             }
 
-            setRefreshDate(new Date())
+            setRefreshDate(moment())
         }
     }, [searchSubmission]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -259,7 +261,7 @@ const Dashboard = () => {
     // Filter the data received from the API using the given start and end dates.
     const filterData = (tempData: ResultInterface[]) => {
         let processedData: ResultInterface[] = tempData.filter((record) => {
-            let tempDate = new Date(record.date)
+            let tempDate = moment(record.date)
             return tempDate >= startDate && tempDate <= endDate && (tabValue === "All" || tabValue === record.platform)
         })
 
@@ -268,9 +270,9 @@ const Dashboard = () => {
     }
 
     return (
-        <section className={classes.root}>
-            <div className={classes.container}>
-                <h2 className={classes.title}>Dashboard</h2>
+        <StyledRoot>
+            <StyledContainer>
+                <StyledTitle>Dashboard</StyledTitle>
 
                 <Stack direction="row" spacing={1} sx={{ marginTop: "16px" }}>
                     <Chip label="Line" color="primary" onClick={() => setChartType("line")} icon={chartType === "line" ? <Done /> : undefined} variant={chartType === "line" ? "filled" : "outlined"} />
@@ -278,21 +280,9 @@ const Dashboard = () => {
                 </Stack>
 
                 <Stack direction="row" spacing={1} sx={{ marginTop: "16px" }}>
-                    <Chip
-                        label="Month"
-                        color="primary"
-                        onClick={() => setDateFilter("month")}
-                        icon={dateFilter === "month" ? <Done /> : undefined}
-                        variant={dateFilter === "month" ? "filled" : "outlined"}
-                    />
+                    <Chip label="Month" color="primary" onClick={() => setDateFilter("month")} icon={dateFilter === "month" ? <Done /> : undefined} variant={dateFilter === "month" ? "filled" : "outlined"} />
                     <Chip label="Day" color="primary" onClick={() => setDateFilter("day")} icon={dateFilter === "day" ? <Done /> : undefined} variant={dateFilter === "day" ? "filled" : "outlined"} />
-                    <Chip
-                        label="Year"
-                        color="primary"
-                        onClick={() => setDateFilter("year")}
-                        icon={dateFilter === "year" ? <Done /> : undefined}
-                        variant={dateFilter === "year" ? "filled" : "outlined"}
-                    />
+                    <Chip label="Year" color="primary" onClick={() => setDateFilter("year")} icon={dateFilter === "year" ? <Done /> : undefined} variant={dateFilter === "year" ? "filled" : "outlined"} />
                 </Stack>
 
                 <Stack direction="row" spacing={1} sx={{ marginTop: "16px" }}>
@@ -307,34 +297,21 @@ const Dashboard = () => {
                         variant={showDistributionOfRuns ? "filled" : "outlined"}
                     />
 
-                    <Chip
-                        label="Show only my results"
-                        color="primary"
-                        onClick={() => setShowOnlyUserResults(!showOnlyUserResults)}
-                        icon={showOnlyUserResults ? <Done /> : undefined}
-                        variant={showOnlyUserResults ? "filled" : "outlined"}
-                    />
+                    <Chip label="Show only my results" color="primary" onClick={() => setShowOnlyUserResults(!showOnlyUserResults)} icon={showOnlyUserResults ? <Done /> : undefined} variant={showOnlyUserResults ? "filled" : "outlined"} />
                 </Stack>
-            </div>
+            </StyledContainer>
 
-            <div className={classes.chartContainer}>
-                <CustomChart
-                    type={chartType}
-                    chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Showing All Results`}
-                    data={showOnlyUserResults ? userResults : results}
-                    dateFilter={dateFilter}
-                    startDate={startDate}
-                    endDate={endDate}
-                />
-            </div>
+            <StyledChartContainer>
+                <CustomChart type={chartType} chartTitle={search !== "" ? `${search} by ${dateFilter}` : `Showing All Results`} data={showOnlyUserResults ? userResults : results} dateFilter={dateFilter} startDate={startDate.toDate()} endDate={endDate.toDate()} />
+            </StyledChartContainer>
 
             {showDistributionOfRuns ? (
-                <div className={classes.chartContainer}>
-                    <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} startDate={startDate} />
-                </div>
+                <StyledChartContainer>
+                    <CustomPie chartTitle={"Distribution of runs"} data={showOnlyUserResults ? userResults : results} startDate={startDate.toDate()} />
+                </StyledChartContainer>
             ) : null}
 
-            <div className={classes.tableContainer}>
+            <StyledTableContainer>
                 <Grid container spacing={2} columns={{ xs: 4, md: 12 }} sx={{ marginBottom: "16px" }} justifyContent="space-between" alignItems="center">
                     <Grid item xs={3}>
                         <Tabs value={tabValue} onChange={(_, value) => setTabValue(value)} sx={{ color: "white" }} textColor="inherit">
@@ -370,12 +347,12 @@ const Dashboard = () => {
                             <DatePicker
                                 label="Select Start Date"
                                 value={startDate}
-                                onChange={(e: Date | null) => {
+                                onChange={(e: Moment | null) => {
                                     if (e !== null) setStartDate(e)
                                 }}
-                                minDate={new Date(2022, 5, 1)}
-                                maxDate={new Date()}
-                                renderInput={(params) => <TextField {...params} variant="filled" sx={{ backgroundColor: "white", borderRadius: "5px" }} fullWidth />}
+                                minDate={moment("2022-05-01")}
+                                maxDate={moment()}
+                                slotProps={{ textField: { variant: "filled", sx: { backgroundColor: "white", borderRadius: "5px" }, fullWidth: true } }}
                             />
                         </LocalizationProvider>
                     </Grid>
@@ -384,12 +361,12 @@ const Dashboard = () => {
                             <DatePicker
                                 label="Select End Date"
                                 value={endDate}
-                                onChange={(e: Date | null) => {
+                                onChange={(e: Moment | null) => {
                                     if (e !== null) setEndDate(e)
                                 }}
                                 minDate={startDate}
-                                maxDate={new Date()}
-                                renderInput={(params) => <TextField {...params} variant="filled" sx={{ backgroundColor: "white", borderRadius: "5px" }} fullWidth />}
+                                maxDate={moment()}
+                                slotProps={{ textField: { variant: "filled", sx: { backgroundColor: "white", borderRadius: "5px" }, fullWidth: true } }}
                             />
                         </LocalizationProvider>
                     </Grid>
@@ -411,21 +388,16 @@ const Dashboard = () => {
                     }}
                     getOptionLabel={(option) => option}
                     isOptionEqualToValue={(option) => option !== ""}
-                    renderInput={(params) => (
-                        <TextField
-                            className={classes.searchBar}
-                            {...params}
-                            label="Search Farming Mode or Item"
-                            variant="filled"
-                            helperText="Display data belonging to a particular Farming Mode or item"
-                        />
-                    )}
+                    renderInput={(params) => <StyledSearchBar {...params} label="Search Farming Mode or Item" variant="filled" helperText="Display data belonging to a particular Farming Mode or item" />}
                     renderOption={(props, option, { inputValue }) => {
+                        // The props object was being spread into the <li> element which included the key property which triggered a warning to not do that.
+                        // Perform type assertion to tell TypeScript that props has a key property to get rid of the warning.
+                        const { key, ...otherProps } = props as { key: React.Key } & React.HTMLAttributes<HTMLLIElement>
                         const matches = match(option, inputValue)
                         const parts = parse(option, matches)
 
                         return (
-                            <li {...props}>
+                            <li key={key} {...otherProps}>
                                 <div>
                                     {parts.map((part, index) => {
                                         return (
@@ -439,9 +411,9 @@ const Dashboard = () => {
                         )
                     }}
                 />
-                <CustomTable rows={showOnlyUserResults ? userResults : results} refreshDate={refreshDate} />
-            </div>
-        </section>
+                <CustomTable rows={showOnlyUserResults ? userResults : results} refreshDate={refreshDate.toDate()} />
+            </StyledTableContainer>
+        </StyledRoot>
     )
 }
 
