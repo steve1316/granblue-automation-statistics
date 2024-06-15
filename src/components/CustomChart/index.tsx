@@ -1,257 +1,133 @@
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement } from "chart.js"
+import { useMemo } from "react"
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement, Filler } from "chart.js"
 import { Bar, Line } from "react-chartjs-2"
-import { ResultInterface } from "../../interfaces/ResultInterface"
-import randomColor from "randomcolor"
+import { chartOptions, PLATFORM_COLORS } from "../../lib/charts"
+import { SummaryDay } from "../../lib/results"
 
 // Register elements to be used by chartjs.
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler)
 
-const CustomChart = ({ type, chartTitle, data, dateFilter, startDate, endDate }: { type: string; chartTitle: string; data: ResultInterface[]; dateFilter: string; startDate: Date; endDate: Date }) => {
-    interface Element {
-        date: Date
-        valueGA: number
-        valueGAA: number
-    }
+// The bots, one series each.
+const PLATFORMS = ["GA", "GAA"] as const
 
-    const chartElements: Element[] = []
-    const barGABackgroundColors: string[] = []
-    const barGAABackgroundColors: string[] = []
-    let newResults: { [key: string]: any } = {}
-    let firstTimeSetup = true
+// Short month names for the axis labels, January first.
+const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-    // Contains the Month names.
-    const months: { [key: string]: string } = {
-        "1": "January",
-        "2": "February",
-        "3": "March",
-        "4": "April",
-        "5": "May",
-        "6": "June",
-        "7": "July",
-        "8": "August",
-        "9": "September",
-        "10": "October",
-        "11": "November",
-        "12": "December",
-    }
+// The groupings the Dashboard offers. Anything else groups by day.
+const GROUPINGS: Record<string, Grouping> = {
+    year: { keyLength: 4, first: (date) => new Date(date.getFullYear(), 0, 1), step: (cursor) => cursor.setFullYear(cursor.getFullYear() + 1) },
+    month: { keyLength: 7, first: (date) => new Date(date.getFullYear(), date.getMonth(), 1), step: (cursor) => cursor.setMonth(cursor.getMonth() + 1) },
+    day: { keyLength: 10, first: (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()), step: (cursor) => cursor.setDate(cursor.getDate() + 1) },
+}
 
-    const initialSetup = () => {
-        let tempStartDate = new Date(startDate)
-        let tempEndDate = new Date(endDate)
-        if (dateFilter === "month") {
-            if (firstTimeSetup) {
-                while (tempStartDate <= tempEndDate) {
-                    let startMonth = tempStartDate.getMonth() + 1
-                    const newKey = `${tempStartDate.getFullYear()}-${startMonth}`
-                    newResults[newKey] = { amountGA: 0, amountGAA: 0 }
+/** How one grouping of the axis works. */
+interface Grouping {
+    /** How much of a "YYYY-MM-DD" day makes up the group's key. */
+    keyLength: number
+    /** Returns the start of the group a date falls in. */
+    first: (date: Date) => Date
+    /** Moves a date on to the start of the next group. */
+    step: (cursor: Date) => void
+}
 
-                    chartElements.push({ date: new Date(tempStartDate), valueGA: newResults[newKey].amountGA, valueGAA: newResults[newKey].amountGAA })
-                    barGABackgroundColors.push(randomColor())
-                    barGAABackgroundColors.push(randomColor())
+/** Props for CustomChart. */
+interface Props {
+    /** Which chart to draw, "line" or "bar". */
+    type: string
+    /** The title shown above the chart. */
+    chartTitle: string
+    /** Totals per day for the current search. Days without runs can be left out. */
+    days: SummaryDay[]
+    /** How the days are grouped on the axis: "day", "month" or "year". */
+    dateFilter: string
+    /** First day of the range the axis covers. */
+    startDate: Date
+    /** Last day of the range the axis covers. */
+    endDate: Date
+}
 
-                    tempStartDate.setMonth(tempStartDate.getMonth() + 1)
-                }
-            }
-        } else if (dateFilter === "day") {
-            if (firstTimeSetup) {
-                while (tempStartDate <= tempEndDate) {
-                    let startMonth = tempStartDate.getMonth() + 1
-                    let startDay = tempStartDate.getDate()
-                    const newKey = `${tempStartDate.getFullYear()}-${startMonth}-${startDay}`
-                    newResults[newKey] = { amountGA: 0, amountGAA: 0 }
+/**
+ * Formats a date as the "YYYY-MM-DD" key the day totals use, in the browser's time zone.
+ *
+ * @param date The date to format.
+ * @returns The key.
+ */
+const dayKey = (date: Date): string => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
 
-                    chartElements.push({ date: new Date(tempStartDate), valueGA: newResults[newKey].amountGA, valueGAA: newResults[newKey].amountGAA })
-                    barGABackgroundColors.push(randomColor())
-                    barGAABackgroundColors.push(randomColor())
+/**
+ * Turns a grouping key into its axis label.
+ *
+ * @param key The key: "YYYY", "YYYY-MM" or "YYYY-MM-DD".
+ * @returns The label, e.g. "2024", "Jan '24" or "Jan 5 '24".
+ */
+const labelFor = (key: string): string => {
+    const [year, month, day] = key.split("-")
+    if (!month) return year
 
-                    tempStartDate.setDate(tempStartDate.getDate() + 1)
-                }
-            }
-        } else {
-            if (firstTimeSetup) {
-                while (tempStartDate.getFullYear() <= tempEndDate.getFullYear()) {
-                    const newKey = `${tempStartDate.getFullYear()}`
-                    newResults[newKey] = { amountGA: 0, amountGAA: 0 }
+    const monthLabel = MONTH_LABELS[Number(month) - 1]
+    return day ? `${monthLabel} ${Number(day)} '${year.slice(2)}` : `${monthLabel} '${year.slice(2)}`
+}
 
-                    chartElements.push({ date: new Date(tempStartDate), valueGA: newResults[newKey].amountGA, valueGAA: newResults[newKey].amountGAA })
-                    barGABackgroundColors.push(randomColor())
-                    barGAABackgroundColors.push(randomColor())
+/**
+ * Draws the amounts per day, month or year as a line or bar chart, with one series per bot.
+ *
+ * @param props The chart's type, title, totals and range.
+ * @returns The chart, or null for an unknown chart type.
+ */
+const CustomChart = ({ type, chartTitle, days, dateFilter, startDate, endDate }: Props) => {
+    const startTime = startDate.getTime()
+    const endTime = endDate.getTime()
 
-                    tempStartDate.setFullYear(tempStartDate.getFullYear() + 1)
-                }
-            }
+    // Roll the days up into the chosen grouping. This only reruns when the search or the grouping changes.
+    const groups = useMemo(() => {
+        const grouping = GROUPINGS[dateFilter] ?? GROUPINGS.day
+        const totals = new Map<string, { amountGA: number; amountGAA: number }>()
+
+        // Start with an empty group for every step of the range, so quiet periods still show on the axis.
+        for (const cursor = grouping.first(new Date(startTime)); cursor.getTime() <= endTime; grouping.step(cursor)) {
+            totals.set(dayKey(cursor).slice(0, grouping.keyLength), { amountGA: 0, amountGAA: 0 })
         }
 
-        firstTimeSetup = false
-    }
-
-    if (data.length === 0) {
-        initialSetup()
-    }
-
-    // Process each result in the data and set up the values and labels for the chart.
-    data.forEach((result) => {
-        // Destructure the date.
-        let resultDate = new Date(result.date)
-        let resultMonth = resultDate.getMonth() + 1
-        let resultDay = resultDate.getDate()
-        let resultYear = resultDate.getFullYear()
-
-        if (resultDate < startDate) return
-
-        if (dateFilter === "month") {
-            initialSetup()
-
-            // Now add the amount value to the month's sum.
-            const newKey = `${resultYear}-${resultMonth}`
-            try {
-                if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
-                else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
-            } catch (e) {
-                if (result.platform === "GA") newResults[newKey] = { amountGA: result.amount, amountGAA: 0 }
-                else if (result.platform === "GAA") newResults[newKey] = { amountGA: 0, amountGAA: result.amount }
-                chartElements.push({ date: new Date(resultDate), valueGA: newResults[newKey].amountGA, valueGAA: newResults[newKey].amountGAA })
-                barGABackgroundColors.push(randomColor())
-                barGAABackgroundColors.push(randomColor())
-            }
-
-            let index = chartElements.findIndex((element) => element.date.getMonth() === resultDate.getMonth() && element.date.getFullYear() === resultDate.getFullYear())
-            chartElements[index].valueGA = newResults[newKey].amountGA
-            chartElements[index].valueGAA = newResults[newKey].amountGAA
-        } else if (dateFilter === "day") {
-            initialSetup()
-
-            // Now add the amount value to the day's sum.
-            const newKey = `${resultYear}-${resultMonth}-${resultDay}`
-            try {
-                if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
-                else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
-            } catch (e) {
-                if (result.platform === "GA") newResults[newKey] = { amountGA: result.amount, amountGAA: 0 }
-                else if (result.platform === "GAA") newResults[newKey] = { amountGA: 0, amountGAA: result.amount }
-                chartElements.push({ date: new Date(resultDate), valueGA: newResults[newKey].amountGA, valueGAA: newResults[newKey].amountGAA })
-                barGABackgroundColors.push(randomColor())
-                barGAABackgroundColors.push(randomColor())
-            }
-
-            let index = chartElements.findIndex(
-                (element) => element.date.getMonth() === resultDate.getMonth() && element.date.getDate() === resultDate.getDate() && element.date.getFullYear() === resultDate.getFullYear()
-            )
-            chartElements[index].valueGA = newResults[newKey].amountGA
-            chartElements[index].valueGAA = newResults[newKey].amountGAA
-        } else if (dateFilter === "year") {
-            initialSetup()
-
-            const newKey = `${resultYear}`
-            try {
-                if (result.platform === "GA") newResults[newKey]["amountGA"] += result.amount
-                else if (result.platform === "GAA") newResults[newKey]["amountGAA"] += result.amount
-            } catch (e) {
-                if (result.platform === "GA") newResults[newKey] = { amountGA: result.amount, amountGAA: 0 }
-                else if (result.platform === "GAA") newResults[newKey] = { amountGA: 0, amountGAA: result.amount }
-                chartElements.push({ date: new Date(resultDate), valueGA: newResults[newKey].amountGA, valueGAA: newResults[newKey].amountGAA })
-                barGABackgroundColors.push(randomColor())
-                barGAABackgroundColors.push(randomColor())
-            }
-
-            let index = chartElements.findIndex((element) => element.date.getFullYear() === resultDate.getFullYear())
-            chartElements[index].valueGA = newResults[newKey].amountGA
-            chartElements[index].valueGAA = newResults[newKey].amountGAA
+        for (const day of days) {
+            const key = day.day.slice(0, grouping.keyLength)
+            const total = totals.get(key) ?? { amountGA: 0, amountGAA: 0 }
+            total.amountGA += day.amountGA
+            total.amountGAA += day.amountGAA
+            totals.set(key, total)
         }
-    })
 
-    // Sort the arrays by date.
-    if (dateFilter === "month") {
-        chartElements.sort((ele1, ele2) => {
-            return ele1.date.getTime() - ele2.date.getTime()
-        })
-    } else if (dateFilter === "day") {
-        chartElements.sort((ele1, ele2) => {
-            return ele1.date.getTime() - ele2.date.getTime()
-        })
-    } else if (dateFilter === "year") {
-        chartElements.sort((ele1, ele2) => {
-            return ele1.date.getFullYear() - ele2.date.getFullYear()
-        })
-    }
-
-    // Create the labels and values arrays to display now that everything is all sorted.
-    const labels: string[] = []
-    const dataValuesGA: number[] = []
-    const dataValuesGAA: number[] = []
-    chartElements.forEach((ele) => {
-        let month = months[ele.date.getMonth() + 1]
-        if (dateFilter === "month") {
-            labels.push(`${month[0]}${month[1]}${month[2]} '${ele.date.getFullYear().toString()[2]}${ele.date.getFullYear().toString()[3]}`)
-        } else if (dateFilter === "day") {
-            labels.push(`${month[0]}${month[1]}${month[2]} ${ele.date.getDate()} '${ele.date.getFullYear().toString()[2]}${ele.date.getFullYear().toString()[3]}`)
-        } else {
-            labels.push(`${ele.date.getFullYear()}`)
+        // The keys are zero-padded, so sorting them as text puts them in date order.
+        const keys = [...totals.keys()].sort()
+        return {
+            labels: keys.map(labelFor),
+            valuesGA: keys.map((key) => totals.get(key)!.amountGA),
+            valuesGAA: keys.map((key) => totals.get(key)!.amountGAA),
         }
-        dataValuesGA.push(ele.valueGA)
-        dataValuesGAA.push(ele.valueGAA)
-    })
+    }, [days, dateFilter, startTime, endTime])
 
     // Configuration options for customizing the chart.
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: "top" as const,
-            },
-            title: {
-                display: true,
-                text: chartTitle,
-            },
-        },
-        scales: { y: { min: 0 } },
-        maintainAspectRatio: false,
-    }
+    const options = useMemo(() => ({ ...chartOptions(chartTitle), scales: { y: { min: 0 } } }), [chartTitle])
 
-    // Data set with the labels and values to display on the chart.
-    const barData = {
-        labels: labels,
-        datasets: [
-            {
-                label: "GA",
-                data: dataValuesGA,
-                backgroundColor: barGABackgroundColors,
-            },
-            {
-                label: "GAA",
-                data: dataValuesGAA,
-                backgroundColor: barGAABackgroundColors,
-            },
-        ],
-    }
-    const lineData = {
-        labels: labels,
-        datasets: [
-            {
-                label: "GA",
-                data: dataValuesGA,
-                backgroundColor: randomColor(),
-                fill: true,
-                borderColor: randomColor(),
-            },
-            {
-                label: "GAA",
-                data: dataValuesGAA,
-                backgroundColor: randomColor(),
-                fill: true,
-                borderColor: randomColor(),
-            },
-        ],
-    }
+    // Data sets with the labels and values to display on the chart. Both chart types use the same series, one color per bot.
+    const chartData = useMemo(
+        () => ({
+            labels: groups.labels,
+            datasets: PLATFORMS.map((platform) => ({
+                label: platform,
+                data: platform === "GA" ? groups.valuesGA : groups.valuesGAA,
+                // Bars are drawn solid. Lines get a see-through fill, so the two areas can overlap.
+                backgroundColor: type === "bar" ? PLATFORM_COLORS[platform].border : PLATFORM_COLORS[platform].fill,
+                borderColor: PLATFORM_COLORS[platform].border,
+                fill: type === "line",
+            })),
+        }),
+        [groups, type]
+    )
 
     // Conditional rendering of different chart types.
-    if (type === "bar") {
-        return <Bar options={options} data={barData} />
-    } else if (type === "line") {
-        return <Line options={options} data={lineData} />
-    } else {
-        return null
-    }
+    if (type === "bar") return <Bar options={options} data={chartData} />
+    if (type === "line") return <Line options={options} data={chartData} />
+    return null
 }
 
 export default CustomChart

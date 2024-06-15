@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext } from "react"
 import { styled } from "@mui/system"
-import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Divider, ListItemIcon, Box, Theme } from "@mui/material"
+import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItemButton, ListItemText, Divider, ListItemIcon, Box } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import { Link as RouterLink, useNavigate } from "react-router-dom"
-import { AssignmentInd, Home, Logout, InsertChart } from "@mui/icons-material"
+import { AssignmentInd, Home, Logout, InsertChart, Info } from "@mui/icons-material"
 import { UserContext } from "../../context/UserContext"
-import axios, { AxiosResponse } from "axios"
-import { UserInterface } from "../../interfaces/UserInterface"
 
 const StyledAppBar = styled(AppBar)({
     background: "transparent",
@@ -68,8 +66,7 @@ const StyledBox = styled(Box)({
 const NavBar = () => {
     const navigate = useNavigate()
     const uc = useContext(UserContext)
-    const user: UserInterface = uc.user
-    const entryPoint: string = uc.entryPoint
+    const user = uc.user
 
     const [scrollNav, setScrollNav] = useState(false)
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -84,21 +81,10 @@ const NavBar = () => {
         setIsDrawerOpen(!isDrawerOpen)
     }
 
-    // Log out the user.
-    const logout = () => {
-        axios
-            .get(`${entryPoint}/api/logout`, { withCredentials: true })
-            .then((res: AxiosResponse) => {
-                if (res.status === 200) {
-                    // This will forcibly reload the page so that conditional rendering can occur for the Navbar.
-                    window.location.href = "/"
-                } else {
-                    console.error("[GAS] Failed to log user out: ", res.data)
-                }
-            })
-            .finally(() => {
-                localStorage.removeItem("user")
-            })
+    // Log out the user. No page reload needed - the user context reacts to the sign-out itself.
+    const logout = async () => {
+        await uc.signOut()
+        navigate("/")
     }
 
     // If user's y-position is greater than the specified offset, allow the page to send the user back to the top of the page.
@@ -129,42 +115,51 @@ const NavBar = () => {
                     <StyledBox>
                         <List>
                             <StyledRouterLink to="/">
-                                <ListItem button key="home">
+                                <ListItemButton key="home">
                                     <ListItemIcon>
                                         <Home />
                                     </ListItemIcon>
                                     <ListItemText primary="Home" />
-                                </ListItem>
+                                </ListItemButton>
+                            </StyledRouterLink>
+
+                            <StyledRouterLink to="/about">
+                                <ListItemButton key="about">
+                                    <ListItemIcon>
+                                        <Info />
+                                    </ListItemIcon>
+                                    <ListItemText primary="About" />
+                                </ListItemButton>
                             </StyledRouterLink>
 
                             {user ? (
                                 <>
                                     <StyledRouterLink to="/dashboard">
-                                        <ListItem button key="dashboard">
+                                        <ListItemButton key="dashboard">
                                             <ListItemIcon>
                                                 <InsertChart />
                                             </ListItemIcon>
                                             <ListItemText primary="Dashboard" />
-                                        </ListItem>
+                                        </ListItemButton>
                                     </StyledRouterLink>
                                     <Divider />
-                                    <StyledRouterLink to="/logout" onClick={() => logout()}>
-                                        <ListItem button key="logout">
+                                    <StyledRouterLink to="/" onClick={() => logout()}>
+                                        <ListItemButton key="logout">
                                             <ListItemIcon>
                                                 <Logout />
                                             </ListItemIcon>
                                             <ListItemText primary="Logout" />
-                                        </ListItem>
+                                        </ListItemButton>
                                     </StyledRouterLink>
                                 </>
                             ) : (
                                 <StyledRouterLink to="/gateway">
-                                    <ListItem button key="getstarted">
+                                    <ListItemButton key="getstarted">
                                         <ListItemIcon>
                                             <AssignmentInd />
                                         </ListItemIcon>
                                         <ListItemText primary="Get Started" />
-                                    </ListItem>
+                                    </ListItemButton>
                                 </StyledRouterLink>
                             )}
                         </List>

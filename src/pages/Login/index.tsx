@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from "react"
-import { Avatar, Container, Grid, IconButton, InputAdornment, TextField, Typography, Theme, Alert, Snackbar } from "@mui/material"
+import { Avatar, Container, Grid, TextField, Typography, Alert, Snackbar } from "@mui/material"
 import { styled } from "@mui/system"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
-import LoadingButton from "@mui/lab/LoadingButton"
-import { Visibility, VisibilityOff } from "@mui/icons-material"
+import { useNavigate } from "react-router-dom"
 import { UserContext } from "../../context/UserContext"
+import PasswordField from "../../components/PasswordField"
+import { StyledFormButton } from "../../components/StyledFormButton"
 
 const StyledPaperContainer = styled(Container)({
     display: "flex",
@@ -27,14 +28,9 @@ const StyledForm = styled("form")(({ theme }) => ({
     marginTop: theme.spacing(3),
 }))
 
-const StyledFormButton = styled(LoadingButton)({
-    backgroundColor: "#01bf71",
-    margin: "32px 32px 0 0",
-    color: "#000",
-})
-
 const Login = () => {
-    const entryPoint: string = useContext(UserContext).entryPoint
+    const { entryPoint, refreshUser } = useContext(UserContext)
+    const navigate = useNavigate()
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -62,31 +58,20 @@ const Login = () => {
         }
     }, [loginFailed])
 
-    // Send a POST request to the Express server to login.
-    const login = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    // Sign in through the API server. It sets the session cookie, then the user context reads the new user back.
+    const login = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         setInProgress(true)
-        axios
-            .post(
-                `${entryPoint}/api/login`,
-                {
-                    username: username,
-                    password: password,
-                },
-                {
-                    withCredentials: true,
-                }
-            )
-            .then(() => {
-                // After login was authenticated, send user to the Dashboard.
-                window.location.href = "/dashboard"
-            })
-            .catch(() => {
-                setLoginFailed(true)
-            })
-            .finally(() => {
-                setInProgress(false)
-            })
+
+        try {
+            await axios.post(`${entryPoint}/api/v2/login`, { username: username, password: password })
+            await refreshUser()
+            navigate("/dashboard")
+        } catch {
+            setLoginFailed(true)
+        } finally {
+            setInProgress(false)
+        }
     }
 
     // Close the Snackbar.
@@ -106,26 +91,18 @@ const Login = () => {
                 </Typography>
                 <StyledForm>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField label="Username" placeholder="Enter your username" required fullWidth onChange={(e) => setUsername(e.target.value)} />
                         </Grid>
-                        <Grid item xs={12}>
-                            <TextField
+                        <Grid size={12}>
+                            <PasswordField
                                 label="Password"
                                 placeholder="Enter your password"
                                 required
                                 fullWidth
                                 onChange={(e) => setPassword(e.target.value)}
-                                type={showPassword ? "text" : "password"}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
-                                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
+                                showPassword={showPassword}
+                                setShowPassword={setShowPassword}
                             />
                         </Grid>
                     </Grid>

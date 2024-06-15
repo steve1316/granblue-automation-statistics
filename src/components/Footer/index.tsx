@@ -3,6 +3,18 @@ import { Link as RouterLink } from "react-router-dom"
 import { FaGithub, FaLinkedin } from "react-icons/fa"
 import { styled } from "@mui/system"
 
+// Shared look of the text links in the footer columns.
+const LINK_STYLE = {
+    color: "#fff",
+    textDecoration: "none",
+    marginBottom: "0.5rem",
+    fontSize: "14px",
+    "&:hover": {
+        color: "#01bf71",
+        transition: "0.3s ease-out",
+    },
+}
+
 const StyledRoot = styled("section")({
     padding: "16px 0 16px 0",
     display: "flex",
@@ -48,16 +60,9 @@ const StyledLinksH1 = styled("h1")({
     marginBottom: "16px",
 })
 
-const StyledCustomRouterLink = styled(RouterLink)({
-    color: "#fff",
-    textDecoration: "none",
-    marginBottom: "0.5rem",
-    fontSize: "14px",
-    "&:hover": {
-        color: "#01bf71",
-        transition: "0.3s ease-out",
-    },
-})
+const StyledCustomRouterLink = styled(RouterLink)(LINK_STYLE)
+
+const StyledExternalLink = styled("a")({ ...LINK_STYLE, whiteSpace: "nowrap" })
 
 const StyledAdditionalInfoContainer = styled("section")({
     maxWidth: "1000px",
@@ -157,12 +162,12 @@ const Footer = () => {
                 <StyledLinksWrapper>
                     <StyledLinksItem>
                         <StyledLinksH1>Supported Apps</StyledLinksH1>
-                        <a href="https://github.com/steve1316/granblue-automation-pyautogui" target="_blank" rel="noreferrer" aria-label="Granblue Automation @ GitHub">
+                        <StyledExternalLink href="https://github.com/steve1316/granblue-automation-pyautogui" target="_blank" rel="noreferrer" aria-label="Granblue Automation @ GitHub">
                             Granblue Automation
-                        </a>
-                        <a href="https://github.com/steve1316/granblue-automation-android" target="_blank" rel="noreferrer" aria-label="Granblue Automation Android @ GitHub">
+                        </StyledExternalLink>
+                        <StyledExternalLink href="https://github.com/steve1316/granblue-automation-android" target="_blank" rel="noreferrer" aria-label="Granblue Automation Android @ GitHub">
                             Granblue Automation Android
-                        </a>
+                        </StyledExternalLink>
                     </StyledLinksItem>
                 </StyledLinksWrapper>
             </StyledLinksContainer>
