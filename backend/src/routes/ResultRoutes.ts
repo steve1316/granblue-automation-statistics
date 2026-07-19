@@ -1,11 +1,8 @@
 import express, { Router } from "express"
-import { ResultInterface } from "../interfaces/ResultInterface"
-import { UserInterface } from "../interfaces/UserInterface"
 import Item from "../schemas/Item"
 import Result from "../schemas/Result"
 import User from "../schemas/User"
 import { authenticationWorkaround } from "./AccountRoutes"
-import fetch from "cross-fetch"
 import * as xml2js from "xml2js"
 
 const router: Router = express.Router()
@@ -13,17 +10,17 @@ const router: Router = express.Router()
 // POST route to create a new result for an item. The bot at this point has already checked if the item exists before calling this.
 router.post("/api/create-result", async (req, res) => {
     if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
+        const { username, password } = req?.body ?? {}
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
 
-    const { appVersion } = req.body
+    const { appVersion } = req.body ?? {}
     let returnNow = false
     if (appVersion) {
-        const { platform } = req.body
+        const { platform } = req.body ?? {}
         if (platform === "GA") {
             await fetch("https://raw.githubusercontent.com/steve1316/granblue-automation-pyautogui/main/src-tauri/update.json")
                 .then(async (jsonRes) => {
@@ -32,7 +29,7 @@ router.post("/api/create-result", async (req, res) => {
                         returnNow = true
                     }
 
-                    await jsonRes.json().then((data) => {
+                    await jsonRes.json().then((data: any) => {
                         if (appVersion !== data.version) {
                             res.status(401).send({message: "Wrong App version for GA."})
                             returnNow = true
@@ -52,7 +49,8 @@ router.post("/api/create-result", async (req, res) => {
                     }
 
                     // Convert XML to JSON object.
-                    xml2js.parseString(xmlRes.text(), (err, result) => {
+                    const xmlText = await xmlRes.text()
+                    xml2js.parseString(xmlText, (err, result) => {
                         if (err) {
                             res.status(500).send({message: "Failed to parse the XML to JSON when reading in the mobile app version."})
                             returnNow = true
@@ -76,7 +74,7 @@ router.post("/api/create-result", async (req, res) => {
         return
     }
 
-    const { username, farmingMode, mission, itemName, platform, amount, elapsedTime } = req.body
+    const { username, farmingMode, mission, itemName, platform, amount, elapsedTime } = req.body ?? {}
     if (
         !username ||
         !farmingMode ||
@@ -100,45 +98,42 @@ router.post("/api/create-result", async (req, res) => {
         return
     }
 
-    await User.findOne({ username: username }, async (err: Error, doc: UserInterface) => {
-        if (err) throw err
-
-        if (doc) {
-            // Create the new Result object.
-            let date = new Date()
-            let newElapsedTime = "00:00:00"
-            if (elapsedTime !== "0.0" && elapsedTime !== "0") {
-                newElapsedTime = elapsedTime
-            }
-
-            const newResult = new Result({
-                username: username,
-                itemName: itemName,
-                amount: amount,
-                platform: platform,
-                farmingMode: farmingMode,
-                mission: mission,
-                date: `${date.toISOString()}`,
-                elapsedTime: newElapsedTime,
-            })
-
-            // Save the new Result to the results collection.
-            await newResult.save()
-
-            // Now update the total amount for this item.
-            await Item.updateOne({ itemName: itemName, farmingMode: farmingMode, mission: mission }, { $inc: { totalAmount: amount } }).exec()
-            console.log(`Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode at ${date} for ${username}.`)
-            res.status(201).send({message: `Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode.`})
-        } else {
-            res.status(404).send({message: "User does not exist."})
+    const doc = await User.findOne({ username: username })
+    if (doc) {
+        // Create the new Result object.
+        let date = new Date()
+        let newElapsedTime = "00:00:00"
+        if (elapsedTime !== "0.0" && elapsedTime !== "0") {
+            newElapsedTime = elapsedTime
         }
-    }).clone()
+
+        const newResult = new Result({
+            username: username,
+            itemName: itemName,
+            amount: amount,
+            platform: platform,
+            farmingMode: farmingMode,
+            mission: mission,
+            date: `${date.toISOString()}`,
+            elapsedTime: newElapsedTime,
+        })
+
+        // Save the new Result to the results collection.
+        await newResult.save()
+
+        // Now update the total amount for this item.
+        await Item.updateOne({ itemName: itemName, farmingMode: farmingMode, mission: mission }, { $inc: { totalAmount: amount } }).exec()
+        console.log(`Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode at ${date} for ${username}.`)
+        res.status(201).send({message: `Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode.`})
+    } else {
+        res.status(404).send({message: "User does not exist."})
+    }
 })
 
 // GET route to fetch multiple results via user ID.
 router.get("/api/get-result/user/:username", async (req, res) => {
     if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
+        const { username, password } = req?.body ?? {}
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send({message: "Not Authenticated."})
             return
@@ -151,21 +146,18 @@ router.get("/api/get-result/user/:username", async (req, res) => {
         return
     }
 
-    await Result.find({ username: username }, (err: Error, docs: ResultInterface[]) => {
-        if (err) throw err
-
-        if (docs) {
-            res.status(200).send(docs)
-        } else {
-            res.status(200).send({message: "No results have been posted yet for this user."})
-        }
-    }).clone()
+    const docs = await Result.find({ username: username })
+    if (docs) {
+        res.status(200).send(docs)
+    } else {
+        res.status(200).send({message: "No results have been posted yet for this user."})
+    }
 })
 
 // GET route to fetch multiple results via the item name.
 router.get("/api/get-result/item/:itemName", async (req, res) => {
     if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
+        const { username, password } = req?.body ?? {}
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send({message: "Not Authenticated."})
             return
@@ -183,47 +175,20 @@ router.get("/api/get-result/item/:itemName", async (req, res) => {
         sort = "desc"
     }
 
-    let newSort = sort === "asc" ? 1 : -1
+    const newSort = sort === "asc" ? 1 : -1
 
-    const { dateFilter } = req.query
-
-    if (dateFilter === "day") {
-        await Result.find({
-            itemName: itemName,
-        })
-            .sort({ _id: newSort })
-            .then((docs: ResultInterface[]) => {
-                if (docs) {
-                    res.status(200).send(docs)
-                } else {
-                    res.status(200).send({message: `No results have been posted yet for this item ${itemName}.`})
-                }
-            })
-            .catch((error: Error) => {
-                throw error
-            })
+    const docs = await Result.find({ itemName: itemName }).sort({ _id: newSort })
+    if (docs) {
+        res.status(200).send(docs)
     } else {
-        await Result.find({
-            itemName: itemName,
-        })
-            .sort({ _id: newSort })
-            .then((docs: ResultInterface[]) => {
-                if (docs) {
-                    res.status(200).send(docs)
-                } else {
-                    res.status(200).send({message: `No results have been posted yet for this item ${itemName}.`})
-                }
-            })
-            .catch((error: Error) => {
-                throw error
-            })
+        res.status(200).send({message: `No results have been posted yet for this item ${itemName}.`})
     }
 })
 
 // GET route to fetch multiple results via the Farming Mode.
 router.get("/api/get-result/farmingMode/:farmingMode", async (req, res) => {
     if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
+        const { username, password } = req?.body ?? {}
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send({message: "Not Authenticated."})
             return
@@ -236,21 +201,18 @@ router.get("/api/get-result/farmingMode/:farmingMode", async (req, res) => {
         return
     }
 
-    await Result.find({ farmingMode: farmingMode }, (err: Error, docs: ResultInterface[]) => {
-        if (err) throw err
-
-        if (docs) {
-            res.status(200).send(docs)
-        } else {
-            res.status(200).send({message: `No results have been posted yet for ${farmingMode} Farming Mode.`})
-        }
-    }).clone()
+    const docs = await Result.find({ farmingMode: farmingMode })
+    if (docs) {
+        res.status(200).send(docs)
+    } else {
+        res.status(200).send({message: `No results have been posted yet for ${farmingMode} Farming Mode.`})
+    }
 })
 
 // GET route to fetch multiple results via the Farming Mode's Mission.
 router.get("/api/get-result/farmingMode/:farmingMode/mission/:mission", async (req, res) => {
     if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
+        const { username, password } = req?.body ?? {}
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send({message: "Not Authenticated."})
             return
@@ -263,21 +225,18 @@ router.get("/api/get-result/farmingMode/:farmingMode/mission/:mission", async (r
         return
     }
 
-    await Result.find({ farmingMode: farmingMode, mission: mission }, (err: Error, docs: ResultInterface[]) => {
-        if (err) throw err
-
-        if (docs) {
-            res.status(200).send(docs)
-        } else {
-            res.status(200).send({message: `No results have been posted yet for ${mission} of ${farmingMode} Farming Mode.`})
-        }
-    }).clone()
+    const docs = await Result.find({ farmingMode: farmingMode, mission: mission })
+    if (docs) {
+        res.status(200).send(docs)
+    } else {
+        res.status(200).send({message: `No results have been posted yet for ${mission} of ${farmingMode} Farming Mode.`})
+    }
 })
 
 // GET route to fetch multiple results via just the Mission.
 router.get("/api/get-result/mission/:mission", async (req, res) => {
     if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
+        const { username, password } = req?.body ?? {}
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send({message: "Not Authenticated."})
             return
@@ -290,20 +249,17 @@ router.get("/api/get-result/mission/:mission", async (req, res) => {
         return
     }
 
-    await Result.find({ mission: mission }, (err: Error, docs: ResultInterface[]) => {
-        if (err) throw err
-
-        if (docs) {
-            res.status(200).send(docs)
-        } else {
-            res.status(200).send({message: `No results have been posted yet for the mission: ${mission}.`})
-        }
-    }).clone()
+    const docs = await Result.find({ mission: mission })
+    if (docs) {
+        res.status(200).send(docs)
+    } else {
+        res.status(200).send({message: `No results have been posted yet for the mission: ${mission}.`})
+    }
 })
 
 router.get("/api/get-result", async (req, res) => {
     if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
+        const { username, password } = req?.body ?? {}
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send({message: "Not Authenticated."})
             return
@@ -315,20 +271,14 @@ router.get("/api/get-result", async (req, res) => {
         sort = "desc"
     }
 
-    let newSort = sort === "asc" ? 1 : -1
+    const newSort = sort === "asc" ? 1 : -1
 
-    await Result.find()
-        .sort({ _id: newSort })
-        .then((docs: ResultInterface[]) => {
-            if (docs) {
-                res.status(200).send(docs)
-            } else {
-                res.status(200).send({message: `Failed to get all results sorted ${newSort}.`})
-            }
-        })
-        .catch((error: Error) => {
-            throw error
-        })
+    const docs = await Result.find().sort({ _id: newSort })
+    if (docs) {
+        res.status(200).send(docs)
+    } else {
+        res.status(200).send({message: `Failed to get all results sorted ${newSort}.`})
+    }
 })
 
 export default router
