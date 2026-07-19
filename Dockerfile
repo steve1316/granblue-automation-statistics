@@ -1,9 +1,12 @@
 FROM node:22-bookworm-slim AS builder
 
 WORKDIR /app
-ADD . /app
 
+# Copy dependency manifests first so the install layer stays cached across source-only changes.
+COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
+
+COPY . .
 RUN yarn build
 
 # SWS defaults to 80, so we need to expose that for the compose file to work.

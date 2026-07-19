@@ -9,9 +9,6 @@ services:
 
   frontend:
     build: ./
-    volumes:
-      - ./:/app
-      - /node_modules
     ports:
       # SWS in the Dockerfile defaults to port 80.
       - 5173:80
