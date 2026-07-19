@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useContext } from "react"
-import { Avatar, Container, Grid, TextField, Typography, Alert, Snackbar, Paper, Stack } from "@mui/material"
+import { Avatar, Button, Container, Grid, TextField, Typography, Alert, Snackbar, Paper, Stack } from "@mui/material"
 import { styled } from "@mui/system"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
 import svgGatewayBackground2 from "../../assets/images/svgGatewayBackground2.svg"
 import { useParams } from "react-router-dom"
-import LoadingButton from "@mui/lab/LoadingButton"
 import { UserContext } from "../../context/UserContext"
 
 const Root = styled("section")({
@@ -137,25 +136,25 @@ const ResetPassword = () => {
                     </Typography>
 
                     {requestSent || expired ? (
-                        <Stack sx={{ height: "100%" }} justifyContent={"center"}>
+                        <Stack sx={{ height: "100%", justifyContent: "center" }}>
                             <Typography component="p" variant="body1">
                                 {expired ? "Password reset link expired." : "Password successfully reset."}
                             </Typography>
                         </Stack>
                     ) : (
-                        <Stack spacing={3} sx={{ height: "100%" }} justifyContent={"center"}>
+                        <Stack spacing={3} sx={{ height: "100%", justifyContent: "center" }}>
                             <Form>
-                                <Grid container spacing={3} flexDirection={"column"}>
-                                    <Grid item xs={12}>
+                                <Grid container spacing={3}>
+                                    <Grid size={12}>
                                         <TextField label="New Password" placeholder="Enter your new password" required fullWidth onChange={(e) => setNewPassword(e.target.value)} />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid size={12}>
                                         <TextField label="Confirm Password" placeholder="Confirm password" required fullWidth onChange={(e) => setConfirmNewPassword(e.target.value)} error={newPassword !== confirmNewPassword} helperText={newPassword !== confirmNewPassword ? "Passwords do not match." : ""} />
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <LoadingButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={newPassword === "" && confirmNewPassword === "" && newPassword !== confirmNewPassword} onClick={(e) => sendPasswordResetRequest(e)} sx={{ width: "100%" }}>
+                                    <Grid size={12}>
+                                        <Button loading={inProgress} type="submit" variant="contained" color="primary" disabled={newPassword === "" && confirmNewPassword === "" && newPassword !== confirmNewPassword} onClick={(e) => sendPasswordResetRequest(e)} sx={{ width: "100%" }}>
                                             Reset Password
-                                        </LoadingButton>
+                                        </Button>
                                     </Grid>
                                 </Grid>
                             </Form>

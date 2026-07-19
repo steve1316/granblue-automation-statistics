@@ -7,7 +7,7 @@ interface IProviderProps {
 }
 
 export const UserContext = createContext<IProviderProps>({} as IProviderProps)
-export const UserContextProvider = ({ children }: any): JSX.Element => {
+export const UserContextProvider = ({ children }: any): React.JSX.Element => {
     const [user, setUser] = useState<any>()
 
     let entryPoint = "https://granblue-automation-statistics.com"

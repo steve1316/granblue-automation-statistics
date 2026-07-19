@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { Paper, Tabs, Tab, AppBar, Theme } from "@mui/material"
+import { useState } from "react"
+import { Paper, Tabs, Tab, AppBar } from "@mui/material"
 import { styled } from "@mui/system"
 import svgGatewayBackground1 from "../../assets/images/svgGatewayBackground1.svg"
 import svgGatewayBackground2 from "../../assets/images/svgGatewayBackground2.svg"
@@ -74,7 +74,7 @@ const Gateway = () => {
                 <StyledAppBar position="static" color="default">
                     <Tabs
                         value={tabValue}
-                        onChange={(e, value) => {
+                        onChange={(_e, value) => {
                             setTabValue(value)
                         }}
                         indicatorColor="secondary"

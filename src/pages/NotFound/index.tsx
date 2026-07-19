@@ -1,7 +1,7 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { styled } from "@mui/system"
 import { Link } from "react-router-dom"
-import { Button, Theme } from "@mui/material"
+import { Button } from "@mui/material"
 
 const StyledRoot = styled("section")({
     background: "#000",

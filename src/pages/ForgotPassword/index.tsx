@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useContext } from "react"
-import { Avatar, Container, Grid, TextField, Typography, Theme, Alert, Snackbar, Paper, Stack } from "@mui/material"
+import { Avatar, Button, Container, Grid, TextField, Typography, Alert, Snackbar, Paper, Stack } from "@mui/material"
 import { styled } from "@mui/system"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
 import svgGatewayBackground1 from "../../assets/images/svgGatewayBackground1.svg"
-import LoadingButton from "@mui/lab/LoadingButton"
 import { UserContext } from "../../context/UserContext"
 
 const StyledRoot = styled("section")({
@@ -123,25 +122,25 @@ const ForgotPassword = () => {
                     </Typography>
 
                     {requestSent ? (
-                        <Stack sx={{ height: "100%" }} justifyContent={"center"}>
+                        <Stack sx={{ height: "100%", justifyContent: "center" }}>
                             <Typography component="p" variant="body1" sx={{ textAlign: "center" }}>
                                 An email with a password reset link has been sent. Please check your spam folder if it did not arrive in your inbox.
                             </Typography>
                         </Stack>
                     ) : (
-                        <Stack sx={{ height: "100%" }} justifyContent={"center"}>
+                        <Stack sx={{ height: "100%", justifyContent: "center" }}>
                             <StyledForm>
-                                <Grid container spacing={3} flexDirection={"column"}>
-                                    <Grid item xs={12}>
+                                <Grid container spacing={3}>
+                                    <Grid size={12}>
                                         <TextField label="Username/Email" placeholder="Enter your username/email" required fullWidth onChange={(e) => setRecoveryEntryPoint(e.target.value)} />
                                     </Grid>
-                                    <Grid item xs={12}></Grid>
+                                    <Grid size={12}></Grid>
                                 </Grid>
                             </StyledForm>
 
-                            <LoadingButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => sendPasswordRecoveryRequest(e)} sx={{ width: "100%" }}>
+                            <Button loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => sendPasswordRecoveryRequest(e)} sx={{ width: "100%" }}>
                                 Request a password reset
-                            </LoadingButton>
+                            </Button>
                         </Stack>
                     )}
                 </StyledPaperContainer>

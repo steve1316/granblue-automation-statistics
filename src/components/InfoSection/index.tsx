@@ -1,8 +1,6 @@
-import React from "react"
 import { styled } from "@mui/system"
 import svgInfoSectionBackground from "../../assets/images/svgInfoSectionBackground.svg"
 import { Section } from "../../pages/Home/data"
-import { Theme } from "@mui/material"
 
 const StyledRoot = styled("section")(({ theme }) => ({
     background: "#000",

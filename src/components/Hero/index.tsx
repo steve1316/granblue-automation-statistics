@@ -1,7 +1,6 @@
 import { styled } from "@mui/system"
-import ReactPlayer from "react-player"
 import heroVideo from "../../assets/hero_video.mp4"
-import { Box, Button, Theme, Typography } from "@mui/material"
+import { Button, Typography } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 
 const StyledRoot = styled("section")({
@@ -83,7 +82,7 @@ const Hero = () => {
 
     return (
         <StyledRoot>
-            <ReactPlayer playing loop muted url={heroVideo} width="100%" height="100%" />
+            <video autoPlay loop muted playsInline src={heroVideo} style={{ width: "100%", height: "100%" }} />
 
             <StyledHeroOverlay>
                 <StyledHeroContainer>

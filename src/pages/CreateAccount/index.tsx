@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Avatar, ClickAwayListener, Container, Grid, IconButton, InputAdornment, Snackbar, TextField, Theme, Typography } from "@mui/material"
+import { Avatar, Button, ClickAwayListener, Container, Grid, IconButton, InputAdornment, Snackbar, TextField, Typography } from "@mui/material"
 import MuiAlert, { AlertProps } from "@mui/material/Alert"
 import { styled } from "@mui/system"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import axios, { AxiosError, AxiosResponse } from "axios"
-import LoadingButton from "@mui/lab/LoadingButton"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import PasswordChecklist from "react-password-checklist"
 import { UserContext } from "../../context/UserContext"
@@ -33,7 +32,7 @@ const StyledForm = styled("form")(({ theme }) => ({
     marginTop: theme.spacing(3),
 }))
 
-const StyledFormButton = styled(LoadingButton)({
+const StyledFormButton = styled(Button)({
     backgroundColor: "#01bf71",
     margin: "32px 32px 0 0",
     color: "#000",
@@ -129,10 +128,10 @@ const CreateAccount = () => {
                 <StyledSubtitle variant="caption">You can use the username and password for GA/GAA after you create your account.</StyledSubtitle>
                 <StyledForm>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField label="Username" placeholder="Enter your username" required fullWidth onChange={(e) => setUsername(e.target.value)} />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <ClickAwayListener onClickAway={(e) => handleClickAway(e)}>
                                 <TextField
                                     label="Password"
@@ -141,21 +140,23 @@ const CreateAccount = () => {
                                     fullWidth
                                     onChange={(e) => setPassword(e.target.value)}
                                     type={showPassword ? "text" : "password"}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
+                                    slotProps={{
+                                        input: {
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
+                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        },
                                     }}
                                     onFocus={() => setPasswordHasFocus(true)}
                                 />
                             </ClickAwayListener>
                             <PasswordChecklist rules={["minLength", "number", "match"]} minLength={5} value={password} valueAgain={confirmPassword} style={{ marginTop: "12px" }} />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField
                                 label="Confirm Password"
                                 placeholder="Enter your password again"
@@ -163,18 +164,20 @@ const CreateAccount = () => {
                                 fullWidth
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 type={showPassword ? "text" : "password"}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
-                                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
+                                slotProps={{
+                                    input: {
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    },
                                 }}
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField label="Email (optional)" placeholder="Enter your email address (used for account recovery)" fullWidth onChange={(e) => setOptionalEmail(e.target.value)} />
                         </Grid>
                     </Grid>

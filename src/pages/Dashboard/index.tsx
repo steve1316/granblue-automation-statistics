@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import { styled } from "@mui/system"
-import { Autocomplete, Box, Button, Chip, CircularProgress, Grid, Stack, Tab, Tabs, TextField, Theme } from "@mui/material"
+import { Autocomplete, Box, Button, Chip, CircularProgress, Grid, Stack, Tab, Tabs, TextField } from "@mui/material"
 import { UserContext } from "../../context/UserContext"
 import axios from "axios"
 import { ResultInterface } from "../../interfaces/ResultInterface"
@@ -312,15 +312,15 @@ const Dashboard = () => {
             ) : null}
 
             <StyledTableContainer>
-                <Grid container spacing={2} columns={{ xs: 4, md: 12 }} sx={{ marginBottom: "16px" }} justifyContent="space-between" alignItems="center">
-                    <Grid item xs={3}>
+                <Grid container spacing={2} columns={{ xs: 4, md: 12 }} sx={{ marginBottom: "16px", justifyContent: "space-between", alignItems: "center" }}>
+                    <Grid size={3}>
                         <Tabs value={tabValue} onChange={(_, value) => setTabValue(value)} sx={{ color: "white" }} textColor="inherit">
                             <Tab value={"All"} label="All" disableRipple />
                             <Tab value={"GA"} label="GA" disableRipple />
                             <Tab value={"GAA"} label="GAA" disableRipple />
                         </Tabs>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid size={3}>
                         <Box sx={{ width: "160px" }}>
                             <Button
                                 variant="contained"
@@ -342,7 +342,7 @@ const Dashboard = () => {
                             </Button>
                         </Box>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid size={3}>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <DatePicker
                                 label="Select Start Date"
@@ -356,7 +356,7 @@ const Dashboard = () => {
                             />
                         </LocalizationProvider>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid size={3}>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <DatePicker
                                 label="Select End Date"
@@ -374,7 +374,7 @@ const Dashboard = () => {
                 <Autocomplete
                     options={availableSearchTerms.map((result) => result)}
                     value={search}
-                    onChange={(e, value) => {
+                    onChange={(_e, value) => {
                         var newItem = ""
                         if (value !== null) {
                             newItem = value
