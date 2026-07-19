@@ -1,64 +1,59 @@
+import { useMemo } from "react"
 import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend } from "chart.js"
 import { Pie } from "react-chartjs-2"
-import { ResultInterface } from "../../interfaces/ResultInterface"
-import randomColor from "randomcolor"
+import { chartOptions, colorFor } from "../../lib/charts"
+import { SummaryMission } from "../../lib/results"
 
 // Register elements to be used by chartjs.
 ChartJS.register(ArcElement, Title, Tooltip, Legend)
 
-const CustomPie = ({ chartTitle, data, startDate }: { chartTitle: string; data: ResultInterface[]; startDate: Date }) => {
-    const labels: string[] = []
-    const values: number[] = []
-    const backgroundColors: string[] = []
+// The single slice shown when a search matched nothing.
+const EMPTY_LABEL = "None"
 
-    if (data.length === 0) {
-        labels.push("None")
-        values.push(0)
-        backgroundColors.push(randomColor())
-    } else {
-        data.forEach((result) => {
-            const resultDate = new Date(result.date)
-            if (resultDate < startDate) return
+// How many missions get their own slice. The rest are added up into one "Other" slice, so the pie stays readable.
+const SLICE_LIMIT = 8
+const OTHER_LABEL = "Other"
 
-            const missionName = result.mission
-            if (!labels.includes(missionName)) {
-                labels.push(missionName)
-                values.push(0)
-                backgroundColors.push(randomColor())
-            }
+// The empty and "Other" slices are not one mission, so they get a quiet gray instead of a mission color.
+const NEUTRAL_COLOR = "#616161"
 
-            const newKey = `${result.mission}`
-            values[labels.indexOf(newKey)] += result.amount
-        })
-    }
+/** Props for CustomPie. */
+interface Props {
+    /** The title shown above the chart. */
+    chartTitle: string
+    /** Totals per mission for the current search, largest first. */
+    missions: SummaryMission[]
+}
 
+/**
+ * Draws how the amounts of a search are spread over its missions as a pie chart.
+ *
+ * @param props The chart's title and totals.
+ * @returns The pie chart.
+ */
+const CustomPie = ({ chartTitle, missions }: Props) => {
     // Configuration options for customizing the chart.
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: "top" as const,
-            },
-            title: {
-                display: true,
-                text: chartTitle,
-            },
-        },
-        maintainAspectRatio: false,
-    }
+    const options = useMemo(() => chartOptions(chartTitle), [chartTitle])
 
-    // Data set with the labels and values to display on the chart.
-    const pieData = {
-        labels: labels,
-        datasets: [
-            {
-                label: "Distribution of runs",
-                data: values,
-                backgroundColor: backgroundColors,
-                borderWidth: 1,
-            },
-        ],
-    }
+    // Data set with the labels and values to display on the chart. Each mission keeps its own color from one search to the next.
+    const pieData = useMemo(() => {
+        const slices = missions.slice(0, SLICE_LIMIT).map((mission) => ({ label: mission.mission, amount: mission.amount, color: colorFor(mission.mission) }))
+        const other = missions.slice(SLICE_LIMIT).reduce((total, mission) => total + mission.amount, 0)
+        if (other > 0) slices.push({ label: OTHER_LABEL, amount: other, color: NEUTRAL_COLOR })
+        if (slices.length === 0) slices.push({ label: EMPTY_LABEL, amount: 0, color: NEUTRAL_COLOR })
+
+        return {
+            labels: slices.map((slice) => slice.label),
+            datasets: [
+                {
+                    label: "Distribution of runs",
+                    data: slices.map((slice) => slice.amount),
+                    backgroundColor: slices.map((slice) => slice.color),
+                    borderWidth: 1,
+                },
+            ],
+        }
+    }, [missions])
 
     return <Pie options={options} data={pieData} />
 }

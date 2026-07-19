@@ -1,58 +1,59 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Avatar, ClickAwayListener, Container, Grid, IconButton, InputAdornment, Snackbar, TextField, Theme, Typography } from "@mui/material"
+import { Avatar, Container, Grid, Snackbar, TextField, Typography } from "@mui/material"
 import MuiAlert, { AlertProps } from "@mui/material/Alert"
-import makeStyles from "@mui/styles/makeStyles"
+import { styled } from "@mui/system"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
-import axios, { AxiosError, AxiosResponse } from "axios"
-import LoadingButton from "@mui/lab/LoadingButton"
-import { Visibility, VisibilityOff } from "@mui/icons-material"
-import PasswordChecklist from "react-password-checklist"
+import axios, { AxiosError } from "axios"
 import { UserContext } from "../../context/UserContext"
+import PasswordChecklist from "react-password-checklist"
+import PasswordField from "../../components/PasswordField"
+import { StyledFormButton } from "../../components/StyledFormButton"
+
+/** A single piece of feedback shown to the user after a sign-up attempt. */
+interface Notice {
+    /** Which colour the Snackbar takes. */
+    severity: "success" | "error"
+    /** The message to show. */
+    text: string
+}
+
+const StyledPaperContainer = styled(Container)({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "32px",
+    width: "100%",
+})
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+    margin: theme.spacing(1),
+    height: 64,
+    width: 64,
+    backgroundColor: "#1565C0",
+}))
+
+const StyledSubtitle = styled(Typography)({
+    textAlign: "center",
+})
+
+const StyledForm = styled("form")(({ theme }) => ({
+    marginTop: theme.spacing(3),
+}))
 
 const CreateAccount = () => {
-    const useStyles = makeStyles((theme: Theme) => ({
-        paperContainer: {
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "32px",
-            width: "100%",
-        },
-        avatar: {
-            margin: theme.spacing(1),
-            height: 64,
-            width: 64,
-            backgroundColor: "#1565C0",
-        },
-        subtitle: {
-            textAlign: "center",
-        },
-        form: {
-            marginTop: theme.spacing(3),
-        },
-        formButton: {
-            backgroundColor: "#01bf71",
-            margin: "32px 32px 0 0",
-            color: "#000",
-        },
-    }))
-
-    const classes = useStyles()
-
     const entryPoint: string = useContext(UserContext).entryPoint
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
-    const [passwordHasFocus, setPasswordHasFocus] = useState(false)
-    const [optionalEmail, setOptionalEmail] = useState("")
-    const [ready, setReady] = useState(false)
+    const [email, setEmail] = useState("")
     const [inProgress, setInProgress] = useState(false)
-    const [creationSuccess, setCreationSuccess] = useState(false)
-    const [usernameExists, setUsernameExists] = useState(false)
-    const [open, setOpen] = useState(false)
+    const [notice, setNotice] = useState<Notice | null>(null)
+
+    // Derived, not stored. The button's enabled state is a pure function of the fields.
+    const ready = username !== "" && email !== "" && password !== "" && password === confirmPassword
 
     const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
         return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -64,141 +65,85 @@ const CreateAccount = () => {
         window.scrollTo(0, 0)
     }, [])
 
-    // Enable the Create Account button if the required fields have been filled in.
-    useEffect(() => {
-        setReady(username !== "" && password !== "" && password === confirmPassword)
-    }, [username, password, confirmPassword])
-
-    // Show the Snackbar for success or failure.
-    useEffect(() => {
-        if (creationSuccess) {
-            setOpen(true)
-        } else if (usernameExists) {
-            setOpen(true)
-        }
-    }, [creationSuccess, usernameExists])
-
-    // Create the account via POST request and receive the result whether success or failure.
-    const createAccount = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    // Create the account through the API server. It does not sign the visitor in, so they stay on this page to see the result.
+    const createAccount = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         setInProgress(true)
-        axios
-            .post(`${entryPoint}/api/register`, { username: username, password: password, email: optionalEmail })
-            .then((res: AxiosResponse) => {
-                console.log("[GAS] Received success response.")
-                if (res.status === 201) {
-                    setCreationSuccess(true)
-                    setUsernameExists(false)
-                }
-            })
-            .catch((err: AxiosError) => {
-                console.warn("[GAS] Failed to create account: ", err.response?.data)
-                if (err.response?.status === 409) {
-                    setCreationSuccess(false)
-                    setUsernameExists(true)
-                }
-            })
-            .finally(() => {
-                setInProgress(false)
-            })
+
+        try {
+            await axios.post(`${entryPoint}/api/register`, { username: username, password: password, email: email })
+            setNotice({ severity: "success", text: "Success! You can now log in." })
+        } catch (err) {
+            const message = (err as AxiosError<{ message?: string }>).response?.data?.message
+            if (message === "Username already exists." || message === "Email already registered.") {
+                setNotice({ severity: "error", text: message === "Username already exists." ? "The username already exists." : "That email is already registered to an account." })
+            } else {
+                console.error("[GAS] Failed to create account: ", message ?? err)
+                setNotice({ severity: "error", text: "Could not create the account. Please try again." })
+            }
+        } finally {
+            setInProgress(false)
+        }
     }
 
     // Close the Snackbar.
     const handleClose = () => {
-        setOpen(false)
-        setCreationSuccess(false)
-        setUsernameExists(false)
-    }
-
-    const handleClickAway = (e: MouseEvent | TouchEvent) => {
-        e.preventDefault()
-        if (passwordHasFocus) {
-            setPasswordHasFocus(false)
-        }
+        setNotice(null)
     }
 
     return (
         <section id="createaccount">
-            <Container className={classes.paperContainer}>
-                <Avatar className={classes.avatar}>
+            <StyledPaperContainer>
+                <StyledAvatar>
                     <AccountCircleIcon style={{ height: 48, width: 48 }} />
-                </Avatar>
+                </StyledAvatar>
                 <Typography component="h1" variant="h5">
                     Create Account
                 </Typography>
-                <Typography variant="caption" className={classes.subtitle}>
-                    You can use the username and password for GA/GAA after you create your account.
-                </Typography>
-                <form className={classes.form}>
+                <StyledSubtitle variant="caption">You can use the username and password for GA/GAA after you create your account.</StyledSubtitle>
+                <StyledForm>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField label="Username" placeholder="Enter your username" required fullWidth onChange={(e) => setUsername(e.target.value)} />
                         </Grid>
-                        <Grid item xs={12}>
-                            <ClickAwayListener onClickAway={(e) => handleClickAway(e)}>
-                                <TextField
-                                    label="Password"
-                                    placeholder="Enter your password"
-                                    required
-                                    fullWidth
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    type={showPassword ? "text" : "password"}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                    onFocus={() => setPasswordHasFocus(true)}
-                                />
-                            </ClickAwayListener>
+                        <Grid size={12}>
+                            <PasswordField
+                                label="Password"
+                                placeholder="Enter your password"
+                                required
+                                fullWidth
+                                onChange={(e) => setPassword(e.target.value)}
+                                showPassword={showPassword}
+                                setShowPassword={setShowPassword}
+                            />
                             <PasswordChecklist rules={["minLength", "number", "match"]} minLength={5} value={password} valueAgain={confirmPassword} style={{ marginTop: "12px" }} />
                         </Grid>
-                        <Grid item xs={12}>
-                            <TextField
+                        <Grid size={12}>
+                            <PasswordField
                                 label="Confirm Password"
                                 placeholder="Enter your password again"
                                 required
                                 fullWidth
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                type={showPassword ? "text" : "password"}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
-                                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
+                                showPassword={showPassword}
+                                setShowPassword={setShowPassword}
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <TextField label="Email (optional)" placeholder="Enter your email address (used for account recovery)" fullWidth onChange={(e) => setOptionalEmail(e.target.value)} />
+                        <Grid size={12}>
+                            <TextField label="Email" placeholder="Enter your email address" type="email" required fullWidth onChange={(e) => setEmail(e.target.value)} helperText="Used to recover your account if you forget your password." />
                         </Grid>
                     </Grid>
 
-                    <LoadingButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => createAccount(e)} className={classes.formButton}>
+                    <StyledFormButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => createAccount(e)}>
                         Create Account
-                    </LoadingButton>
-                </form>
-            </Container>
+                    </StyledFormButton>
+                </StyledForm>
+            </StyledPaperContainer>
 
-            {creationSuccess ? (
-                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
-                    <Alert onClose={() => handleClose()} severity="success">
-                        Success! You can now log in.
-                    </Alert>
-                </Snackbar>
-            ) : null}
-
-            {usernameExists ? (
-                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
-                    <Alert onClose={() => handleClose()} severity="error">
-                        The username already exists.
+            {notice !== null ? (
+                <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">
+                    <Alert onClose={() => handleClose()} severity={notice.severity}>
+                        {notice.text}
                     </Alert>
                 </Snackbar>
             ) : null}

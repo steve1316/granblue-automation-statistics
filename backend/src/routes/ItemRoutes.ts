@@ -1,147 +1,120 @@
 import express, { Router } from "express"
-import { ItemInterface } from "../interfaces/ItemInterface"
-import Item from "../schemas/Item"
-import { authenticationWorkaround } from "./AccountRoutes"
+import { pool } from "../db"
+import { requireAuth } from "../middleware/requireAuth"
+import { requireStringParams } from "../middleware/validateBody"
 
 const router: Router = express.Router()
 
-// POST route to create an item if it does not already exist.
-router.post("/api/create-item", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
-            return
+// The columns every item response is built from.
+const ITEM_COLUMNS = "id, item_name, farming_mode, mission, total_amount"
+
+// The filters `fetchItems` accepts, mapped to the columns they match on. Only these names ever reach the SQL.
+const ITEM_FILTER_COLUMNS = { farmingMode: "farming_mode", mission: "mission", itemName: "item_name" } as const
+
+/** One row of the items table. */
+interface ItemRow {
+    /** The row's surrogate key. pg returns bigint columns as strings. */
+    id: string
+    /** The item's name, e.g. "Grimnir Anima". */
+    item_name: string
+    /** The Farming Mode the item drops in. */
+    farming_mode: string
+    /** The mission within that Farming Mode. */
+    mission: string
+    /** Every unit of this item ever submitted for that mission. */
+    total_amount: string
+}
+
+/**
+ * Converts an item row into the exact JSON the old Mongo-backed API returned. `_id` and `__v` are
+ * vestigial Mongoose fields, kept because a shipped bot reading either of them would otherwise start
+ * seeing undefined.
+ *
+ * @param row The item row to convert.
+ * @returns The item in the API's frozen wire shape.
+ */
+const toItemResponse = (row: ItemRow) => ({
+    _id: String(row.id),
+    itemName: row.item_name,
+    farmingMode: row.farming_mode,
+    mission: row.mission,
+    totalAmount: Number(row.total_amount),
+    __v: 0,
+})
+
+/**
+ * Reads every item matching a set of exact-match filters.
+ *
+ * @param filters Values to match on. A filter that is not set is skipped.
+ * @returns The matching items in the API's wire shape.
+ */
+const fetchItems = async (filters: Partial<Record<keyof typeof ITEM_FILTER_COLUMNS, string>> = {}) => {
+    const clauses: string[] = []
+    const values: string[] = []
+    for (const [key, column] of Object.entries(ITEM_FILTER_COLUMNS)) {
+        const value = filters[key as keyof typeof ITEM_FILTER_COLUMNS]
+        if (value !== undefined) {
+            values.push(value)
+            clauses.push(`${column} = $${values.length}`)
         }
     }
 
+    const where = clauses.length > 0 ? `where ${clauses.join(" and ")}` : ""
+    const { rows } = await pool.query<ItemRow>(`select ${ITEM_COLUMNS} from items ${where} order by id`, values)
+    return rows.map(toItemResponse)
+}
+
+// POST route to create an item if it does not already exist. The identity is Farming Mode, mission and
+// item name together. The old code looked one up on only two of the three while the running total was
+// keyed on all three, which is how the totals drifted apart.
+router.post("/api/create-item", requireAuth, async (req, res) => {
     const { farmingMode, mission, itemName } = req.body
-    if (!farmingMode || !mission || !itemName || typeof farmingMode !== "string" || typeof mission !== "string" || typeof itemName !== "string") {
-        res.status(400).send("Improper values for parameters.")
+    if (!requireStringParams(res, { farmingMode, mission, itemName })) return
+
+    // No pre-flight read. The unique constraint already tells us if it exists.
+    const { rowCount } = await pool.query("insert into items (farming_mode, mission, item_name) values ($1, $2, $3) on conflict on constraint items_identity_key do nothing", [farmingMode, mission, itemName])
+    if (rowCount === 0) {
+        res.status(201).send({ message: "Item already exists." })
         return
     }
 
-    await Item.findOne({ farmingMode: farmingMode, itemName: itemName }, async (err: Error, doc: ItemInterface) => {
-        if (err) throw err
-
-        if (doc) {
-            res.status(201).send("Item already exists.")
-        } else {
-            // Create the new Item object to the items collection.
-            const newItem = new Item({
-                itemName: itemName,
-                farmingMode: farmingMode,
-                mission: mission,
-            })
-
-            // Save the new Item.
-            await newItem.save()
-            console.log(`Successfully created item ${itemName} for ${mission} of ${farmingMode} Farming Mode.`)
-            res.status(201).send(`Successfully created item ${itemName} for ${mission} of ${farmingMode} Farming Mode.`)
-        }
-    }).clone()
+    console.log(`Successfully created item ${itemName} for ${mission} of ${farmingMode} Farming Mode.`)
+    res.status(201).send({ message: `Successfully created item ${itemName} for ${mission} of ${farmingMode} Farming Mode.` })
 })
 
 // GET route to fetch multiple items via the Farming Mode.
-router.get("/api/get-item/farmingMode/:farmingMode", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
-            return
-        }
-    }
-
+router.get("/api/get-item/farmingMode/:farmingMode", requireAuth, async (req, res) => {
+    if (!requireStringParams(res, req.params)) return
     const { farmingMode } = req.params
-    if (!farmingMode || typeof farmingMode !== "string") {
-        res.status(400).send("Improper values for parameters.")
-        return
-    }
 
-    await Item.find({ farmingMode: farmingMode }, (err: Error, docs: ItemInterface[]) => {
-        if (err) throw err
-
-        if (docs) {
-            res.status(200).send(docs)
-        } else {
-            res.status(200).send(`No Items have been created for Farming Mode ${farmingMode} yet.`)
-        }
-    }).clone()
+    res.status(200).send(await fetchItems({ farmingMode: farmingMode }))
 })
 
 // GET route to fetch multiple items via the Farming Mode and a specific Mission.
-router.get("/api/get-item/farmingMode/:farmingMode/mission/:mission", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
-            return
-        }
-    }
-
+router.get("/api/get-item/farmingMode/:farmingMode/mission/:mission", requireAuth, async (req, res) => {
+    if (!requireStringParams(res, req.params)) return
     const { farmingMode, mission } = req.params
-    if (!farmingMode || !mission || typeof farmingMode !== "string" || typeof mission !== "string") {
-        res.status(400).send("Improper values for parameters.")
-        return
-    }
 
-    await Item.find({ farmingMode: farmingMode, mission: mission }, (err: Error, docs: ItemInterface[]) => {
-        if (err) throw err
-
-        if (docs) {
-            res.status(200).send(docs)
-        } else {
-            res.status(200).send(`No Items have been created for ${mission} of Farming Mode ${farmingMode} yet.`)
-        }
-    }).clone()
+    res.status(200).send(await fetchItems({ farmingMode: farmingMode, mission: mission }))
 })
 
-// GET route to fetch an item via the item name.
-router.get("/api/get-item/farmingMode/:farmingMode/item/:itemName", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
-            return
-        }
-    }
-
+// GET route to fetch an item via the item name. A miss is a 200 carrying a message rather than a 404,
+// so callers discriminate on the shape. That is how it has always behaved.
+router.get("/api/get-item/farmingMode/:farmingMode/item/:itemName", requireAuth, async (req, res) => {
+    if (!requireStringParams(res, req.params)) return
     const { farmingMode, itemName } = req.params
-    if (!farmingMode || !itemName || typeof farmingMode !== "string" || typeof itemName !== "string") {
-        res.status(400).send("Improper values for parameters.")
-        return
+
+    const [item] = await fetchItems({ farmingMode: farmingMode, itemName: itemName })
+    if (item) {
+        res.status(200).send(item)
+    } else {
+        res.status(200).send({ message: `Item ${itemName} does not exist for Farming Mode ${farmingMode}.` })
     }
-
-    await Item.findOne({ farmingMode: farmingMode, itemName: itemName }, (err: Error, doc: ItemInterface) => {
-        if (err) throw err
-
-        if (doc) {
-            res.status(200).send(doc)
-        } else {
-            res.status(200).send(`Item ${itemName} does not exist for Farming Mode ${farmingMode}.`)
-        }
-    }).clone()
 })
 
 // GET route to get all items.
-router.get("/api/get-item", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
-            return
-        }
-    }
-
-    await Item.find({}, (err: Error, docs: ItemInterface[]) => {
-        if (err) throw err
-
-        if (docs) {
-            res.status(200).send(docs)
-        } else {
-            res.status(200).send(`No Items found.`)
-        }
-    }).clone()
+router.get("/api/get-item", requireAuth, async (_req, res) => {
+    res.status(200).send(await fetchItems())
 })
 
 export default router

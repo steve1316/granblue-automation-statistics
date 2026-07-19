@@ -1,5 +1,5 @@
 import React from "react"
-import ReactDOM from "react-dom"
+import { createRoot } from "react-dom/client"
 import "./index.css"
 import App from "./App"
 import { ThemeProvider, createTheme, StyledEngineProvider } from "@mui/material/styles"
@@ -7,7 +7,10 @@ import { UserContextProvider } from "./context/UserContext"
 
 const theme = createTheme()
 
-ReactDOM.render(
+const container = document.getElementById("app")
+const root = createRoot(container!);
+
+root.render(
     <ThemeProvider theme={theme}>
         <StyledEngineProvider injectFirst>
             <React.StrictMode>
@@ -16,6 +19,5 @@ ReactDOM.render(
                 </UserContextProvider>
             </React.StrictMode>
         </StyledEngineProvider>
-    </ThemeProvider>,
-    document.getElementById("root")
+    </ThemeProvider>
 )

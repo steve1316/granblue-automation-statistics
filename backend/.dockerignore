@@ -4,3 +4,5 @@ build/
 dist/
 
 .DS_Store
+# Secrets come in through env_file at runtime. Keep them out of the image.
+.env
