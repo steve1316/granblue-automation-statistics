@@ -10,14 +10,8 @@ export const UserContext = createContext<IProviderProps>({} as IProviderProps)
 export const UserContextProvider = ({ children }: any): React.JSX.Element => {
     const [user, setUser] = useState<any>()
 
-    let entryPoint = "https://granblue-automation-statistics.com"
-    console.log("VITE_API_URL: ", import.meta.env.VITE_API_URL)
-    if (import.meta.env.VITE_API_URL !== "https://granblue-automation-statistics.com") {
-        entryPoint = "http://localhost:4000"
-        console.log("This is running in a development environment.")
-    } else {
-        console.log("This is running in a production environment.")
-    }
+    // VITE_API_URL is defined per environment in .env.development / .env.production, so it is the entry point directly.
+    const entryPoint = import.meta.env.VITE_API_URL
 
     // Check and retrieve the user if they were logged in.
     useEffect(() => {
