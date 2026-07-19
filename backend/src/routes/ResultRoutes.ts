@@ -15,7 +15,7 @@ router.post("/api/create-result", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
@@ -28,13 +28,13 @@ router.post("/api/create-result", async (req, res) => {
             await fetch("https://raw.githubusercontent.com/steve1316/granblue-automation-pyautogui/main/src-tauri/update.json")
                 .then(async (jsonRes) => {
                     if (jsonRes.status !== 200) {
-                        res.status(400).send(`Cannot fetch current desktop app version due to status code ${jsonRes.status}.`)
+                        res.status(400).send({message: `Cannot fetch current desktop app version due to status code ${jsonRes.status}.`})
                         returnNow = true
                     }
 
                     await jsonRes.json().then((data) => {
                         if (appVersion !== data.version) {
-                            res.status(401).send("Wrong App version for GA.")
+                            res.status(401).send({message: "Wrong App version for GA."})
                             returnNow = true
                         }
                     })
@@ -54,10 +54,10 @@ router.post("/api/create-result", async (req, res) => {
                     // Convert XML to JSON object.
                     xml2js.parseString(xmlRes.text(), (err, result) => {
                         if (err) {
-                            res.status(500).send("Failed to parse the XML to JSON when reading in the mobile app version.")
+                            res.status(500).send({message: "Failed to parse the XML to JSON when reading in the mobile app version."})
                             returnNow = true
                         } else if (appVersion !== result.AppUpdater.update[0].latestVersion[0]) {
-                            res.status(401).send("Wrong App version for GAA.")
+                            res.status(401).send({message: "Wrong App version for GAA."})
                             returnNow = true
                         }
                     })
@@ -67,7 +67,7 @@ router.post("/api/create-result", async (req, res) => {
                     returnNow = true
                 })
         } else {
-            res.status(400).send(`API request came from an supported platform.`)
+            res.status(400).send({message: "API request came from an supported platform."})
             returnNow = true
         }
     }
@@ -93,10 +93,10 @@ router.post("/api/create-result", async (req, res) => {
         typeof amount !== "number" ||
         typeof elapsedTime !== "string"
     ) {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     } else if (Number.isNaN(Number(amount))) {
-        res.status(400).send("Improper value for the item amount.")
+        res.status(400).send({message: "Improper value for the item amount."})
         return
     }
 
@@ -128,9 +128,9 @@ router.post("/api/create-result", async (req, res) => {
             // Now update the total amount for this item.
             await Item.updateOne({ itemName: itemName, farmingMode: farmingMode, mission: mission }, { $inc: { totalAmount: amount } }).exec()
             console.log(`Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode at ${date} for ${username}.`)
-            res.status(201).send(`Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode.`)
+            res.status(201).send({message: `Successfully created result of ${amount}x ${itemName} of ${mission} for ${farmingMode} Farming Mode.`})
         } else {
-            res.status(404).send("User does not exist.")
+            res.status(404).send({message: "User does not exist."})
         }
     }).clone()
 })
@@ -140,14 +140,14 @@ router.get("/api/get-result/user/:username", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
 
     const { username } = req.params
     if (!username || typeof username !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -157,7 +157,7 @@ router.get("/api/get-result/user/:username", async (req, res) => {
         if (docs) {
             res.status(200).send(docs)
         } else {
-            res.status(200).send("No results have been posted yet for this user.")
+            res.status(200).send({message: "No results have been posted yet for this user."})
         }
     }).clone()
 })
@@ -167,14 +167,14 @@ router.get("/api/get-result/item/:itemName", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
 
     const { itemName } = req.params
     if (!itemName || typeof itemName !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -196,7 +196,7 @@ router.get("/api/get-result/item/:itemName", async (req, res) => {
                 if (docs) {
                     res.status(200).send(docs)
                 } else {
-                    res.status(200).send(`No results have been posted yet for this item ${itemName}.`)
+                    res.status(200).send({message: `No results have been posted yet for this item ${itemName}.`})
                 }
             })
             .catch((error: Error) => {
@@ -211,7 +211,7 @@ router.get("/api/get-result/item/:itemName", async (req, res) => {
                 if (docs) {
                     res.status(200).send(docs)
                 } else {
-                    res.status(200).send(`No results have been posted yet for this item ${itemName}.`)
+                    res.status(200).send({message: `No results have been posted yet for this item ${itemName}.`})
                 }
             })
             .catch((error: Error) => {
@@ -225,14 +225,14 @@ router.get("/api/get-result/farmingMode/:farmingMode", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
 
     const { farmingMode } = req.params
     if (!farmingMode || typeof farmingMode !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -242,7 +242,7 @@ router.get("/api/get-result/farmingMode/:farmingMode", async (req, res) => {
         if (docs) {
             res.status(200).send(docs)
         } else {
-            res.status(200).send(`No results have been posted yet for ${farmingMode} Farming Mode.`)
+            res.status(200).send({message: `No results have been posted yet for ${farmingMode} Farming Mode.`})
         }
     }).clone()
 })
@@ -252,14 +252,14 @@ router.get("/api/get-result/farmingMode/:farmingMode/mission/:mission", async (r
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
 
     const { farmingMode, mission } = req.params
     if (!farmingMode || !mission || typeof farmingMode !== "string" || typeof mission !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -269,7 +269,7 @@ router.get("/api/get-result/farmingMode/:farmingMode/mission/:mission", async (r
         if (docs) {
             res.status(200).send(docs)
         } else {
-            res.status(200).send(`No results have been posted yet for ${mission} of ${farmingMode} Farming Mode.`)
+            res.status(200).send({message: `No results have been posted yet for ${mission} of ${farmingMode} Farming Mode.`})
         }
     }).clone()
 })
@@ -279,14 +279,14 @@ router.get("/api/get-result/mission/:mission", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
 
     const { mission } = req.params
     if (!mission || typeof mission !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -296,7 +296,7 @@ router.get("/api/get-result/mission/:mission", async (req, res) => {
         if (docs) {
             res.status(200).send(docs)
         } else {
-            res.status(200).send(`No results have been posted yet for the mission: ${mission}.`)
+            res.status(200).send({message: `No results have been posted yet for the mission: ${mission}.`})
         }
     }).clone()
 })
@@ -305,7 +305,7 @@ router.get("/api/get-result", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
@@ -323,7 +323,7 @@ router.get("/api/get-result", async (req, res) => {
             if (docs) {
                 res.status(200).send(docs)
             } else {
-                res.status(200).send(`Failed to get all results sorted ${newSort}.`)
+                res.status(200).send({message: `Failed to get all results sorted ${newSort}.`})
             }
         })
         .catch((error: Error) => {

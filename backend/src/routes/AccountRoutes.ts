@@ -29,7 +29,7 @@ const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const { user }: any = req
 
     if (!user) {
-        res.status(401).send("No user provided.")
+        res.status(401).send({message: "No user provided."})
     } else {
         User.findOne({ username: user.username }, (err: Error, doc: UserInterface) => {
             if (err) throw err
@@ -37,7 +37,7 @@ const isAdminMiddleware = (req: Request, res: Response, next: NextFunction) => {
             if (doc?.isAdmin) {
                 next()
             } else {
-                res.status(401).send("User is not an admin.")
+                res.status(401).send({message: "User is not an admin."})
             }
         })
     }
@@ -48,7 +48,7 @@ router.post("/api/register", async (req: Request, res: Response) => {
     // Destructure the username, password and email fields and perform type validation.
     const { username, password, email } = req?.body
     if (!username || !password || typeof username !== "string" || typeof password !== "string" || typeof email !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -57,7 +57,7 @@ router.post("/api/register", async (req: Request, res: Response) => {
         if (err) throw err
 
         if (doc) {
-            res.status(409).send("Username already exists.")
+            res.status(409).send({message: "Username already exists."})
         } else {
             // Hash the user's password.
             const hashedPassword = await bcrypt.hash(req.body.password, 10)
@@ -71,14 +71,14 @@ router.post("/api/register", async (req: Request, res: Response) => {
 
             // Save the new User to the users collection.
             await newUser.save()
-            res.status(201).send("Successfully created user.")
+            res.status(201).send({message: "Successfully created user."})
         }
     })
 })
 
 // POST route to login via passport authentication.
 router.post("/api/login", passport.authenticate("local"), (req, res) => {
-    res.status(200).send("Successfully authenticated user.")
+    res.status(200).send({message: "Successfully authenticated user."})
 })
 
 // GET route to get the logged in user.
@@ -86,7 +86,7 @@ router.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
@@ -98,7 +98,7 @@ router.get("/api/user", (req, res) => {
 router.get("/api/get-user/:username", (req, res) => {
     const { username } = req.params
     if (!username || typeof username !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -106,9 +106,9 @@ router.get("/api/get-user/:username", (req, res) => {
         if (err) throw err
 
         if (doc) {
-            res.status(200).send("User exists.")
+            res.status(200).send({message: "User exists."})
         } else {
-            res.status(404).send("User does not exists.")
+            res.status(404).send({message: "User does not exists."})
         }
     }).clone()
 })
@@ -116,14 +116,14 @@ router.get("/api/get-user/:username", (req, res) => {
 // GET route to log out the user.
 router.get("/api/logout", (req, res) => {
     req.logout()
-    res.status(200).send("Successfully logged out.")
+    res.status(200).send({message: "Successfully logged out."})
 })
 
 // PUT route to delete a user and all of their associated results.
 router.put("/api/delete-user/:username", isAdminMiddleware, async (req, res) => {
     const { username } = req.params
     if (!username || typeof username !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -156,9 +156,9 @@ router.put("/api/delete-user/:username", isAdminMiddleware, async (req, res) => 
             })
 
             console.log("Updated total amounts in items affected.")
-            res.status(200).send(`User and their data have been successfully deleted.`)
+            res.status(200).send({message: "User and their data have been successfully deleted."})
         } else {
-            res.status(200).send(`User successfully deleted.`)
+            res.status(200).send({message: "User successfully deleted."})
         }
     }).clone()
 })
@@ -167,7 +167,7 @@ router.put("/api/delete-user/:username", isAdminMiddleware, async (req, res) => 
 router.post("/api/forgot-password", (req, res) => {
     const { recoveryEntryPoint } = req?.body
     if (!recoveryEntryPoint || typeof recoveryEntryPoint !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -215,10 +215,10 @@ ${link}
 
             console.log("Password reset email sent: ", email.messageId)
 
-            res.status(200).send("Password reset link has been emailed.")
+            res.status(200).send({message: "Password reset link has been emailed."})
         } catch (err) {
             console.error(err)
-            res.status(500).send("Failed to email password reset link.")
+            res.status(500).send({message: "Failed to email password reset link."})
         }
     }
 
@@ -236,7 +236,7 @@ ${link}
                 if (doc) {
                     sendEmail(doc)
                 } else {
-                    res.status(404).send("Username/Email does not exist.")
+                    res.status(404).send({message: "Username/Email does not exist."})
                 }
             }).clone()
         }
@@ -247,7 +247,7 @@ ${link}
 router.post("/api/reset-password", async (req, res) => {
     const { username, newPassword } = req?.body
     if (!username || !newPassword || typeof username !== "string" || typeof newPassword !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -258,9 +258,9 @@ router.post("/api/reset-password", async (req, res) => {
         if (err) throw err
 
         if (doc) {
-            res.status(200).send("Password updated successfully.")
+            res.status(200).send({message: "Password updated successfully."})
         } else {
-            res.status(404).send("Could not find user to update password for.")
+            res.status(404).send({message: "Could not find user to update password for."})
         }
     })
 })
@@ -273,10 +273,10 @@ router.get("/api/verify-token/:username/:token", (req, res) => {
 
     try {
         jwt.verify(token, secret)
-        res.status(200).send("Token is valid.")
+        res.status(200).send({message: "Token is valid."})
     } catch (err) {
         console.error("Password reset token expired for: ", username)
-        res.status(400).send(err)
+        res.status(400).send({message: (err as Error).message})
     }
 })
 
