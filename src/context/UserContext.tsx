@@ -11,9 +11,12 @@ export const UserContextProvider = ({ children }: any): JSX.Element => {
     const [user, setUser] = useState<any>()
 
     let entryPoint = "https://granblue-automation-statistics.com"
-    if (process.env.REACT_APP_ENVIRONMENT && process.env.REACT_APP_ENVIRONMENT === "development") {
+    console.log("VITE_API_URL: ", import.meta.env.VITE_API_URL)
+    if (import.meta.env.VITE_API_URL !== "https://granblue-automation-statistics.com") {
         entryPoint = "http://localhost:4000"
         console.log("This is running in a development environment.")
+    } else {
+        console.log("This is running in a production environment.")
     }
 
     // Check and retrieve the user if they were logged in.
