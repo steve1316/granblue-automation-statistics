@@ -1,4 +1,4 @@
-FROM node:20-bookworm-slim
+FROM node:20-bookworm-slim AS builder
 
 WORKDIR /app
 ADD . /app
@@ -8,6 +8,10 @@ ADD . /app
 RUN NODE_OPTIONS=--openssl-legacy-provider yarn install
 RUN NODE_OPTIONS=--openssl-legacy-provider yarn build
 
-EXPOSE 5173
+# SWS defaults to 80, so we need to expose that for the compose file to work.
+FROM joseluisq/static-web-server:2
+COPY --from=builder /app/build /public
 
-CMD [ "yarn", "start" ]
+# Add configuration for SWS to handle SPA routing.
+ENV SERVER_FALLBACK_PAGE=/public/index.html
+EXPOSE 80
