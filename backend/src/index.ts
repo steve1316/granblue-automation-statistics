@@ -17,7 +17,7 @@ dotenv.config()
 
 ////////////////////
 // Connect to MongoDB cluster.
-mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_URI}`, (err: MongooseError) => {
+mongoose.connect(process.env.MONGODB_URI as string, (err: MongooseError) => {
     if (err) throw err
     console.log("Connected to MongoDB Cluster.")
 })
@@ -29,8 +29,8 @@ const app = express()
 // Parse incoming data.
 app.use(express.json())
 
-// CORS middleware.
-app.use(cors({ origin: ["http://localhost:3000", "https://granblue-automation-statistics.com", "https://tauri.localhost"], credentials: true }))
+// CORS middleware. As a side note, make sure to port forward these localhost ports from VSCode if you are working remotely.
+app.use(cors({ origin: ["http://localhost:3000", "http://localhost:4000", "http://localhost:5173", "https://granblue-automation-statistics.com", "https://tauri.localhost"], credentials: true }))
 const oneDaySession = 1000 * 60 * 60 * 24 // In milliseconds.
 
 // Session middleware.

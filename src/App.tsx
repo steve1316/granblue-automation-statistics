@@ -1,6 +1,6 @@
 import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
-import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom"
+import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom"
 import NavBar from "./components/Navbar"
 import Footer from "./components/Footer"
 import Gateway from "./pages/Gateway"
@@ -16,24 +16,14 @@ function App() {
     return (
         <Router>
             <NavBar />
-            <Switch>
-                <Route path="/" component={Home} exact>
-                    <Home />
-                </Route>
-                <Route path="/gateway" exact>
-                    {user ? <Redirect to="/dashboard" /> : <Gateway />}
-                </Route>
-                <Route path="/forgot-password" exact>
-                    {user ? <Redirect to="/dashboard" /> : <ForgotPassword />}
-                </Route>
-                <Route path="/reset-password/:username/:token">{user ? <Redirect to="/dashboard" /> : <ResetPassword />}</Route>
-                <Route path={["/dashboard"]} component={Dashboard} exact>
-                    {user ? <Dashboard /> : <Redirect to="/gateway" />}
-                </Route>
-                <Route path="*">
-                    <NotFound />
-                </Route>
-            </Switch>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/gateway" element={user ? <Navigate to="/dashboard" replace /> : <Gateway />} />
+                <Route path="/forgot-password" element={user ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
+                <Route path="/reset-password/:username/:token" element={user ? <Navigate to="/dashboard" replace /> : <ResetPassword />} />
+                <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/gateway" replace />} />
+                <Route path="*" element={<NotFound />} />
+            </Routes>
             <Footer />
         </Router>
     )

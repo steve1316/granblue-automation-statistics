@@ -1,45 +1,44 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Avatar, ClickAwayListener, Container, Grid, IconButton, InputAdornment, Snackbar, TextField, Theme, Typography } from "@mui/material"
+import { Avatar, Button, ClickAwayListener, Container, Grid, IconButton, InputAdornment, Snackbar, TextField, Typography } from "@mui/material"
 import MuiAlert, { AlertProps } from "@mui/material/Alert"
-import makeStyles from "@mui/styles/makeStyles"
+import { styled } from "@mui/system"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import axios, { AxiosError, AxiosResponse } from "axios"
-import LoadingButton from "@mui/lab/LoadingButton"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import PasswordChecklist from "react-password-checklist"
 import { UserContext } from "../../context/UserContext"
 
+const StyledPaperContainer = styled(Container)({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "32px",
+    width: "100%",
+})
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+    margin: theme.spacing(1),
+    height: 64,
+    width: 64,
+    backgroundColor: "#1565C0",
+}))
+
+const StyledSubtitle = styled(Typography)({
+    textAlign: "center",
+})
+
+const StyledForm = styled("form")(({ theme }) => ({
+    marginTop: theme.spacing(3),
+}))
+
+const StyledFormButton = styled(Button)({
+    backgroundColor: "#01bf71",
+    margin: "32px 32px 0 0",
+    color: "#000",
+})
+
 const CreateAccount = () => {
-    const useStyles = makeStyles((theme: Theme) => ({
-        paperContainer: {
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "32px",
-            width: "100%",
-        },
-        avatar: {
-            margin: theme.spacing(1),
-            height: 64,
-            width: 64,
-            backgroundColor: "#1565C0",
-        },
-        subtitle: {
-            textAlign: "center",
-        },
-        form: {
-            marginTop: theme.spacing(3),
-        },
-        formButton: {
-            backgroundColor: "#01bf71",
-            margin: "32px 32px 0 0",
-            color: "#000",
-        },
-    }))
-
-    const classes = useStyles()
-
     const entryPoint: string = useContext(UserContext).entryPoint
 
     const [username, setUsername] = useState("")
@@ -119,22 +118,20 @@ const CreateAccount = () => {
 
     return (
         <section id="createaccount">
-            <Container className={classes.paperContainer}>
-                <Avatar className={classes.avatar}>
+            <StyledPaperContainer>
+                <StyledAvatar>
                     <AccountCircleIcon style={{ height: 48, width: 48 }} />
-                </Avatar>
+                </StyledAvatar>
                 <Typography component="h1" variant="h5">
                     Create Account
                 </Typography>
-                <Typography variant="caption" className={classes.subtitle}>
-                    You can use the username and password for GA/GAA after you create your account.
-                </Typography>
-                <form className={classes.form}>
+                <StyledSubtitle variant="caption">You can use the username and password for GA/GAA after you create your account.</StyledSubtitle>
+                <StyledForm>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField label="Username" placeholder="Enter your username" required fullWidth onChange={(e) => setUsername(e.target.value)} />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <ClickAwayListener onClickAway={(e) => handleClickAway(e)}>
                                 <TextField
                                     label="Password"
@@ -143,21 +140,23 @@ const CreateAccount = () => {
                                     fullWidth
                                     onChange={(e) => setPassword(e.target.value)}
                                     type={showPassword ? "text" : "password"}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
+                                    slotProps={{
+                                        input: {
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
+                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        },
                                     }}
                                     onFocus={() => setPasswordHasFocus(true)}
                                 />
                             </ClickAwayListener>
                             <PasswordChecklist rules={["minLength", "number", "match"]} minLength={5} value={password} valueAgain={confirmPassword} style={{ marginTop: "12px" }} />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField
                                 label="Confirm Password"
                                 placeholder="Enter your password again"
@@ -165,27 +164,29 @@ const CreateAccount = () => {
                                 fullWidth
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 type={showPassword ? "text" : "password"}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
-                                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
+                                slotProps={{
+                                    input: {
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    },
                                 }}
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField label="Email (optional)" placeholder="Enter your email address (used for account recovery)" fullWidth onChange={(e) => setOptionalEmail(e.target.value)} />
                         </Grid>
                     </Grid>
 
-                    <LoadingButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => createAccount(e)} className={classes.formButton}>
+                    <StyledFormButton loading={inProgress} type="submit" variant="contained" color="primary" disabled={!ready} onClick={(e) => createAccount(e)}>
                         Create Account
-                    </LoadingButton>
-                </form>
-            </Container>
+                    </StyledFormButton>
+                </StyledForm>
+            </StyledPaperContainer>
 
             {creationSuccess ? (
                 <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "right" }} open={open} autoHideDuration={10000} onClose={() => handleClose()} key="bottom right">

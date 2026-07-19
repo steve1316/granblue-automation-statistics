@@ -10,14 +10,14 @@ router.post("/api/create-item", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
 
     const { farmingMode, mission, itemName } = req.body
     if (!farmingMode || !mission || !itemName || typeof farmingMode !== "string" || typeof mission !== "string" || typeof itemName !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -25,7 +25,7 @@ router.post("/api/create-item", async (req, res) => {
         if (err) throw err
 
         if (doc) {
-            res.status(201).send("Item already exists.")
+            res.status(201).send({message: "Item already exists."})
         } else {
             // Create the new Item object to the items collection.
             const newItem = new Item({
@@ -37,7 +37,7 @@ router.post("/api/create-item", async (req, res) => {
             // Save the new Item.
             await newItem.save()
             console.log(`Successfully created item ${itemName} for ${mission} of ${farmingMode} Farming Mode.`)
-            res.status(201).send(`Successfully created item ${itemName} for ${mission} of ${farmingMode} Farming Mode.`)
+            res.status(201).send({message: `Successfully created item ${itemName} for ${mission} of ${farmingMode} Farming Mode.`})
         }
     }).clone()
 })
@@ -47,14 +47,14 @@ router.get("/api/get-item/farmingMode/:farmingMode", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
 
     const { farmingMode } = req.params
     if (!farmingMode || typeof farmingMode !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -64,7 +64,7 @@ router.get("/api/get-item/farmingMode/:farmingMode", async (req, res) => {
         if (docs) {
             res.status(200).send(docs)
         } else {
-            res.status(200).send(`No Items have been created for Farming Mode ${farmingMode} yet.`)
+            res.status(200).send({message: `No Items have been created for Farming Mode ${farmingMode} yet.`})
         }
     }).clone()
 })
@@ -74,14 +74,14 @@ router.get("/api/get-item/farmingMode/:farmingMode/mission/:mission", async (req
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
 
     const { farmingMode, mission } = req.params
     if (!farmingMode || !mission || typeof farmingMode !== "string" || typeof mission !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -91,7 +91,7 @@ router.get("/api/get-item/farmingMode/:farmingMode/mission/:mission", async (req
         if (docs) {
             res.status(200).send(docs)
         } else {
-            res.status(200).send(`No Items have been created for ${mission} of Farming Mode ${farmingMode} yet.`)
+            res.status(200).send({message: `No Items have been created for ${mission} of Farming Mode ${farmingMode} yet.`})
         }
     }).clone()
 })
@@ -101,14 +101,14 @@ router.get("/api/get-item/farmingMode/:farmingMode/item/:itemName", async (req, 
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
 
     const { farmingMode, itemName } = req.params
     if (!farmingMode || !itemName || typeof farmingMode !== "string" || typeof itemName !== "string") {
-        res.status(400).send("Improper values for parameters.")
+        res.status(400).send({message: "Improper values for parameters."})
         return
     }
 
@@ -118,7 +118,7 @@ router.get("/api/get-item/farmingMode/:farmingMode/item/:itemName", async (req, 
         if (doc) {
             res.status(200).send(doc)
         } else {
-            res.status(200).send(`Item ${itemName} does not exist for Farming Mode ${farmingMode}.`)
+            res.status(200).send({message: `Item ${itemName} does not exist for Farming Mode ${farmingMode}.`})
         }
     }).clone()
 })
@@ -128,7 +128,7 @@ router.get("/api/get-item", async (req, res) => {
     if (!req.isAuthenticated()) {
         const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send("Not Authenticated.")
+            res.status(401).send({message: "Not Authenticated."})
             return
         }
     }
@@ -139,7 +139,7 @@ router.get("/api/get-item", async (req, res) => {
         if (docs) {
             res.status(200).send(docs)
         } else {
-            res.status(200).send(`No Items found.`)
+            res.status(200).send({message: "No Items found."})
         }
     }).clone()
 })

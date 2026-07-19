@@ -12,8 +12,8 @@ import Paper from "@mui/material/Paper"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import Switch from "@mui/material/Switch"
 import { ResultInterface } from "../../interfaces/ResultInterface"
-import makeStyles from "@mui/styles/makeStyles"
-import { Theme, Typography } from "@mui/material"
+import { styled } from "@mui/system"
+import { Typography } from "@mui/material"
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -102,12 +102,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             <TableRow>
                 <TableCell sx={{ backgroundColor: "gray" }} />
                 {headCells.map((headCell) => (
-                    <TableCell
-                        sx={{ backgroundColor: "gray", color: "white" }}
-                        key={headCell.id}
-                        padding={headCell.disablePadding ? "none" : "normal"}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
+                    <TableCell sx={{ backgroundColor: "gray", color: "white" }} key={headCell.id} padding={headCell.disablePadding ? "none" : "normal"} sortDirection={orderBy === headCell.id ? order : false}>
                         <TableSortLabel active={orderBy === headCell.id} direction={orderBy === headCell.id ? order : "asc"} onClick={createSortHandler(headCell.id)}>
                             {headCell.label}
                         </TableSortLabel>
@@ -118,28 +113,25 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     )
 }
 
+const StyledTableFooter = styled("div")(({ theme }) => ({
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingLeft: "12px",
+    [theme.breakpoints.down("sm")]: {
+        flexDirection: "column",
+    },
+}))
+
+const StyledTableFooterNotes = styled("div")({
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    paddingLeft: "12px",
+    paddingBottom: "12px",
+})
+
 const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDate: Date }) => {
-    const useStyles = makeStyles((theme: Theme) => ({
-        tableFooter: {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingLeft: "12px",
-            [theme.breakpoints.down("sm")]: {
-                flexDirection: "column",
-            },
-        },
-        tableFooterNotes: {
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            paddingLeft: "12px",
-            paddingBottom: "12px",
-        },
-    }))
-
-    const classes = useStyles()
-
     const [order, setOrder] = useState<Order>("desc")
     const [orderBy, setOrderBy] = useState<keyof ResultInterface>("date")
     const [page, setPage] = useState(0)
@@ -173,7 +165,7 @@ const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDa
     }, [order])
 
     // Adjust the ordering of the column according to the provided property key.
-    const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof ResultInterface) => {
+    const handleRequestSort = (_event: React.MouseEvent<unknown>, property: keyof ResultInterface) => {
         const isAsc = orderBy === property && order === "asc"
         setOrder(isAsc ? "desc" : "asc")
         setOrderBy(property)
@@ -210,7 +202,7 @@ const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDa
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <div className={classes.tableFooter}>
+                <StyledTableFooter>
                     <FormControlLabel control={<Switch checked={dense} onChange={(e) => setDense(e.target.checked)} />} label="Dense padding" />
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25, 50, 100, 250]}
@@ -218,19 +210,17 @@ const CustomTable = ({ rows, refreshDate }: { rows: ResultInterface[]; refreshDa
                         count={rows.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
-                        onPageChange={(e, newPage) => setPage(newPage)}
+                        onPageChange={(_e, newPage) => setPage(newPage)}
                         onRowsPerPageChange={(e) => {
                             setRowsPerPage(parseInt(e.target.value, 10))
                             setPage(0)
                         }}
                     />
-                </div>
-                <div className={classes.tableFooterNotes}>
-                    <Typography fontSize={12}>Data last updated on: {refreshDate.toString()}</Typography>
-                    <Typography fontSize={12}>
-                        * Time it takes from the start of a run to when the Loot Collection process completes. A time of 0:00:00 means that the result came from a Pending Battle.
-                    </Typography>
-                </div>
+                </StyledTableFooter>
+                <StyledTableFooterNotes>
+                    <Typography sx={{ fontSize: 12 }}>Data last updated on: {refreshDate.toString()}</Typography>
+                    <Typography sx={{ fontSize: 12 }}>* Time it takes from the start of a run to when the Loot Collection process completes. A time of 0:00:00 means that the result came from a Pending Battle.</Typography>
+                </StyledTableFooterNotes>
             </Paper>
         </Box>
     )
