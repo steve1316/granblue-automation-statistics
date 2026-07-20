@@ -7,22 +7,10 @@ import Item from "../schemas/Item"
 import Result from "../schemas/Result"
 import jwt from "jsonwebtoken"
 import nodemailer from "nodemailer"
+import { requireAuth } from "../middleware/requireAuth"
+import { requireStringParams } from "../middleware/validateBody"
 
 const router: Router = express.Router()
-
-// This workaround method is only for the use of Tauri to work around the fact that the headers are stripped in the response when Tauri receives it from the server.
-export const authenticationWorkaround = async (username: string, password: string) => {
-    try {
-        await fetch("http://localhost:4000/api/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: username, password: password }),
-        })
-        return true
-    } catch {
-        return false
-    }
-}
 
 // This middleware makes sure that user is an admin before continuing executing the route.
 const isAdminMiddleware = async (req: Request, res: Response, next: NextFunction) => {
@@ -76,25 +64,14 @@ router.post("/api/login", passport.authenticate("local"), (req, res) => {
 })
 
 // GET route to get the logged in user.
-router.get("/api/user", (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send({message: "Not Authenticated."})
-            return
-        }
-    }
-
+router.get("/api/user", requireAuth, (req, res) => {
     res.status(200).send(req.user)
 })
 
 // GET route to fetch a user by their username.
 router.get("/api/get-user/:username", async (req, res) => {
     const { username } = req.params
-    if (!username || typeof username !== "string") {
-        res.status(400).send({message: "Improper values for parameters."})
-        return
-    }
+    if (!requireStringParams(res, { username })) return
 
     const doc = await User.findOne({ username: username })
     if (doc) {
@@ -118,10 +95,7 @@ router.get("/api/logout", (req, res) => {
 // PUT route to delete a user and all of their associated results.
 router.put("/api/delete-user/:username", isAdminMiddleware, async (req, res) => {
     const { username } = req.params
-    if (!username || typeof username !== "string") {
-        res.status(400).send({message: "Improper values for parameters."})
-        return
-    }
+    if (!requireStringParams(res, { username })) return
 
     await User.deleteOne({ username: username }).exec()
     console.log(`User ${username} has been successfully deleted. Now proceeding to remove all records belonging to them...`)
@@ -144,10 +118,12 @@ router.put("/api/delete-user/:username", isAdminMiddleware, async (req, res) => 
         console.log(`Deleted records for user ${username}.`)
 
         // Update the amounts of the items affected.
-        Object.keys(amountToDelete).forEach(async (key) => {
-            await Item.updateOne({ itemName: key }, { $dec: { totalAmount: amountToDelete[key] } }).exec()
-            console.log(`Total amount updated for item: ${key}.`)
-        })
+        const ops = Object.keys(amountToDelete).map((key) => ({
+            updateOne: { filter: { itemName: key }, update: { $inc: { totalAmount: -amountToDelete[key] } } },
+        }))
+        if (ops.length > 0) {
+            await Item.bulkWrite(ops)
+        }
 
         console.log("Updated total amounts in items affected.")
         res.status(200).send({message: "User and their data have been successfully deleted."})
@@ -159,10 +135,7 @@ router.put("/api/delete-user/:username", isAdminMiddleware, async (req, res) => 
 // POST route to start the password recovery process.
 router.post("/api/forgot-password", async (req, res) => {
     const { recoveryEntryPoint } = req?.body
-    if (!recoveryEntryPoint || typeof recoveryEntryPoint !== "string") {
-        res.status(400).send({message: "Improper values for parameters."})
-        return
-    }
+    if (!requireStringParams(res, { recoveryEntryPoint })) return
 
     const sendEmail = async (doc: UserInterface) => {
         // Create the jwt token.
@@ -233,10 +206,7 @@ ${link}
 // POST route to reset a user's password.
 router.post("/api/reset-password", async (req, res) => {
     const { username, newPassword } = req?.body
-    if (!username || !newPassword || typeof username !== "string" || typeof newPassword !== "string") {
-        res.status(400).send({message: "Improper values for parameters."})
-        return
-    }
+    if (!requireStringParams(res, { username, newPassword })) return
 
     // Hash the user's password.
     const hashedPassword = await bcrypt.hash(newPassword, 10)
