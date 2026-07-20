@@ -24,5 +24,9 @@ yarn-error.log*
 
 .env
 .env.*
+!.env.example
+
+# Generated DKIM signing keys for the mail server.
+mail/dkim/
 
 .vscode/
