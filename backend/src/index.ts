@@ -3,12 +3,11 @@ import cookieParser from "cookie-parser"
 import cors from "cors"
 import dotenv from "dotenv"
 import express from "express"
-import mongoose, { MongooseError } from "mongoose"
+import mongoose from "mongoose"
 import passport from "passport"
 import passportLocal from "passport-local"
 import session from "express-session"
 import User from "./schemas/User"
-import { UserInterface } from "./interfaces/UserInterface"
 import ResultRoutes from "./routes/ResultRoutes"
 import ItemRoutes from "./routes/ItemRoutes"
 import AccountRoutes from "./routes/AccountRoutes"
@@ -17,10 +16,9 @@ dotenv.config()
 
 ////////////////////
 // Connect to MongoDB cluster.
-mongoose.connect(process.env.MONGODB_URI as string, (err: MongooseError) => {
-    if (err) throw err
-    console.log("Connected to MongoDB Cluster.")
-})
+mongoose
+    .connect(process.env.MONGODB_URI as string)
+    .then(() => console.log("Connected to MongoDB Cluster."))
 
 ////////////////////
 // Middleware
@@ -28,6 +26,12 @@ const app = express()
 
 // Parse incoming data.
 app.use(express.json())
+
+// Express 5 no longer defaults req.body to {} for bodiless requests, so restore that behavior here.
+app.use((req, _res, next) => {
+    req.body ??= {}
+    next()
+})
 
 // CORS middleware. As a side note, make sure to port forward these localhost ports from VSCode if you are working remotely.
 app.use(cors({ origin: ["http://localhost:3000", "http://localhost:4000", "http://localhost:5173", "https://granblue-automation-statistics.com", "https://tauri.localhost"], credentials: true }))
@@ -56,43 +60,45 @@ app.use(passport.session())
 // Passport
 const LocalStrategy = passportLocal.Strategy
 passport.use(
-    new LocalStrategy((username, password, done) => {
-        User.findOne({ username: username }, (err: Error, user: UserInterface) => {
-            if (err) throw err
-
+    new LocalStrategy(async (username, password, done) => {
+        try {
+            const user = await User.findOne({ username: username })
             if (!user) {
                 return done(null, false)
-            } else {
-                // Use bcrypt to compare the hashes.
-                bcrypt.compare(password, user.password, (bcryptError, result) => {
-                    if (bcryptError) {
-                        throw bcryptError
-                    }
-
-                    if (result === true) {
-                        return done(null, user)
-                    } else {
-                        return done(null, false)
-                    }
-                })
             }
-        })
+
+            // Use bcrypt to compare the hashes.
+            const result = await bcrypt.compare(password, user.password)
+            if (result === true) {
+                return done(null, user)
+            } else {
+                return done(null, false)
+            }
+        } catch (err) {
+            return done(err)
+        }
     })
 )
 passport.serializeUser((user: any, cb) => {
     // Persist user data after successful authentication throughout the session.
     cb(null, user.id)
 })
-passport.deserializeUser((id: string, cb) => {
+passport.deserializeUser(async (id: string, cb) => {
     // Attaches the user object to the session's object in the request.
-    User.findOne({ _id: id }, (err: Error, user: UserInterface) => {
+    try {
+        const user = await User.findOne({ _id: id })
+        if (!user) {
+            return cb(null, null)
+        }
+
         const userInfo = {
             username: user.username,
             isAdmin: user.isAdmin,
         }
-
-        cb(err, userInfo)
-    })
+        cb(null, userInfo)
+    } catch (err) {
+        cb(err)
+    }
 })
 
 ////////////////////

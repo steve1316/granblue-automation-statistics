@@ -7,15 +7,19 @@ import mongoose from "mongoose"
 const result = new mongoose.Schema({
     username: {
         type: String,
+        required: true,
     },
     itemName: {
         type: String,
+        required: true,
     },
     farmingMode: {
         type: String,
+        required: true,
     },
     mission: {
         type: String,
+        required: true,
     },
     amount: {
         type: Number,
@@ -23,12 +27,15 @@ const result = new mongoose.Schema({
     },
     platform: {
         type: String,
+        required: true,
     },
     date: {
         type: String,
+        required: true,
     },
     elapsedTime: {
         type: String,
+        required: true,
     },
 })
 
