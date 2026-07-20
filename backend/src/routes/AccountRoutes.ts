@@ -147,15 +147,13 @@ router.post("/api/forgot-password", async (req, res) => {
         const token = jwt.sign(payload, secret, { expiresIn: "60m" })
 
         try {
-            // Create the nodemailer transporter.
-            let transporter = nodemailer.createTransport({
-                host: "mail.granblue-automation-statistics.com",
-                port: 465,
-                secure: true,
-                auth: {
-                    user: process.env.EMAIL,
-                    pass: process.env.EMAIL_PASSWORD,
-                },
+            // Create the nodemailer transporter. Defaults to the mail relay service (see docker-compose),
+            // but any SMTP host can be used via the SMTP_* environment variables.
+            const transporter = nodemailer.createTransport({
+                host: process.env.SMTP_HOST || "mail",
+                port: Number(process.env.SMTP_PORT) || 587,
+                secure: process.env.SMTP_SECURE === "true",
+                ...(process.env.EMAIL ? { auth: { user: process.env.EMAIL, pass: process.env.EMAIL_PASSWORD } } : {}),
                 tls: {
                     rejectUnauthorized: false, // Allow self signed certificate.
                 },
