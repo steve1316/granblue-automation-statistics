@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Avatar, ClickAwayListener, Container, Grid, Snackbar, TextField, Typography } from "@mui/material"
+import { Avatar, Container, Grid, Snackbar, TextField, Typography } from "@mui/material"
 import MuiAlert, { AlertProps } from "@mui/material/Alert"
 import { styled } from "@mui/system"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
@@ -40,7 +40,6 @@ const CreateAccount = () => {
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
-    const [passwordHasFocus, setPasswordHasFocus] = useState(false)
     const [optionalEmail, setOptionalEmail] = useState("")
     const [ready, setReady] = useState(false)
     const [inProgress, setInProgress] = useState(false)
@@ -104,13 +103,6 @@ const CreateAccount = () => {
         setUsernameExists(false)
     }
 
-    const handleClickAway = (e: MouseEvent | TouchEvent) => {
-        e.preventDefault()
-        if (passwordHasFocus) {
-            setPasswordHasFocus(false)
-        }
-    }
-
     return (
         <section id="createaccount">
             <StyledPaperContainer>
@@ -127,18 +119,15 @@ const CreateAccount = () => {
                             <TextField label="Username" placeholder="Enter your username" required fullWidth onChange={(e) => setUsername(e.target.value)} />
                         </Grid>
                         <Grid size={12}>
-                            <ClickAwayListener onClickAway={(e) => handleClickAway(e)}>
-                                <PasswordField
-                                    label="Password"
-                                    placeholder="Enter your password"
-                                    required
-                                    fullWidth
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    onFocus={() => setPasswordHasFocus(true)}
-                                    showPassword={showPassword}
-                                    setShowPassword={setShowPassword}
-                                />
-                            </ClickAwayListener>
+                            <PasswordField
+                                label="Password"
+                                placeholder="Enter your password"
+                                required
+                                fullWidth
+                                onChange={(e) => setPassword(e.target.value)}
+                                showPassword={showPassword}
+                                setShowPassword={setShowPassword}
+                            />
                             <PasswordChecklist rules={["minLength", "number", "match"]} minLength={5} value={password} valueAgain={confirmPassword} style={{ marginTop: "12px" }} />
                         </Grid>
                         <Grid size={12}>
