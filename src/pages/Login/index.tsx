@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useContext } from "react"
-import { Avatar, Button, Container, Grid, IconButton, InputAdornment, TextField, Typography, Alert, Snackbar } from "@mui/material"
+import { Avatar, Container, Grid, TextField, Typography, Alert, Snackbar } from "@mui/material"
 import { styled } from "@mui/system"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import axios from "axios"
-import { Visibility, VisibilityOff } from "@mui/icons-material"
 import { UserContext } from "../../context/UserContext"
+import PasswordField from "../../components/PasswordField"
+import { StyledFormButton } from "../../components/StyledFormButton"
 
 const StyledPaperContainer = styled(Container)({
     display: "flex",
@@ -25,12 +26,6 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 const StyledForm = styled("form")(({ theme }) => ({
     marginTop: theme.spacing(3),
 }))
-
-const StyledFormButton = styled(Button)({
-    backgroundColor: "#01bf71",
-    margin: "32px 32px 0 0",
-    color: "#000",
-})
 
 const Login = () => {
     const entryPoint: string = useContext(UserContext).entryPoint
@@ -109,24 +104,14 @@ const Login = () => {
                             <TextField label="Username" placeholder="Enter your username" required fullWidth onChange={(e) => setUsername(e.target.value)} />
                         </Grid>
                         <Grid size={12}>
-                            <TextField
+                            <PasswordField
                                 label="Password"
                                 placeholder="Enter your password"
                                 required
                                 fullWidth
                                 onChange={(e) => setPassword(e.target.value)}
-                                type={showPassword ? "text" : "password"}
-                                slotProps={{
-                                    input: {
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} onMouseDown={(e) => e.preventDefault()} edge="end">
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    },
-                                }}
+                                showPassword={showPassword}
+                                setShowPassword={setShowPassword}
                             />
                         </Grid>
                     </Grid>
