@@ -3,7 +3,7 @@ import { styled } from "@mui/system"
 import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItemButton, ListItemText, Divider, ListItemIcon, Box } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import { Link as RouterLink, useNavigate } from "react-router-dom"
-import { AssignmentInd, Home, Logout, InsertChart } from "@mui/icons-material"
+import { AssignmentInd, Home, Logout, InsertChart, Info } from "@mui/icons-material"
 import { UserContext } from "../../context/UserContext"
 import axios, { AxiosResponse } from "axios"
 import { UserInterface } from "../../interfaces/UserInterface"
@@ -134,6 +134,15 @@ const NavBar = () => {
                                         <Home />
                                     </ListItemIcon>
                                     <ListItemText primary="Home" />
+                                </ListItemButton>
+                            </StyledRouterLink>
+
+                            <StyledRouterLink to="/about">
+                                <ListItemButton key="about">
+                                    <ListItemIcon>
+                                        <Info />
+                                    </ListItemIcon>
+                                    <ListItemText primary="About" />
                                 </ListItemButton>
                             </StyledRouterLink>
 
