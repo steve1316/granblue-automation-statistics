@@ -13,47 +13,86 @@
 
 Granblue Automation Statistics aims to provide users who choose to opt-in valuable information regarding which Farming Modes and Raids have been popular with what and how many item drops the user and others have been getting.
 
-How it works is every time the Loot Collection process detects 1 or more item drops after a run, it will send a POST request to the MongoDB cluster and add a new entry into the specific Item table with the various information such as item name, amount it acquired, and how long it took.
+Every time the Loot Collection process in GA/GAA detects one or more item drops after a run, it sends the result to this site's API, which stores it in MongoDB with information such as the item name, the amount acquired, and how long the run took. On the website, you can display all runs provided by opt-in users for a particular Farming Mode's item as a sortable/filterable table or as charts for visual representation.
 
-Back to the website, you can choose to display all runs provided by opt-in users for a particular Farming Mode's item in a table, display it as a chart, and sort/filter the results. The results are also displayed charts for visual representation.
+See the [`/about`](https://granblue-automation-statistics.com/about) page for a walkthrough of how opting in works.
 
 ## Disclaimer
 
-Information collected by Granblue Automation Statistics do not contain any personal identifiable information.
+Information collected by Granblue Automation Statistics does not contain any personally identifiable information.
 
-# Features
+## Features
 
--   Create an account to login and use in both GA/GAA to send run results via the website's API.
--   Displays results in charts for visual representation.
--   Displays results in a table for easy sort/filter.
+-   Create an account to log in and use in both GA/GAA to submit run results via the website's API.
+-   Displays results as charts for visual representation.
+-   Displays results in a table for easy sorting/filtering.
+-   Password recovery by email, sent through a self-hosted mail server.
 
-# Build Instructions
+## Tech stack
 
-1. Open a terminal in the root of the project and run `yarn install` to install the frontend Javascript dependencies.
-2. Run `yarn install` in the `/backend/` folder as well to install the backend Node/Express dependencies.
-3. Create a `.env` file in the `/backend/` folder with the following information:
+-   **Frontend** (repository root) - React 19, Material UI 9, and Chart.js, built with Vite 8.
+-   **Backend** (`/backend`) - Express 5 with Passport authentication and Mongoose 9 talking to MongoDB.
+-   **Mail** (`/mail`) - a self-hosted Postfix server that sends the password-recovery emails.
+-   **Runtime** - Node 22, with the whole stack deployable through Docker Compose.
 
-```
-MONGODB_USERNAME=
-MONGODB_PASSWORD=
-MONGODB_URI=
+## Running with Docker (recommended)
 
-EXPRESS_SESSION_SECRET=
+The entire stack runs from the root `docker-compose.yml` (frontend, backend, and mail server):
 
-JWT_SECRET=
-
-EMAIL=
-EMAIL_PASSWORD=
-```
-
-The URI for the MongoDB cluster can be found when you create one. The secrets can be anything. The last part of the .env is used to send a password reset email using an email service hosted on your server.
-
-4. Create a `.env` file in the root of the project with the following information:
+1. Create the environment files described in [Environment variables](#environment-variables) - `backend/.env`, `.env.production`, and `mail/.env`.
+2. From the project root, build and start everything:
 
 ```
-REACT_APP_ENVIRONMENT=
+docker compose up --build
 ```
 
-Set the enviroment to "development" to force the React project to use the localhost entrypoints instead of the website's.
+The frontend is served at http://localhost:5173 and the backend API at http://localhost:4000. See [`mail/README.md`](mail/README.md) for the DNS records the mail server needs to deliver email.
 
-5. Now you can run/build the project by running `yarn start` in both the `/backend/` folder to start the localhost server and in the root of the project to start a localhost version of the website.
+## Local development
+
+1. Use Node 22 (e.g. `nvm install 22 && nvm use 22`).
+2. Install dependencies in both the root and `/backend`:
+
+```
+yarn install
+cd backend && yarn install
+```
+
+3. Provide a MongoDB connection string in `backend/.env` (a local instance or a MongoDB Atlas cluster) and the frontend's `.env.development` (already set to `http://localhost:4000`).
+4. Start each side in its own terminal:
+
+```
+yarn start              # frontend (Vite dev server on :5173)
+cd backend && yarn start # backend (tsx watch on :4000)
+```
+
+## Environment variables
+
+**`backend/.env`** - the backend loads these via dotenv:
+
+```
+MONGODB_URI=              # MongoDB connection string
+EXPRESS_SESSION_SECRET=   # any random string
+JWT_SECRET=               # any random string, used for password-reset tokens
+EXPRESS_PORT=4000
+
+# SMTP - defaults below point at the mail service from docker-compose.
+SMTP_HOST=mail
+SMTP_PORT=587
+SMTP_SECURE=false
+# Optional: set EMAIL/EMAIL_PASSWORD instead to send through an authenticated external SMTP server.
+```
+
+**Frontend** - `.env.development` and `.env.production` each define `VITE_API_URL`, which is the backend entry point the site talks to:
+
+```
+# .env.development
+VITE_API_URL=http://localhost:4000
+
+# .env.production
+VITE_API_URL=https://granblue-automation-statistics.com
+```
+
+**`mail/.env`** - the mail server's configuration. Copy `mail/.env.example` and follow [`mail/README.md`](mail/README.md) for the DKIM and DNS setup.
+
+All `.env` files are gitignored - never commit real credentials.
