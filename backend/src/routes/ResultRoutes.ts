@@ -2,21 +2,14 @@ import express, { Router } from "express"
 import Item from "../schemas/Item"
 import Result from "../schemas/Result"
 import User from "../schemas/User"
-import { authenticationWorkaround } from "./AccountRoutes"
+import { requireAuth } from "../middleware/requireAuth"
+import { requireStringParams } from "../middleware/validateBody"
 import * as xml2js from "xml2js"
 
 const router: Router = express.Router()
 
 // POST route to create a new result for an item. The bot at this point has already checked if the item exists before calling this.
-router.post("/api/create-result", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send({message: "Not Authenticated."})
-            return
-        }
-    }
-
+router.post("/api/create-result", requireAuth, async (req, res) => {
     const { appVersion } = req.body
     let returnNow = false
     if (appVersion) {
@@ -131,40 +124,18 @@ router.post("/api/create-result", async (req, res) => {
 })
 
 // GET route to fetch multiple results via user ID.
-router.get("/api/get-result/user/:username", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send({message: "Not Authenticated."})
-            return
-        }
-    }
-
+router.get("/api/get-result/user/:username", requireAuth, async (req, res) => {
     const { username } = req.params
-    if (!username || typeof username !== "string") {
-        res.status(400).send({message: "Improper values for parameters."})
-        return
-    }
+    if (!requireStringParams(res, { username })) return
 
     const docs = await Result.find({ username: username })
     res.status(200).send(docs)
 })
 
 // GET route to fetch multiple results via the item name.
-router.get("/api/get-result/item/:itemName", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send({message: "Not Authenticated."})
-            return
-        }
-    }
-
+router.get("/api/get-result/item/:itemName", requireAuth, async (req, res) => {
     const { itemName } = req.params
-    if (!itemName || typeof itemName !== "string") {
-        res.status(400).send({message: "Improper values for parameters."})
-        return
-    }
+    if (!requireStringParams(res, { itemName })) return
 
     let sort = req.query.sort
     if (sort === undefined) {
@@ -178,74 +149,33 @@ router.get("/api/get-result/item/:itemName", async (req, res) => {
 })
 
 // GET route to fetch multiple results via the Farming Mode.
-router.get("/api/get-result/farmingMode/:farmingMode", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send({message: "Not Authenticated."})
-            return
-        }
-    }
-
+router.get("/api/get-result/farmingMode/:farmingMode", requireAuth, async (req, res) => {
     const { farmingMode } = req.params
-    if (!farmingMode || typeof farmingMode !== "string") {
-        res.status(400).send({message: "Improper values for parameters."})
-        return
-    }
+    if (!requireStringParams(res, { farmingMode })) return
 
     const docs = await Result.find({ farmingMode: farmingMode })
     res.status(200).send(docs)
 })
 
 // GET route to fetch multiple results via the Farming Mode's Mission.
-router.get("/api/get-result/farmingMode/:farmingMode/mission/:mission", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send({message: "Not Authenticated."})
-            return
-        }
-    }
-
+router.get("/api/get-result/farmingMode/:farmingMode/mission/:mission", requireAuth, async (req, res) => {
     const { farmingMode, mission } = req.params
-    if (!farmingMode || !mission || typeof farmingMode !== "string" || typeof mission !== "string") {
-        res.status(400).send({message: "Improper values for parameters."})
-        return
-    }
+    if (!requireStringParams(res, { farmingMode, mission })) return
 
     const docs = await Result.find({ farmingMode: farmingMode, mission: mission })
     res.status(200).send(docs)
 })
 
 // GET route to fetch multiple results via just the Mission.
-router.get("/api/get-result/mission/:mission", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send({message: "Not Authenticated."})
-            return
-        }
-    }
-
+router.get("/api/get-result/mission/:mission", requireAuth, async (req, res) => {
     const { mission } = req.params
-    if (!mission || typeof mission !== "string") {
-        res.status(400).send({message: "Improper values for parameters."})
-        return
-    }
+    if (!requireStringParams(res, { mission })) return
 
     const docs = await Result.find({ mission: mission })
     res.status(200).send(docs)
 })
 
-router.get("/api/get-result", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        const { username, password } = req?.body
-        if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
-            res.status(401).send({message: "Not Authenticated."})
-            return
-        }
-    }
-
+router.get("/api/get-result", requireAuth, async (req, res) => {
     let sort = req.query.sort
     if (sort === undefined) {
         sort = "desc"
