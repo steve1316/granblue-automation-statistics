@@ -43,7 +43,7 @@ const isAdminMiddleware = async (req: Request, res: Response, next: NextFunction
 // POST route to register a new user.
 router.post("/api/register", async (req: Request, res: Response) => {
     // Destructure the username, password and email fields and perform type validation.
-    const { username, password, email } = req?.body ?? {}
+    const { username, password, email } = req?.body
     if (!username || !password || typeof username !== "string" || typeof password !== "string" || typeof email !== "string") {
         res.status(400).send({message: "Improper values for parameters."})
         return
@@ -78,7 +78,7 @@ router.post("/api/login", passport.authenticate("local"), (req, res) => {
 // GET route to get the logged in user.
 router.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) {
-        const { username, password } = req?.body ?? {}
+        const { username, password } = req?.body
         if ((username !== undefined || password !== undefined) && !authenticationWorkaround) {
             res.status(401).send({message: "Not Authenticated."})
             return
@@ -158,7 +158,7 @@ router.put("/api/delete-user/:username", isAdminMiddleware, async (req, res) => 
 
 // POST route to start the password recovery process.
 router.post("/api/forgot-password", async (req, res) => {
-    const { recoveryEntryPoint } = req?.body ?? {}
+    const { recoveryEntryPoint } = req?.body
     if (!recoveryEntryPoint || typeof recoveryEntryPoint !== "string") {
         res.status(400).send({message: "Improper values for parameters."})
         return
@@ -232,7 +232,7 @@ ${link}
 
 // POST route to reset a user's password.
 router.post("/api/reset-password", async (req, res) => {
-    const { username, newPassword } = req?.body ?? {}
+    const { username, newPassword } = req?.body
     if (!username || !newPassword || typeof username !== "string" || typeof newPassword !== "string") {
         res.status(400).send({message: "Improper values for parameters."})
         return

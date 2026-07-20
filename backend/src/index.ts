@@ -19,9 +19,6 @@ dotenv.config()
 mongoose
     .connect(process.env.MONGODB_URI as string)
     .then(() => console.log("Connected to MongoDB Cluster."))
-    .catch((err) => {
-        throw err
-    })
 
 ////////////////////
 // Middleware
@@ -29,6 +26,12 @@ const app = express()
 
 // Parse incoming data.
 app.use(express.json())
+
+// Express 5 no longer defaults req.body to {} for bodiless requests, so restore that behavior here.
+app.use((req, _res, next) => {
+    req.body ??= {}
+    next()
+})
 
 // CORS middleware. As a side note, make sure to port forward these localhost ports from VSCode if you are working remotely.
 app.use(cors({ origin: ["http://localhost:3000", "http://localhost:4000", "http://localhost:5173", "https://granblue-automation-statistics.com", "https://tauri.localhost"], credentials: true }))
